@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -35,7 +35,7 @@ public class PermissionsManager implements Listener {
 		permissions.clear();
 	}
 	
-	public boolean check(HumanEntity player, int id) {
+	public boolean check(Player player, int id) {
 		PermissionAttachment attachment = permissions.get(player.getUniqueId());
 		if (attachment.getPermissions().containsKey(Integer.toString(id)) == false) {
 			return true;
@@ -44,7 +44,7 @@ public class PermissionsManager implements Listener {
 		return attachment.getPermissions().get(Integer.toString(id));
 	}
 	
-	public boolean check(HumanEntity player, Entity entity) {
+	public boolean check(Player player, Entity entity) {
 		PermissionAttachment attachment = permissions.get(player.getUniqueId());
 		if (attachment.getPermissions().containsKey(entity.getType().name()) == false) {
 			return true;
@@ -53,7 +53,7 @@ public class PermissionsManager implements Listener {
 		return attachment.getPermissions().get(entity.getType().name());
 	}
 	
-	public boolean check(HumanEntity player, Material material) {
+	public boolean check(Player player, Material material) {
 		PermissionAttachment attachment = permissions.get(player.getUniqueId());
 		if (attachment.getPermissions().containsKey(material.ordinal()) == false) {
 			return true;

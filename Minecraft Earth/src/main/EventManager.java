@@ -1,13 +1,17 @@
 package main;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.player.PlayerAnimationEvent;
+import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.inventory.ItemStack;
 
 public class EventManager implements Listener {
@@ -21,11 +25,15 @@ public class EventManager implements Listener {
 	
 	@EventHandler
 	private void onCraft(CraftItemEvent event) {
-		pManager.check(event.getWhoClicked(), event.getRecipe().getResult().getType());
+		Player player = (Player) event.getWhoClicked();
+		Material item = event.getRecipe().getResult().getType();
+		if (pManager.check(player, item) == false) {
+			event.setCancelled(true);
+		}
 	}
 	
 	@EventHandler
-	private void onDrop(EntityDeathEvent event) {
+	private void onItemDrop(EntityDeathEvent event) {
 		if (event.getEntity() instanceof Player == false) {
 			EntityDamageEvent cause = event.getEntity().getLastDamageCause();			
 			if (cause instanceof EntityDamageByEntityEvent) {
@@ -37,6 +45,17 @@ public class EventManager implements Listener {
 						}
 					}
 				}
+			}
+		}
+	}
+	
+	@EventHandler
+	private void onItemUse(PlayerAnimationEvent event) {
+		if (event.getAnimationType().equals(PlayerAnimationType.ARM_SWING)) {
+			Player player = event.getPlayer();
+			Material item = player.getItemInHand().getType();
+			if (pManager.check(player, item) == false) {
+				event.setCancelled(true);
 			}
 		}
 	}
