@@ -1,0 +1,11 @@
+name: QUHC
+main: main.QUHC
+description: QUHC V 1.0
+version: 1.0
+author: qsik
+
+commands:
+  join:
+  start:
+  reset:
+  lobby:
