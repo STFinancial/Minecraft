@@ -12,27 +12,37 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.permissions.PermissionAttachment;
 
-public class PermissionsManager implements Listener {
+public class DataManager implements Listener {
 	private HashMap<UUID, PermissionAttachment> permissions = new HashMap<UUID, PermissionAttachment>();
+	private HashMap<UUID, Tech> playerTechs = new HashMap<UUID, Tech>();
 	private final Main plugin;
 	
-	public PermissionsManager(Main main) {
+	public DataManager(Main main) {
 		plugin = main;
 		new EventManager(main, this);
+		load();
 	}
 	
 	@EventHandler
 	private void onLogin(PlayerJoinEvent event) {
-		permissions.put(event.getPlayer().getUniqueId(), event.getPlayer().addAttachment(plugin));
+		Player player = event.getPlayer();
+		permissions.put(player.getUniqueId(), player.addAttachment(plugin));
+		playerTechs.put(player.getUniqueId(), new Tech(player));
 	}
 	
 	@EventHandler
 	private void onQuit(PlayerQuitEvent event) {
 		permissions.remove(event.getPlayer().getUniqueId());
+		playerTechs.remove(event.getPlayer().getUniqueId());
 	}
 	
-	public void clearPermissions() {
+	public void load() {
+		
+	}
+	
+	public void cleanup() {
 		permissions.clear();
+		playerTechs.clear();
 	}
 	
 	public boolean check(Player player, int id) {

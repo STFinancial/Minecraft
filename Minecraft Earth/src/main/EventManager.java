@@ -4,7 +4,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -16,9 +15,9 @@ import org.bukkit.inventory.ItemStack;
 
 public class EventManager implements Listener {
 	private final Main plugin;
-	private final PermissionsManager pManager;
+	private final DataManager pManager;
 	
-	public EventManager(Main main, PermissionsManager permissionsManager) {
+	public EventManager(Main main, DataManager permissionsManager) {
 		plugin = main;
 		pManager = permissionsManager;
 	}
