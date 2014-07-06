@@ -14,12 +14,16 @@ import org.bukkit.permissions.PermissionAttachment;
 
 public class DataManager implements Listener {
 	private HashMap<UUID, PermissionAttachment> permissions = new HashMap<UUID, PermissionAttachment>();
-	private HashMap<UUID, Tech> playerTechs = new HashMap<UUID, Tech>();
+	private HashMap<UUID, TechData> playerTechs = new HashMap<UUID, TechData>();
+	private HashMap<String, String> techs;
 	private final Main plugin;
+	private final FileManager fileManager;
 	
 	public DataManager(Main main) {
 		plugin = main;
 		new EventManager(main, this);
+		fileManager = new FileManager(main);
+		techs = fileManager.parseTechs();
 		load();
 	}
 	
@@ -27,7 +31,7 @@ public class DataManager implements Listener {
 	private void onLogin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		permissions.put(player.getUniqueId(), player.addAttachment(plugin));
-		playerTechs.put(player.getUniqueId(), new Tech(player));
+		playerTechs.put(player.getUniqueId(), new TechData(player));
 	}
 	
 	@EventHandler
@@ -40,7 +44,7 @@ public class DataManager implements Listener {
 		
 	}
 	
-	public void cleanup() {
+	public void quit() {
 		permissions.clear();
 		playerTechs.clear();
 	}

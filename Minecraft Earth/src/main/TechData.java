@@ -8,13 +8,13 @@ import javax.swing.Timer;
 
 import org.bukkit.entity.Player;
 
-public class Tech implements ActionListener {
+public class TechData implements ActionListener {
 	private int exp = 0;
 	private final Timer expTimer;
 	private final Timer updateTimer;	
 	private final UUID player;
 	
-	public Tech(Player player) {
+	public TechData(Player player) {
 		expTimer = new Timer(3600000, this);
 		expTimer.setActionCommand("exp");
 		expTimer.setRepeats(true);
@@ -23,7 +23,7 @@ public class Tech implements ActionListener {
 		this.player = player.getUniqueId();
 	}
 	
-	public Tech(Player player, int exp) {
+	public TechData(Player player, int exp) {
 		this(player);
 		this.exp = exp;
 	}
