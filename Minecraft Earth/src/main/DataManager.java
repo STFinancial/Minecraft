@@ -15,6 +15,7 @@ import org.bukkit.permissions.PermissionAttachment;
 public class DataManager implements Listener {
 	private HashMap<UUID, PermissionAttachment> permissions = new HashMap<UUID, PermissionAttachment>();
 	private HashMap<UUID, TechData> playerTechs = new HashMap<UUID, TechData>();
+	private HashMap<UUID, AFKWatch> playerAFK = new HashMap<UUID,AFKWatch>();
 	private HashMap<String, String> techs;
 	private final Main plugin;
 	private final FileManager fileManager;
@@ -31,13 +32,15 @@ public class DataManager implements Listener {
 	private void onLogin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		permissions.put(player.getUniqueId(), player.addAttachment(plugin));
-		playerTechs.put(player.getUniqueId(), new TechData(player));
+		playerTechs.put(player.getUniqueId(), new TechData(player, this));
+		playerAFK.put(player.getUniqueId(), new AFKWatch(player));
 	}
 	
 	@EventHandler
 	private void onQuit(PlayerQuitEvent event) {
 		permissions.remove(event.getPlayer().getUniqueId());
 		playerTechs.remove(event.getPlayer().getUniqueId());
+		playerAFK.remove(event.getPlayer().getUniqueId());
 	}
 	
 	public void load() {
@@ -74,5 +77,12 @@ public class DataManager implements Listener {
 		}
 		
 		return attachment.getPermissions().get(material.name());
+	}
+	
+	public boolean isPlayerAFK(UUID ID){
+		if(playerAFK.get(ID) != null){
+			return playerAFK.get(ID).AFK;
+		}
+		return false;
 	}
 }
