@@ -1,11 +1,7 @@
-name: QUHC
-main: main.QUHC
-description: QUHC V 1.0
+name: Minecraft Earth
+main: main.Main
+description: Minecraft Earth Alpha 1.0
 version: 1.0
 author: qsik
 
 commands:
-  join:
-  start:
-  reset:
-  lobby:
