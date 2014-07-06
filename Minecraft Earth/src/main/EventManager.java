@@ -15,18 +15,18 @@ import org.bukkit.inventory.ItemStack;
 
 public class EventManager implements Listener {
 	private final Main plugin;
-	private final DataManager pManager;
+	private final DataManager dataManager;
 	
-	public EventManager(Main main, DataManager permissionsManager) {
+	public EventManager(Main main, DataManager dataManager) {
 		plugin = main;
-		pManager = permissionsManager;
+		this.dataManager = dataManager;
 	}
 	
 	@EventHandler
 	private void onCraft(CraftItemEvent event) {
 		Player player = (Player) event.getWhoClicked();
 		Material item = event.getRecipe().getResult().getType();
-		if (pManager.check(player, item) == false) {
+		if (dataManager.check(player, item) == false) {
 			event.setCancelled(true);
 		}
 	}
@@ -39,7 +39,7 @@ public class EventManager implements Listener {
 				Entity damager = ((EntityDamageByEntityEvent) cause).getDamager();
 				if (damager instanceof Player) {
 					for (ItemStack item : event.getDrops()) {
-						if (pManager.check((Player) damager, item.getType()) == false) {
+						if (dataManager.check((Player) damager, item.getType()) == false) {
 							event.getDrops().remove(item);
 						}
 					}
@@ -53,7 +53,7 @@ public class EventManager implements Listener {
 		if (event.getAnimationType().equals(PlayerAnimationType.ARM_SWING)) {
 			Player player = event.getPlayer();
 			Material item = player.getItemInHand().getType();
-			if (pManager.check(player, item) == false) {
+			if (dataManager.check(player, item) == false) {
 				event.setCancelled(true);
 			}
 		}
