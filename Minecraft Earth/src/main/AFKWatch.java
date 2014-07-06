@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 public class AFKWatch implements ActionListener  {
 	Location lastLocation;
 	int durationAFK = 0;
-	int tickTimer = 60000; //one minute
+	int tickTimer = 10000; //ten seconds
 	boolean AFK = false;
 	Timer updateTimer;
 	Player player;
@@ -29,8 +29,10 @@ public class AFKWatch implements ActionListener  {
 			durationAFK = 0;
 		} else {
 			durationAFK++;
-			if (durationAFK > 5)
+			if (durationAFK > 5){
 				AFK = true;
+				player.sendMessage("You are now AFK");
+			}
 			if (durationAFK > 30)
 				player.kickPlayer("removed for being AFK too long");
 		}
