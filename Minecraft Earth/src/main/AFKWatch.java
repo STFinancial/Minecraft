@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 public class AFKWatch implements ActionListener  {
 	Location lastLocation;
 	int durationAFK = 0;
-	int tickTimer = 10000; //ten seconds
+	int tickTimer = 5000; //ten seconds
 	boolean AFK = false;
 	Timer updateTimer;
 	Player player;
@@ -28,8 +28,11 @@ public class AFKWatch implements ActionListener  {
 	public void actionPerformed(ActionEvent e) {
 		if (lastLocation.equals(player.getLocation()) == false) {
 			durationAFK = 0;
+			AFK = false;
+			player.sendMessage("Debug Message, you have moved");
 		} else {
 			durationAFK++;
+			player.sendMessage("Debug Message, you have not moved");
 			if (durationAFK > 5 && durationAFK % 5 == 0){
 				AFK = true;
 				player.sendMessage("You are now AFK");
