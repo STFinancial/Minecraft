@@ -3,6 +3,7 @@ package main;
 import java.util.HashMap;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -30,26 +31,39 @@ public class DataManager implements Listener {
 	
 	@EventHandler
 	private void onLogin(PlayerJoinEvent event) {
-		Player player = event.getPlayer();
+		loadPlayerData(event.getPlayer());
+	}
+	
+	@EventHandler
+	private void onQuit(PlayerQuitEvent event) {
+		removePlayerData(event.getPlayer());
+	}
+	
+	public void load() {
+		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+			loadPlayerData(player);
+		}
+	}
+	
+	public void quit() {
+		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+			removePlayerData(player);
+		}
+		permissions.clear();
+		playerTechs.clear();
+		playerAFK.clear();
+	}
+	
+	private void loadPlayerData(Player player) {
 		permissions.put(player.getUniqueId(), player.addAttachment(plugin));
 		playerTechs.put(player.getUniqueId(), new TechData(player, this));
 		playerAFK.put(player.getUniqueId(), new AFKWatch(player));
 	}
 	
-	@EventHandler
-	private void onQuit(PlayerQuitEvent event) {
-		permissions.remove(event.getPlayer().getUniqueId());
-		playerTechs.remove(event.getPlayer().getUniqueId());
-		playerAFK.remove(event.getPlayer().getUniqueId());
-	}
-	
-	public void load() {
-		
-	}
-	
-	public void quit() {
-		permissions.clear();
-		playerTechs.clear();
+	private void removePlayerData(Player player) {
+		permissions.remove(player.getUniqueId());
+		playerTechs.remove(player.getUniqueId());
+		playerAFK.remove(player.getUniqueId());
 	}
 	
 	public boolean check(Player player, int id) {

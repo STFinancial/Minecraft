@@ -20,6 +20,7 @@ public class AFKWatch implements ActionListener  {
 		lastLocation = player.getLocation();
 		updateTimer = new Timer(tickTimer, this);
 		updateTimer.setRepeats(true);
+		updateTimer.start();
 		this.player = player;
 	}
 
@@ -29,12 +30,12 @@ public class AFKWatch implements ActionListener  {
 			durationAFK = 0;
 		} else {
 			durationAFK++;
-			if (durationAFK > 5){
+			if (durationAFK > 5 && durationAFK % 5 == 0){
 				AFK = true;
 				player.sendMessage("You are now AFK");
 			}
 			if (durationAFK > 30)
-				player.kickPlayer("removed for being AFK too long");
+				player.kickPlayer("Removed for being AFK too long");
 		}
 		lastLocation = player.getLocation();
 	}
