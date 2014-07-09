@@ -8,6 +8,7 @@ public class Main extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		dataManager = new DataManager(this);
+		this.getServer().getPluginManager().registerEvents(dataManager, this);
 	}
 	
 	@Override
