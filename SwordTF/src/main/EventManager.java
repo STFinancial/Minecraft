@@ -7,9 +7,11 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -17,8 +19,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class EventManager implements Listener {
 	private final Main plugin;
 
-	private static final Set<Material> SWORDS = new HashSet<Material>(Arrays.asList(
-			new Material[] {Material.DIAMOND_SWORD, Material.IRON_SWORD, Material.GOLD_SWORD, Material.STONE_SWORD, Material.WOOD_SWORD}));
+
 
 	public EventManager(Main main) {
 		plugin = main;
@@ -35,18 +36,39 @@ public class EventManager implements Listener {
 	}
 
 	@EventHandler
-	private void onPlayerAnimation(PlayerAnimationEvent event){
+	private void onPlayerAnimation(EntityDamageByEntityEvent event) {
+			if (event.getDamager() instanceof Player) {
+				Player damager = (Player) event.getDamager();
+				if (Main.SWORDS.contains(damager.getItemInHand().getType())) {
+					plugin.getLogger().info(damager.getName() + " has just tried to damage");
+					if(plugin.getDataManager().canPlayerDamage(damager.getUniqueId())){
+						plugin.getLogger().info("Damage was accepted"); 
+					}else{
+						plugin.getLogger().info("Damage was prevented due to energy losses"); 
+						event.setCancelled(true);
+					}
+				}
+			}
+	}
+
+	@EventHandler
+	private void onPlayerAnimation(PlayerAnimationEvent event) {
 		UUID playerID = event.getPlayer().getUniqueId();
-		if(SWORDS.contains(event.getPlayer().getItemInHand().getType())){
-			plugin.getLogger().info(event.getPlayer().getName() + " Has just tried to swing their "+ event.getPlayer().getItemInHand().getType()
-					+ "with " + plugin.getDataManager().currentEnergy(playerID)
-					+ " energy");
-		
-			if(plugin.getDataManager().canPlayerSwing(playerID)){
-				plugin.getLogger().info("And it was good");
+		if (Main.SWORDS.contains(event.getPlayer().getItemInHand().getType())) {
+			plugin.getLogger().info(
+					event.getPlayer().getName()
+							+ " Has just tried to swing with "
+							+ plugin.getDataManager().currentEnergy(playerID)
+							+ " energy");
+
+			if (plugin.getDataManager().canPlayerSwing(playerID)) {
 				plugin.getDataManager().swing(playerID);
-			}else{
-				plugin.getLogger().info("And it failed"); //Need to add DamageEvent and cancel that as well, also block animation packets? for cleanliness, Can't stop client animation
+				plugin.getLogger().info(
+						"And it was good, now at "
+								+ plugin.getDataManager().currentEnergy(
+										playerID) + " energy");
+			} else {
+				plugin.getLogger().info("Not enough energy"); 
 				event.setCancelled(true);
 			}
 		}
@@ -71,6 +93,5 @@ public class EventManager implements Listener {
 	private void removePlayerData(Player player) {
 		plugin.getDataManager().remove(player);
 	}
-
 
 }
