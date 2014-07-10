@@ -19,7 +19,8 @@ public class SwordData implements Runnable {
 	private final BukkitScheduler scheduler;
 	private final Main plugin;
 	boolean ready = false;
-	private final Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
+	private final Scoreboard board = Bukkit.getScoreboardManager()
+			.getNewScoreboard();
 	private Objective objective;
 	private Score score;
 	private final Player player;
@@ -53,7 +54,8 @@ public class SwordData implements Runnable {
 		if (taskID != -1) {
 			scheduler.cancelTask(taskID);
 		}
-		taskID = scheduler.scheduleSyncRepeatingTask(plugin, this, TICKS_PER_UPDATE, TICKS_PER_UPDATE);
+		taskID = scheduler.scheduleSyncRepeatingTask(plugin, this,
+				TICKS_PER_UPDATE, TICKS_PER_UPDATE);
 		ready = true;
 	}
 
@@ -67,9 +69,16 @@ public class SwordData implements Runnable {
 	public void run() {
 		if (energy >= 100) {
 			scheduler.cancelTask(taskID);
-		} else if (energy < 40) {
-			player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 40, 10, true));
 		} else {
+			if (energy >= ENERGY_PER_SWING) {
+				if (player.hasPotionEffect(PotionEffectType.SLOW_DIGGING)) {
+					player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
+				}
+			}
+			if (energy < 40) {
+				player.addPotionEffect(new PotionEffect(
+						PotionEffectType.SLOW_DIGGING, 40, 10, true));
+			}
 			energy += TICKS_PER_UPDATE * ENERGY_PER_TICK;
 			score.setScore(energy);
 		}
