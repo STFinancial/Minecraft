@@ -1,25 +1,44 @@
 package main;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 
 public class PlayerData {
-	int energy, taskID = -1;
+	int energy, taskID = -1, gracePeriodID = -1;
 	BukkitScheduler scheduler;
 	Plugin plugin;
-
-	public PlayerData(Plugin plugin){
+	boolean ready = false;
+	ScoreboardManager manager = Bukkit.getScoreboardManager();
+	Scoreboard board = manager.getNewScoreboard();
+	Objective objective;
+	Score score;
+	Player player;
+	
+	public PlayerData(Plugin plugin, Player player){
 		scheduler = Bukkit.getServer().getScheduler();
 		energy = 100;
 		this.plugin = plugin;
+		this.player = player;
+		player.setScoreboard(board);
+		objective = board.registerNewObjective(" ", "dummy");
+		score = objective.getScore("Energy:");
+		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+		score.setScore(100);
 	}
 
 	public boolean swingReady(){
-		return energy > Main.ENERGY_PER_SWING;
+		return energy >= Main.ENERGY_PER_SWING;
+	}
+	
+	public boolean damageReady(){
+		return ready;
 	}
 
 	public void swingPerformed(){
@@ -31,14 +50,24 @@ public class PlayerData {
 			
 			@Override
 			public void run() {
-				if(energy>100){
+				if(energy>=100){
 					scheduler.cancelTask(taskID);
 				}else{
-					energy+=5;
+					energy += Main.TICKS_PER_UPDATE * Main.ENERGY_PER_TICK;
+					score.setScore(energy);
 				}
 			}
 
-		}, 5, 5);
+		}, Main.TICKS_PER_UPDATE, Main.TICKS_PER_UPDATE);
+		ready = true;
+		scheduler.scheduleSyncDelayedTask(plugin, new Runnable(){
+			
+			@Override
+			public void run() {
+				ready = false;
+			}
+
+		}, 1);
 	}
 
 

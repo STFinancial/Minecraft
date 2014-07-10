@@ -20,7 +20,7 @@ public class DataManager {
 	}
 
 	public void add(Player player) {
-		playerData.put(player.getUniqueId(), new PlayerData(plugin));
+		playerData.put(player.getUniqueId(), new PlayerData(plugin,player));
 	}
 	
 	public boolean canPlayerSwing(UUID playerID){
@@ -33,5 +33,9 @@ public class DataManager {
 	
 	public int currentEnergy(UUID playerID){
 		return playerData.get(playerID).energy;
+	}
+
+	public boolean canPlayerDamage(UUID playerID) {
+		return playerData.get(playerID).damageReady();
 	}
 }
