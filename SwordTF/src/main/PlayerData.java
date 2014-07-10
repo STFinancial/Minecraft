@@ -27,9 +27,10 @@ public class PlayerData {
 		this.plugin = plugin;
 		this.player = player;
 		player.setScoreboard(board);
-		objective = board.registerNewObjective("Energy:", "dummy");
-		score = objective.getScore(player.getName());
+		objective = board.registerNewObjective(" ", "dummy");
+		score = objective.getScore("Energy:");
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+		score.setScore(100);
 	}
 
 	public boolean swingReady(){
