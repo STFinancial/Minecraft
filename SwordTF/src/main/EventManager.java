@@ -1,13 +1,5 @@
 package main;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,86 +7,58 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 public class EventManager implements Listener {
 	private final Main plugin;
-
-
-
-	public EventManager(Main main) {
-		plugin = main;
+	private final DataManager dataManager;
+	
+	public EventManager(Main plugin, DataManager dataManager) {
+		this.plugin = plugin;
+		this.dataManager = dataManager;
+	}
+	
+	private boolean holdingSword(Player player) {
+		return player.getItemInHand().getType().name().contains("_SWORD");
 	}
 
 	@EventHandler
 	private void onLogin(PlayerJoinEvent event) {
-		loadPlayerData(event.getPlayer());
+		dataManager.add(event.getPlayer());
 	}
 
 	@EventHandler
 	private void onQuit(PlayerQuitEvent event) {
-		removePlayerData(event.getPlayer());
+		dataManager.remove(event.getPlayer());
 	}
 
 	@EventHandler
 	private void onPlayerAnimation(EntityDamageByEntityEvent event) {
-			if (event.getDamager() instanceof Player) {
-				Player damager = (Player) event.getDamager();
-				damager.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 1000, 6, false));
-				if (Main.SWORDS.contains(damager.getItemInHand().getType())) {
-					plugin.getLogger().info(damager.getName() + " has just tried to damage");
-					if(plugin.getDataManager().canPlayerDamage(damager.getUniqueId())){
-						plugin.getLogger().info("Damage was accepted"); 
-					}else{
-						plugin.getLogger().info("Damage was prevented due to energy losses"); 
-						event.setCancelled(true);
-					}
+		if (event.getDamager() instanceof Player) {
+			Player damager = (Player) event.getDamager();
+			if (holdingSword(damager)) {
+				plugin.getLogger().info(damager.getName() + " has just tried to damage");
+				if (dataManager.canPlayerDamage(damager)) {
+					plugin.getLogger().info("Damage was accepted");
+				} else {
+					plugin.getLogger().info("Damage was prevented due to energy losses");
+					event.setCancelled(true);
 				}
 			}
+		}
 	}
 
 	@EventHandler
 	private void onPlayerAnimation(PlayerAnimationEvent event) {
-		UUID playerID = event.getPlayer().getUniqueId();
-		if (Main.SWORDS.contains(event.getPlayer().getItemInHand().getType())) {
-			plugin.getLogger().info(
-					event.getPlayer().getName()
-							+ " Has just tried to swing with "
-							+ plugin.getDataManager().currentEnergy(playerID)
-							+ " energy");
-
-			if (plugin.getDataManager().canPlayerSwing(playerID)) {
-				plugin.getDataManager().swing(playerID);
-				plugin.getLogger().info(
-						"And it was good, now at "
-								+ plugin.getDataManager().currentEnergy(
-										playerID) + " energy");
+		if (holdingSword(event.getPlayer())) {
+			Player player = event.getPlayer();
+			plugin.getLogger().info(event.getPlayer().getName() + " Has just tried to swing with " + dataManager.currentEnergy(player) + " energy");
+			if (dataManager.canPlayerSwing(player)) {
+				dataManager.swing(player);
+				plugin.getLogger().info("And it was good, now at " + dataManager.currentEnergy(player) + " energy");
 			} else {
-				plugin.getLogger().info("Not enough energy"); 
+				plugin.getLogger().info("Not enough energy");
 				event.setCancelled(true);
 			}
 		}
 	}
-
-	public void load() {
-		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-			loadPlayerData(player);
-		}
-	}
-
-	public void quit() {
-		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-			removePlayerData(player);
-		}
-	}
-
-	private void loadPlayerData(Player player) {
-		plugin.getDataManager().add(player);
-	}
-
-	private void removePlayerData(Player player) {
-		plugin.getDataManager().remove(player);
-	}
-
 }

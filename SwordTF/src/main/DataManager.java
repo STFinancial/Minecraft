@@ -1,41 +1,56 @@
 package main;
 
 import java.util.HashMap;
-import java.util.UUID;
-
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 public class DataManager {
-	Plugin plugin;
-	private HashMap<UUID, PlayerData> playerData;
-	
-	public DataManager (Plugin plugin){
+	private final Main plugin;
+	private final EventManager eventManager;
+	private HashMap<Player, SwordData> swordData;
+
+	public DataManager(Main plugin) {
 		this.plugin = plugin;
-		playerData = new HashMap<UUID, PlayerData>();
+		swordData = new HashMap<Player, SwordData>();
+		eventManager = new EventManager(plugin, this);
+		plugin.getServer().getPluginManager().registerEvents(eventManager, plugin);
+		load();
+	}
+
+	private void load() {
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			add(player);
+		}
+	}
+
+	public void quit() {
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			remove(player);
+		}
 	}
 
 	public void remove(Player player) {
-		playerData.remove(player.getUniqueId());
+		swordData.get(player).stop();
+		swordData.remove(player);
 	}
 
 	public void add(Player player) {
-		playerData.put(player.getUniqueId(), new PlayerData(plugin,player));
-	}
-	
-	public boolean canPlayerSwing(UUID playerID){
-		return playerData.get(playerID).swingReady();
-	}
-	
-	public void swing(UUID playerID){
-		playerData.get(playerID).swingPerformed();
-	}
-	
-	public int currentEnergy(UUID playerID){
-		return playerData.get(playerID).energy;
+		swordData.put(player, new SwordData(plugin, player));
 	}
 
-	public boolean canPlayerDamage(UUID playerID) {
-		return playerData.get(playerID).damageReady();
+	public boolean canPlayerSwing(Player player) {
+		return swordData.get(player).swingReady();
+	}
+
+	public void swing(Player player) {
+		swordData.get(player).swingPerformed();
+	}
+
+	public int currentEnergy(Player player) {
+		return swordData.get(player).getEnergy();
+	}
+
+	public boolean canPlayerDamage(Player player) {
+		return swordData.get(player).damageReady();
 	}
 }

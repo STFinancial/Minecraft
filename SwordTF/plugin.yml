@@ -4,5 +4,4 @@ description: STF presents a better Minecraft combat
 version: 1.0
 author: Boxxy
 
-depend: [ProtocolLib]
 commands:
