@@ -20,10 +20,12 @@ public class DataManager implements Listener {
 	private HashMap<String, String> techs;
 	private final Main plugin;
 	private final FileManager fileManager;
+	private final EventManager eventManager;
 	
 	public DataManager(Main main) {
 		plugin = main;
-		new EventManager(main, this);
+		eventManager = new EventManager(main, this);
+		plugin.getServer().getPluginManager().registerEvents(eventManager, plugin);
 		fileManager = new FileManager(main);
 		techs = fileManager.parseTechs();
 		load();
