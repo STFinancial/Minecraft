@@ -15,10 +15,10 @@ public class SwordData implements Runnable {
 	public static final int ENERGY_PER_SWING = 40;
 	public static final int ENERGY_PER_TICK = 1;
 	public static final int TICKS_PER_UPDATE = 5;
-	private int energy = 100, taskID = -1, gracePeriodID = -1;
+	private int energy = 100, taskID = -1;
 	private final BukkitScheduler scheduler;
 	private final Main plugin;
-	boolean ready = false;
+	boolean damageReady = false;
 	private final Scoreboard board = Bukkit.getScoreboardManager()
 			.getNewScoreboard();
 	private Objective objective;
@@ -41,11 +41,12 @@ public class SwordData implements Runnable {
 	}
 
 	public boolean swingReady() {
+		damageReady = false;
 		return energy >= ENERGY_PER_SWING;
 	}
 
 	public boolean damageReady() {
-		return ready;
+		return damageReady;
 	}
 
 	public void swingPerformed() {
@@ -56,37 +57,18 @@ public class SwordData implements Runnable {
 		taskID = scheduler.scheduleSyncRepeatingTask(plugin, this,
 				TICKS_PER_UPDATE, TICKS_PER_UPDATE);
 		
-		if (energy < 40) {
+		//@TODO <TESTING> check if animation is applied too early (if so we will add in scheduled Task instead)
+		if (energy < 40) {	
 			player.addPotionEffect(new PotionEffect(
 					PotionEffectType.SLOW_DIGGING, 40, 10, true));
 		}
 		
-		ready = true;
-		/*
-		We need this back in to disable damage. Player loses energy after animation,
-		that same tick the damage event goes out, we set damage "allowed" on swing, and 1 tick delay to turn off
-		damage again
-		*/
-		
-		/*	
-		gracePeriodID = scheduler.scheduleSyncDelayedTask(plugin, new Runnable(){
-
-			@Override
-			public void run() {
-				ready = false;
-				gracePeriodID = -1;
-			}
-
-		}, 1);
-		*/
+		damageReady = true;
 	}
 
 	public void stop() {
 		if (taskID != -1) {
 			scheduler.cancelTask(taskID);
-		}
-		if(gracePeriodID != -1){
-			scheduler.cancelTask(gracePeriodID);
 		}
 	}
 
