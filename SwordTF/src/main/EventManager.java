@@ -15,6 +15,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class EventManager implements Listener {
 	private final Main plugin;
@@ -39,6 +41,7 @@ public class EventManager implements Listener {
 	private void onPlayerAnimation(EntityDamageByEntityEvent event) {
 			if (event.getDamager() instanceof Player) {
 				Player damager = (Player) event.getDamager();
+				damager.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 1000, 6, false));
 				if (Main.SWORDS.contains(damager.getItemInHand().getType())) {
 					plugin.getLogger().info(damager.getName() + " has just tried to damage");
 					if(plugin.getDataManager().canPlayerDamage(damager.getUniqueId())){

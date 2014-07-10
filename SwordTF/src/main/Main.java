@@ -34,19 +34,19 @@ public class Main extends JavaPlugin {
 		eventManager = new EventManager(this);
 		dataManager = new DataManager(this);
 		this.getServer().getPluginManager().registerEvents(eventManager, this);
-		pManager.addPacketListener(new PacketAdapter(this, PacketType.Play.Server.ENTITY_METADATA) {
-			@Override
-			public void onPacketSending(PacketEvent event) {
-				Entity entity = event.getPacket().getEntityModifier(event).read(0);
-                
-                // Disable "personal" potion effect particles.
-                if (event.getPlayer().equals(entity)) {
-                    modifyWatchable(event, 7, (int) 0);
-                }
-				
-			}
-			
-		});
+//		pManager.addPacketListener(new PacketAdapter(this, PacketType.Play.Server.ENTITY_METADATA) {
+//			@Override
+//			public void onPacketSending(PacketEvent event) {
+//				Entity entity = event.getPacket().getEntityModifier(event).read(0);
+//                
+//                // Disable "personal" potion effect particles.
+//                if (event.getPlayer().equals(entity)) {
+//                    modifyWatchable(event, 7, (int) 0);
+//                }
+//				
+//			}
+//			
+//		});
 	}
 	
 	private void modifyWatchable(PacketEvent event, int index, Object value) {
