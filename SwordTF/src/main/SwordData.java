@@ -41,7 +41,15 @@ public class SwordData implements Runnable {
 
 	public boolean swingReady() {
 		damageReady = false;
-		return energy >= ENERGY_PER_SWING;
+		if(energy < ENERGY_PER_SWING){
+			if (player.hasPotionEffect(PotionEffectType.SLOW_DIGGING) == false) {
+				player.addPotionEffect(new PotionEffect(
+					PotionEffectType.SLOW_DIGGING, 40, 10, true));
+			}
+			return false;
+		}else{
+			return true;
+		}
 	}
 
 	public boolean damageReady() {
@@ -56,11 +64,6 @@ public class SwordData implements Runnable {
 		taskID = scheduler.scheduleSyncRepeatingTask(plugin, this,
 				TICKS_PER_UPDATE, TICKS_PER_UPDATE);
 		
-		//@TODO <TESTING> check if animation is applied too early (if so we will add in scheduled Task instead)
-		if (energy < 40) {	
-			player.addPotionEffect(new PotionEffect(
-					PotionEffectType.SLOW_DIGGING, 40, 10, true));
-		}
 		
 		damageReady = true;
 	}
@@ -79,6 +82,12 @@ public class SwordData implements Runnable {
 		} else {
 			energy += TICKS_PER_UPDATE * ENERGY_PER_TICK;
 			score.setScore(energy);
+			if (energy < 30){
+				if (player.hasPotionEffect(PotionEffectType.SLOW_DIGGING) == false) {
+					player.addPotionEffect(new PotionEffect(
+						PotionEffectType.SLOW_DIGGING, 40, 10, true));
+				}
+			}
 			if (energy >= ENERGY_PER_SWING) {
 				if (player.hasPotionEffect(PotionEffectType.SLOW_DIGGING)) {
 					player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
