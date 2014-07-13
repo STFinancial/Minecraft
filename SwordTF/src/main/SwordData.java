@@ -13,8 +13,12 @@ import org.bukkit.scoreboard.Scoreboard;
 public class SwordData implements Runnable {
 	public static final int ENERGY_PER_SWING = 40;
 	public static final int ENERGY_PER_TICK = 1;
-	public static final int TICKS_PER_UPDATE = 5;
-	private int energy = 100, taskID = -1;
+	public static final int TICKS_PER_UPDATE = 2;
+	public static final int ENERGY_PER_BLOCK = 30;
+	public static final int BLOCK_LENGTH_TICKS = 12;
+	int energy = 100;
+	private int taskID = -1;
+	private int blockID = -1;
 	private final BukkitScheduler scheduler;
 	private final Main plugin;
 	boolean damageReady = false;
@@ -23,6 +27,7 @@ public class SwordData implements Runnable {
 	private Objective objective;
 	private Score score;
 	private final Player player;
+	boolean criticalBlock = false;
 
 	public SwordData(Main plugin, Player player) {
 		scheduler = Bukkit.getServer().getScheduler();
@@ -42,10 +47,9 @@ public class SwordData implements Runnable {
 	public boolean swingReady() {
 		damageReady = false;
 		if(energy < ENERGY_PER_SWING){
-			if (player.hasPotionEffect(PotionEffectType.SLOW_DIGGING) == false) {
-				player.addPotionEffect(new PotionEffect(
-					PotionEffectType.SLOW_DIGGING, 40, 10, true));
-			}
+			if (player.hasPotionEffect(PotionEffectType.SLOW_DIGGING) == false) 
+				player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 40, 10, true));
+
 			return false;
 		}else{
 			return true;
@@ -58,19 +62,41 @@ public class SwordData implements Runnable {
 
 	public void swingPerformed() {
 		energy -= ENERGY_PER_SWING;
+		score.setScore(energy);
 		if (taskID != -1) {
 			scheduler.cancelTask(taskID);
 		}
 		taskID = scheduler.scheduleSyncRepeatingTask(plugin, this,
 				TICKS_PER_UPDATE, TICKS_PER_UPDATE);
-		
-		
 		damageReady = true;
+	}
+
+	public boolean blockReady() {
+		if(energy < ENERGY_PER_SWING){
+			if (player.hasPotionEffect(PotionEffectType.SLOW_DIGGING) == false) 
+				player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 40, 10, true));			
+			return false;
+		}else{
+			return true;
+		}
+	}
+
+	public void blockPerformed() {
+		energy -= ENERGY_PER_BLOCK;
+		score.setScore(energy);
+		if (taskID != -1) {
+			scheduler.cancelTask(taskID);
+		}
+		taskID = scheduler.scheduleSyncRepeatingTask(plugin, this,
+				TICKS_PER_UPDATE, TICKS_PER_UPDATE);
 	}
 
 	public void stop() {
 		if (taskID != -1) {
 			scheduler.cancelTask(taskID);
+		}
+		if (blockID != -1) {
+			scheduler.cancelTask(blockID);
 		}
 	}
 
@@ -82,18 +108,40 @@ public class SwordData implements Runnable {
 		} else {
 			energy += TICKS_PER_UPDATE * ENERGY_PER_TICK;
 			score.setScore(energy);
-			if (energy < 30){
-				if (player.hasPotionEffect(PotionEffectType.SLOW_DIGGING) == false) {
-					player.addPotionEffect(new PotionEffect(
-						PotionEffectType.SLOW_DIGGING, 40, 10, true));
-				}
-			}
-			if (energy >= ENERGY_PER_SWING) {
-				if (player.hasPotionEffect(PotionEffectType.SLOW_DIGGING)) {
+			if (energy >= ENERGY_PER_SWING - TICKS_PER_UPDATE) {
+				if (player.hasPotionEffect(PotionEffectType.SLOW_DIGGING)) 
 					player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
-				}
+
 			}
 		}
 	}
+
+	public void criticalBlock() {
+
+		if (blockID != -1) {
+			scheduler.cancelTask(blockID);
+		}
+
+		//player.sendMessage("Why the fuck do you still showup");
+		criticalBlock = true;
+		blockID = scheduler.scheduleSyncDelayedTask(plugin, new Runnable(){
+
+			@Override
+			public void run() {
+				//player.sendMessage("test, block worn off");
+				criticalBlock = false;
+				blockID = -1;
+			}
+		}, BLOCK_LENGTH_TICKS);
+
+
+	}
+
+	public void changeEnergy(int amount) {
+		energy += amount;
+		score.setScore(energy);
+	}
+
+
 
 }

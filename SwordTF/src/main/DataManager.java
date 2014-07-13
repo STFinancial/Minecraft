@@ -6,14 +6,11 @@ import org.bukkit.entity.Player;
 
 public class DataManager {
 	private final Main plugin;
-	private final EventManager eventManager;
 	private HashMap<Player, SwordData> swordData;
 
 	public DataManager(Main plugin) {
 		this.plugin = plugin;
 		swordData = new HashMap<Player, SwordData>();
-		eventManager = new EventManager(plugin, this);
-		plugin.getServer().getPluginManager().registerEvents(eventManager, plugin);
 		load();
 	}
 
@@ -46,11 +43,36 @@ public class DataManager {
 		swordData.get(player).swingPerformed();
 	}
 
+	public boolean canPlayerBlock(Player player) {
+		return swordData.get(player).blockReady();
+	}
+
+	public void block(Player player) {
+		swordData.get(player).blockPerformed();
+	}
+	
+	public void criticalBlock(Player player){
+		swordData.get(player).criticalBlock();
+	}
+	
 	public int currentEnergy(Player player) {
 		return swordData.get(player).getEnergy();
 	}
 
 	public boolean canPlayerDamage(Player player) {
 		return swordData.get(player).damageReady();
+	}
+
+	public boolean canCriticalBlock(Player player) {
+		return swordData.get(player).criticalBlock;
+	}
+
+	public void criticalBlocked(Player player) {
+		energyChange(player, 10);
+		swordData.get(player).criticalBlock = false;
+	}
+	
+	public void energyChange(Player player, int amount){
+		swordData.get(player).changeEnergy(amount);
 	}
 }
