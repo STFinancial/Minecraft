@@ -1,7 +1,7 @@
 name: SwordTF
 main: main.Main
 description: STF presents a better Minecraft combat
-version: 1.0
+version: 1.2
 author: Boxxy
 
 commands:
