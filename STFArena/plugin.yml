@@ -1,0 +1,12 @@
+name: STFArena
+main: main.Main
+description: STF presents an arena mini-game for Minecraft
+version: 1.0
+author: Boxxy
+
+commands:
+   arena:
+      description: See in game help menu
+      usage: /<command> [player]
+      permission: <plugin name>.basic
+      permission-message: You don't have <permission>
