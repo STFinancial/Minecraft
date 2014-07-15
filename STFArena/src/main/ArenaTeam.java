@@ -36,6 +36,10 @@ public class ArenaTeam {
 		return rating;
 	}
 
+	public String getName() {
+		return name;
+	}
+
 	public String getRecord() {
 		if (win + loss == 0)
 			return "Wins: " + win + " Losses: " + loss;
@@ -45,6 +49,10 @@ public class ArenaTeam {
 	}
 
 	public String toString() {
-		return "Team: " + name + " Rating: " + rating;
+		return "Team: " + name + " (" + size + ") Rating: " + rating;
+	}
+
+	public ArrayList<UUID> getPlayers() {
+		return players;
 	}
 }

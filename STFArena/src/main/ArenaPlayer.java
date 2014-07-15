@@ -1,5 +1,7 @@
 package main;
 
+import java.util.ArrayList;
+
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -11,6 +13,8 @@ public class ArenaPlayer{
 	String teamFocused;
 	Player player;
 	boolean saved;
+	ArrayList<String> teams;
+	String name;
 	
 	//Data to save state on entering match;
 	float exhaustion, saturation;
@@ -26,12 +30,12 @@ public class ArenaPlayer{
 		teamFocused = null;
 		this.player = player;
 		saved = false;
+		teams = new ArrayList<String>();
+		name = player.getName();
 	}
 	
 	public void saveState(){
-		
-		
-		
+
 		saved = true;
 	}
 	
@@ -44,8 +48,32 @@ public class ArenaPlayer{
 	public Status getStatus(){
 		return status;
 	}
-	
-	public String getTeamFocused(){
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+	public String getFocus(){
 		return teamFocused;
 	}
+	public void setFocus(String teamName){
+		teamFocused = teamName;
+	}
+	public void addTeam(String teamName){
+		teams.add(teamName);
+	}
+	
+	public void removeTeam(String teamName){
+		teams.remove(teamName);
+	}
+
+	public ArrayList<String> getTeams() {
+		return teams;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+
+	
+	
 }
