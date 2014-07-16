@@ -213,7 +213,7 @@ public class CommandManager implements CommandExecutor {
 		player.sendMessage("Arena Profile for Player: " + player.getName());
 		player.sendMessage(doing(player));
 		for(String t : dataManager.getTeams(player)){
-			player.sendMessage("On Team: "+ dataManager.getTeam(t));
+			player.sendMessage("On "+ dataManager.getTeam(t));
 		}
 	}
 
