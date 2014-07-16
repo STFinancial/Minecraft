@@ -56,6 +56,12 @@ public class CommandManager implements CommandExecutor {
 				case "me":
 					me(player);
 					break;
+				case "save":
+					dataManager.saveTest(player);
+					break;
+				case "load":
+					dataManager.loadTest(player);
+					break;
 				default:
 					help(player, args);
 					break;
@@ -133,7 +139,7 @@ public class CommandManager implements CommandExecutor {
 				player.sendMessage("Player " + args[1] + " was not found");
 			}else if(dataManager.getArenaPlayer(args[1]).getStatus() != Status.FREE){
 				player.sendMessage("Invalid invitation");
-				player.sendMessage("Player " + args[1] + " is currently " + dataManager.getArenaPlayer(player.getName()).getStatus());
+				player.sendMessage("Player " + args[1] + " is currently " + dataManager.getArenaPlayer(args[1]).getStatus());
 			}else if(dataManager.getArenaPlayer(args[1]).getTeams().size() > 5 ){
 				player.sendMessage("Invalid invitation");
 				player.sendMessage("Player " + args[1] + " is currently on too many teams");

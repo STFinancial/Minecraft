@@ -106,7 +106,11 @@ public class DataManager {
 
 
 	}
-
+	public void saveTest(Player player){
+		arenaPlayers.get(player).saveState();
+	}public void loadTest(Player player){
+		arenaPlayers.get(player).loadState();
+	}
 
 	public Status getStatus(Player player){
 		return arenaPlayers.get(player).getStatus();
@@ -149,19 +153,21 @@ public class DataManager {
 
 	public void cancelCreateTeam(Player player){
 		int toDelete = -1;
-		for(int i = 0; i < beingCreated.size(); i++){
-			if(beingCreated.get(i).getName() == getFocus(player)){
+		int i = 0;
+		for(ArenaTeam t: beingCreated){
+			if(t.getName().equals(getFocus(player))){
 				toDelete = i;
-				for(UUID p:beingCreated.get(i).getPlayers()){
+				for(UUID p:t.getPlayers()){
 					if(plugin.getServer().getPlayer(p) != null){
 						if(plugin.getServer().getPlayer(p).isOnline()){
 							setFocus(plugin.getServer().getPlayer(p), null);
 							setStatus(plugin.getServer().getPlayer(p), Status.FREE);
-							player.sendMessage("Creation of the team " + beingCreated.get(toDelete).getName() + " has been canceled");
+							plugin.getServer().getPlayer(p).sendMessage("Creation of the team " + t.getName() + " has been canceled");
 						}
 					}
 				}
 			}
+			i++;
 		}
 		if(toDelete != -1){
 			beingCreated.remove(toDelete);
@@ -185,6 +191,7 @@ public class DataManager {
 						}
 					}
 				}
+				player.sendMessage("You have accepted the team invitation to " + getFocus(player));
 				t.addPlayer(player);
 				if(t.isFull()){
 					for(UUID p:t.getPlayers()){
@@ -208,7 +215,7 @@ public class DataManager {
 			beingCreated.remove(toRemove);
 		}
 		if(exist == false){
-			player.sendMessage("Invite accept has failed, the team owner has disbanded the team");
+			player.sendMessage("Invite accept has failed, the team has disbanded");
 			setFocus(player, null);
 			setStatus(player, Status.FREE);
 		}
@@ -247,9 +254,10 @@ public class DataManager {
 	public void sendInvitation(Player sender, ArenaPlayer arenaPlayer, String focus) {
 		arenaPlayer.setFocus(focus);
 		arenaPlayer.setStatus(Status.INVITED);
-		Bukkit.getServer().getPlayer(arenaPlayer.getUUID()).sendMessage("You were just invited to join the " + getTeam(focus).getSize() + "s team " + focus ); //Gets to here, throws a null (obviously getting player by UUID)
+		Bukkit.getServer().getPlayer(arenaPlayer.getUUID()).sendMessage("You were just invited to join the " + getTempTeam(focus).getSize() + "s team " + focus ); //Gets to here, throws a null (obviously getting player by UUID)
 		Bukkit.getServer().getPlayer(arenaPlayer.getUUID()).sendMessage("by " + sender.getName() + " please type");
 		Bukkit.getServer().getPlayer(arenaPlayer.getUUID()).sendMessage("/arena accept or /arena cancel");
+		sender.sendMessage("You have successfully invited " + arenaPlayer.getName());
 	}
 
 
