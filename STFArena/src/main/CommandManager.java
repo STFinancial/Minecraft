@@ -1,28 +1,34 @@
 package main;
 
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+
 public class CommandManager implements CommandExecutor {
 	private final Main plugin;
 	private final DataManager dataManager;
+
 
 	public CommandManager(Main plugin, DataManager dataManager) {
 		this.plugin = plugin;
 		this.dataManager = dataManager;
 	}
 
+
 	public void quit(){
 		plugin.getCommand("arena").setExecutor(null);
 	}
+
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		Player player;
 		if(sender instanceof Player){
 			player = (Player) sender;
+
 
 			if(args.length == 0){
 				help(player, args);
@@ -42,7 +48,7 @@ public class CommandManager implements CommandExecutor {
 					break;	
 				case "cancel":
 				case "decline":
-					cancel(player,args);
+					cancel(player);
 					break;
 				case "leave":
 					leave(player,args);
@@ -56,10 +62,13 @@ public class CommandManager implements CommandExecutor {
 				}
 			}
 
+
 		}
+
 
 		return true;
 	}
+
 
 	private void leave(Player player, String[] args) {
 		if(args.length > 1){
@@ -75,7 +84,8 @@ public class CommandManager implements CommandExecutor {
 		}
 	}
 
-	private void cancel(Player player, String[] args) {
+
+	void cancel(Player player) {
 		switch(dataManager.getStatus(player)){
 		case CREATING:
 			dataManager.cancelCreateTeam(player);
@@ -90,13 +100,14 @@ public class CommandManager implements CommandExecutor {
 			dataManager.forfeit(player);
 			break;
 		case INVITED:
-			dataManager.declineInvite(player);
+			dataManager.cancelInvite(player);
 			break;
 		case FREE:
 			player.sendMessage("You are not currently invited or doing anything in Arena");
 			break;
 		}
 	}
+
 
 	private void accept(Player player, String[] args) {
 		switch(dataManager.getStatus(player)){
@@ -111,16 +122,13 @@ public class CommandManager implements CommandExecutor {
 		}
 	}
 
+
 	private void invite(Player player, String[] args) {
 		if(args.length > 1){
 			if(dataManager.getStatus(player) != Status.CREATING){
 				player.sendMessage("Invalid invitation");
 				player.sendMessage("Create a team before you invite players");
-				
-			}else if(dataManager.getStatus(player) != Status.CREATING){
-				player.sendMessage("Invalid invitation");
-				player.sendMessage("Create a team before you invite players");
-			}else if(dataManager.getArenaPlayer(args[1]) == null){
+			}else if(dataManager.getArenaPlayer(args[1]) == null){ //@TODO currently failing
 				player.sendMessage("Invalid invitation");
 				player.sendMessage("Player " + args[1] + " was not found");
 			}else if(dataManager.getArenaPlayer(args[1]).getStatus() != Status.FREE){
@@ -137,6 +145,7 @@ public class CommandManager implements CommandExecutor {
 			player.sendMessage("/arena invite [playerName]");
 		}
 	}
+
 
 	private void create(Player player, String[] args) {
 		if(args.length > 2){
@@ -177,7 +186,9 @@ public class CommandManager implements CommandExecutor {
 			player.sendMessage("/arena create [teamName] [teamSize]");
 		}
 
+
 	}
+
 
 	private void queue(Player player, String[] args) {
 		if(args.length > 1){
@@ -188,7 +199,9 @@ public class CommandManager implements CommandExecutor {
 			player.sendMessage("/arena queue [teamName]");
 		}
 
+
 	}
+
 
 	private void me(Player player) {
 		player.sendMessage("Arena Profile for Player: " + player.getName());
@@ -197,6 +210,7 @@ public class CommandManager implements CommandExecutor {
 			player.sendMessage("On Team: "+ dataManager.getTeam(t));
 		}
 	}
+
 
 	private void help(Player player, String[] args) {
 		if(args.length > 1){
@@ -233,7 +247,8 @@ public class CommandManager implements CommandExecutor {
 		player.sendMessage("/arena accept");
 		player.sendMessage("/arena cancel");
 	}
-	
+
+
 	private String doing(Player player){
 		if(dataManager.getStatus(player) == Status.FREE){
 			return "You are currently Free" ;
@@ -241,6 +256,8 @@ public class CommandManager implements CommandExecutor {
 			return "You are currently "+ dataManager.getStatus(player) + " for " + dataManager.getFocus(player);
 		}
 	}
+
+
 
 
 }

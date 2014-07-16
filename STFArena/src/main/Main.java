@@ -24,4 +24,8 @@ public class Main extends JavaPlugin {
 		eventManager = null;
 		commandManager = null;
 	}	
+	
+	public CommandManager getCommandManager(){
+		return commandManager;
+	}
 }
