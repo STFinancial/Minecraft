@@ -14,14 +14,14 @@ public class DataManager {
 	private final Main plugin;
 	HashMap<String, ArenaTeam> arenaTeams;
 	HashMap<Player, ArenaPlayer> arenaPlayers;
-	ArrayList<ArenaTeam> beingCreated;
+	HashMap<String, ArenaTeam> beingCreated;
 
 
 	public DataManager(Main plugin) {
 		this.plugin = plugin;
 		arenaTeams = new HashMap<String, ArenaTeam>();
 		arenaPlayers = new HashMap<Player, ArenaPlayer>();
-		beingCreated = new ArrayList<ArenaTeam>();
+		beingCreated = new HashMap<String, ArenaTeam>();
 		load();
 	}
 
@@ -66,15 +66,10 @@ public class DataManager {
 
 
 	public boolean isNameUnique(String string){
-		for(ArenaTeam t:arenaTeams.values()){
-			if(string == t.getName())
-				return false;
-		}
-		for(ArenaTeam t: beingCreated){
-			if(string == t.getName())
-				return false;
-		}
-
+		if(arenaTeams.get(string) != null)
+			return false;
+		if(beingCreated.get(string) != null)
+			return false;
 
 		return true;
 	}
@@ -106,7 +101,11 @@ public class DataManager {
 
 
 	}
-
+	public void saveTest(Player player){
+		arenaPlayers.get(player).saveState(player);
+	}public void loadTest(Player player){
+		arenaPlayers.get(player).loadState();
+	}
 
 	public Status getStatus(Player player){
 		return arenaPlayers.get(player).getStatus();
@@ -132,39 +131,30 @@ public class DataManager {
 	}
 
 	public ArenaTeam getTempTeam(String teamName){
-		for(ArenaTeam t: beingCreated){
-			if(t.getName().equals(teamName))
-				return t;
-		}
-		return null;
+		return beingCreated.get(teamName);
 	}
 
 	public void createTeam(Player player, String string, int parseInt) {
 		arenaPlayers.get(player).setStatus(Status.CREATING);
 		arenaPlayers.get(player).setFocus(string);
-		beingCreated.add(new ArenaTeam(string, parseInt));
-		beingCreated.get(beingCreated.size() - 1).addPlayer(player);
+		beingCreated.put(string, new ArenaTeam(string, parseInt));
+		beingCreated.get(string).addPlayer(player);
 	}
 
 
 	public void cancelCreateTeam(Player player){
-		int toDelete = -1;
-		for(int i = 0; i < beingCreated.size(); i++){
-			if(beingCreated.get(i).getName() == getFocus(player)){
-				toDelete = i;
-				for(UUID p:beingCreated.get(i).getPlayers()){
-					if(plugin.getServer().getPlayer(p) != null){
-						if(plugin.getServer().getPlayer(p).isOnline()){
-							setFocus(plugin.getServer().getPlayer(p), null);
-							setStatus(plugin.getServer().getPlayer(p), Status.FREE);
-							player.sendMessage("Creation of the team " + beingCreated.get(toDelete).getName() + " has been canceled");
-						}
+		ArenaTeam toCancel = beingCreated.get(getFocus(player));
+		if(toCancel != null){
+			for(UUID p : toCancel.getPlayers()){
+				if(plugin.getServer().getPlayer(p) != null){
+					if(plugin.getServer().getPlayer(p).isOnline()){
+						plugin.getServer().getPlayer(p).sendMessage("Creation of the team " + toCancel.getName() + " has been canceled");
+						setFocus(plugin.getServer().getPlayer(p), null);
+						setStatus(plugin.getServer().getPlayer(p), Status.FREE);
 					}
 				}
 			}
-		}
-		if(toDelete != -1){
-			beingCreated.remove(toDelete);
+			beingCreated.remove(toCancel.getName());
 		}else{
 			plugin.getLogger().info("Seriouse problem canceling a team creation! team not found!");
 		}
@@ -172,43 +162,36 @@ public class DataManager {
 
 
 	public void acceptInvite(Player player) {
-		boolean exist = false;
-		int toRemove = -1;
-		int i = 0;
-		for(ArenaTeam t: beingCreated){
-			if(t.getName() == getFocus(player)){
-				exist = true;
-				for(UUID p:t.getPlayers()){
-					if(plugin.getServer().getPlayer(p) != null){
-						if(plugin.getServer().getPlayer(p).isOnline()){
-							plugin.getServer().getPlayer(p).sendMessage("Player " + player.getName() + " has accepted your team invite");
-						}
+		ArenaTeam toCreate = beingCreated.get(getFocus(player));
+		if(toCreate != null){
+			for(UUID p:toCreate.getPlayers()){
+				if(plugin.getServer().getPlayer(p) != null){
+					if(plugin.getServer().getPlayer(p).isOnline()){
+						plugin.getServer().getPlayer(p).sendMessage("Player " + player.getName() + " has accepted your team invite");
 					}
-				}
-				t.addPlayer(player);
-				if(t.isFull()){
-					for(UUID p:t.getPlayers()){
-						if(plugin.getServer().getPlayer(p) != null){
-							if(plugin.getServer().getPlayer(p).isOnline()){
-								plugin.getServer().getPlayer(p).sendMessage("Your " +  t.getSize() + "s team " + t.getName() + " has been created!");
-								setFocus(plugin.getServer().getPlayer(p), null);
-								setStatus(plugin.getServer().getPlayer(p), Status.FREE);
-							}
-						}
-					}
-					toRemove = i;
-				}else{
-					setStatus(player, Status.CREATING);
 				}
 			}
-			i++;
-		}
-		if(toRemove != -1){
-			arenaTeams.put(beingCreated.get(toRemove).getName(), beingCreated.get(toRemove));
-			beingCreated.remove(toRemove);
-		}
-		if(exist == false){
-			player.sendMessage("Invite accept has failed, the team owner has disbanded the team");
+			player.sendMessage("You have accepted the team invitation to " + getFocus(player));
+			toCreate.addPlayer(player);
+			if(toCreate.isFull()){
+				for(UUID p:toCreate.getPlayers()){
+					if(plugin.getServer().getPlayer(p) != null){
+						if(plugin.getServer().getPlayer(p).isOnline()){
+							plugin.getServer().getPlayer(p).sendMessage("Your " +  toCreate.getSize() + "s team " + toCreate.getName() + " has been created!");
+							addTeamToPlayer(plugin.getServer().getPlayer(p));
+							setFocus(plugin.getServer().getPlayer(p), null);
+							setStatus(plugin.getServer().getPlayer(p), Status.FREE);
+						}
+					}
+				}
+				arenaTeams.put(toCreate.getName(), toCreate);
+				beingCreated.remove(toCreate.getName());
+			}else{
+				setStatus(player, Status.CREATING);
+			}
+			
+		}else{
+			player.sendMessage("Invite accept has failed, the team has disbanded");
 			setFocus(player, null);
 			setStatus(player, Status.FREE);
 		}
@@ -217,16 +200,15 @@ public class DataManager {
 	}
 
 	public void cancelInvite(Player player) {
-		for(ArenaTeam t: beingCreated){
-			if(t.getName() == getFocus(player)){
-				for(UUID p:t.getPlayers()){
+		if(beingCreated.get(getFocus(player)) != null){
+				for(UUID p:beingCreated.get(getFocus(player)).getPlayers()){
 					if(plugin.getServer().getPlayer(p) != null){
 						if(plugin.getServer().getPlayer(p).isOnline()){
 							plugin.getServer().getPlayer(p).sendMessage("Player " + player.getName() + " has declined your team invite");
 						}
 					}
 				}
-			}
+			
 		}
 		setFocus(player, null);
 		setStatus(player, Status.FREE);
@@ -242,14 +224,19 @@ public class DataManager {
 
 		return null;
 	}
+	
+	public void addTeamToPlayer(Player player){
+		arenaPlayers.get(player).addTeam(getFocus(player));
+	}
 
 	//TODO needs serious refinement
 	public void sendInvitation(Player sender, ArenaPlayer arenaPlayer, String focus) {
 		arenaPlayer.setFocus(focus);
 		arenaPlayer.setStatus(Status.INVITED);
-		Bukkit.getServer().getPlayer(arenaPlayer.getUUID()).sendMessage("You were just invited to join the " + getTeam(focus).getSize() + "s team " + focus ); //Gets to here, throws a null (obviously getting player by UUID)
+		Bukkit.getServer().getPlayer(arenaPlayer.getUUID()).sendMessage("You were just invited to join the " + getTempTeam(focus).getSize() + "s team " + focus ); //Gets to here, throws a null (obviously getting player by UUID)
 		Bukkit.getServer().getPlayer(arenaPlayer.getUUID()).sendMessage("by " + sender.getName() + " please type");
 		Bukkit.getServer().getPlayer(arenaPlayer.getUUID()).sendMessage("/arena accept or /arena cancel");
+		sender.sendMessage("You have successfully invited " + arenaPlayer.getName());
 	}
 
 
