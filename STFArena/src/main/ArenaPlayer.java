@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.Vector;
 
@@ -24,11 +25,12 @@ public class ArenaPlayer{
 	//Data to save state on entering match;
 	private float exhaustion, saturation, exp;
 	private int level, remainingAir;
-	private PlayerInventory inventory;
+	private ItemStack[] inventory;
 	private Location location;
 	private double health;
 	private Vector velocity;
 	private Entity vehicle = null;
+	private boolean inVehicle = false;
 
 
 	public ArenaPlayer(Player player){
@@ -44,18 +46,23 @@ public class ArenaPlayer{
 
 
 	public void saveState(Player player) {
+		vehicle = null;
+		inVehicle = false;
+		
 		exhaustion = player.getExhaustion();
 		saturation = player.getSaturation();
 		level = player.getLevel();
 		exp = player.getExp();
 		remainingAir = player.getRemainingAir();
-		inventory = player.getInventory();
+		inventory = player.getInventory().getContents();
+		player.getInventory().clear();
 		location = player.getLocation();
 		health = player.getHealth();
 		if (player.isInsideVehicle()) {
 			vehicle = player.getVehicle();
 			velocity = player.getVehicle().getVelocity();
 			player.leaveVehicle();	
+			inVehicle = true;
 		}
 		else {
 			velocity = player.getVelocity();
@@ -75,17 +82,16 @@ public class ArenaPlayer{
 			player.setHealth(health);
 			player.setRemainingAir(remainingAir);
 			player.getInventory().clear();
-			
-			for(int i = 0; i < inventory.getSize(); i++) {
-				player.getInventory().setItem(i, inventory.iterator().next());
-			}
+			player.getInventory().setContents(inventory);
 			
 			try {
 				vehicle.setPassenger(player);
 				vehicle.setVelocity(velocity);
 			}
 			catch (NullPointerException e) {
-				player.setVelocity(velocity);
+				if (inVehicle == false) {
+					player.setVelocity(velocity);
+				}
 			}
 		}
 		
