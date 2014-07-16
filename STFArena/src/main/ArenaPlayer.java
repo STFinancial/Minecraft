@@ -6,9 +6,11 @@ import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Horse;
+import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.Vector;
 
 
@@ -26,10 +28,12 @@ public class ArenaPlayer{
 	private float exhaustion, saturation, exp;
 	private int level, remainingAir;
 	private ItemStack[] inventory;
+	private ItemStack[] armor;
 	private Location location;
 	private double health;
 	private Vector velocity;
-	private Entity vehicle = null;
+	private EntityType vehicleType;
+	private HorseData horse;
 	private boolean inVehicle = false;
 
 
@@ -46,7 +50,6 @@ public class ArenaPlayer{
 
 
 	public void saveState(Player player) {
-		vehicle = null;
 		inVehicle = false;
 		
 		exhaustion = player.getExhaustion();
@@ -55,13 +58,19 @@ public class ArenaPlayer{
 		exp = player.getExp();
 		remainingAir = player.getRemainingAir();
 		inventory = player.getInventory().getContents();
+		armor = player.getInventory().getArmorContents();
 		player.getInventory().clear();
 		location = player.getLocation();
 		health = player.getHealth();
 		if (player.isInsideVehicle()) {
-			vehicle = player.getVehicle();
-			velocity = player.getVehicle().getVelocity();
-			player.leaveVehicle();	
+			Entity vehicle = player.getVehicle();
+			vehicleType = vehicle.getType();
+			if (vehicleType.equals(EntityType.HORSE)) {
+				horse = new HorseData(vehicle);
+			}
+			velocity = vehicle.getVelocity();
+			player.leaveVehicle();
+			vehicle.remove();
 			inVehicle = true;
 		}
 		else {
@@ -83,15 +92,23 @@ public class ArenaPlayer{
 			player.setRemainingAir(remainingAir);
 			player.getInventory().clear();
 			player.getInventory().setContents(inventory);
+			player.getInventory().setArmorContents(armor);
 			
-			try {
+			if (inVehicle) {
+				Entity vehicle = location.getWorld().spawnEntity(location, vehicleType);
+				if (vehicleType.equals(EntityType.PIG)) {
+					((Pig) vehicle).setSaddle(true);
+				}
+				else if (vehicleType.equals(EntityType.HORSE)) {
+					horse.morphTarget((Horse) vehicle);
+					((Horse) vehicle).setOwner(player);
+				}
+				
 				vehicle.setPassenger(player);
 				vehicle.setVelocity(velocity);
 			}
-			catch (NullPointerException e) {
-				if (inVehicle == false) {
-					player.setVelocity(velocity);
-				}
+			else {
+				player.setVelocity(velocity);
 			}
 		}
 		
