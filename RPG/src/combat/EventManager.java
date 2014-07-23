@@ -5,32 +5,46 @@ import java.util.Map;
 
 import main.GamePlayer;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
-
+import org.bukkit.event.player.PlayerQuitEvent;
+import util.Util;
+import util.Util.Weapon;
 import wizard.FrostMage;
-import wizard.Wizzard;
 
 public class EventManager implements Listener {
 	private static Map<Player, GamePlayer> players = new HashMap<Player, GamePlayer>();
-	
-	@EventHandler
-	private static void login(PlayerLoginEvent event) {
-		players.put(event.getPlayer(), new FrostMage(event.getPlayer(), 1, 0));
+
+	public static void addGamePlayer(Player player) {
+		players.put(player, new FrostMage(player, 1, 0));		
 	}
-	
+
+	public static void removeGamePlayer(Player player) {
+		players.remove(player);		
+	}
+
+	@EventHandler
+	private static void playerLogin(PlayerLoginEvent event) {
+		addGamePlayer(event.getPlayer());
+	}
+
+	@EventHandler
+	private static void playerQuit(PlayerQuitEvent event) {
+		removeGamePlayer(event.getPlayer());
+	}
+
 	@EventHandler
 	private static void projectileAttack(EntityDamageByEntityEvent event) {
 		if (event.getEntity() instanceof Projectile) {
 			Projectile missile = (Projectile) event.getEntity();
 			if (missile.getShooter() instanceof Player) {
-				switch(missile.getType().name().toLowerCase()) {
+				switch (missile.getType().name().toLowerCase()) {
 				case "arrow":
 				case "snowball":
 				case "small_fireball":
@@ -41,37 +55,24 @@ public class EventManager implements Listener {
 			}
 		}
 	}
-	
+
 	@EventHandler
 	private static void secondaryAttack(PlayerInteractEvent event) {
-		if (event.getPlayer().getItemInHand().getType().equals(Material.DIAMOND_HOE)) {
-			if (event.getPlayer().isSneaking()) {
-				players.get(event.getPlayer()).specialAttack();
-			}
-			else {
-				players.get(event.getPlayer()).secondaryAttack();
+		if (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+			Player player = event.getPlayer();
+			if (Util.getWeapon(player) != Weapon.NONE) {
+				if (player.isSneaking()) {
+					players.get(player).specialAttack(Util.getWeapon(player));
+				}
+				else if (event.getClickedBlock() == null || Util.isInteractable(event.getClickedBlock()) == false) {
+					players.get(player).secondaryAttack(Util.getWeapon(player));
+				}				
 			}
 		}
 	}
 	
-//	private String getWeapon(Player player) {
-//		String[] weapon = player.getItemInHand().getType().name().split("_");
-//		if (weapon.length == 1) {
-//			return weapon[0].equalsIgnoreCase("bow")? "bow" : "none";
-//		}
-//		else if (weapon.length == 2) {
-//			switch (weapon[1].toLowerCase()) {
-//			case "sword":
-//			case "spade":
-//			case "pickaxe":
-//			case "rod":
-//			case "hoe":
-//				return weapon[1].toLowerCase();
-//				
-//			}
-//		}
-//		else {
-//			return "none";
-//		}
-//	}
+	@EventHandler
+	private static void wizzardPrimaryAttack(Player player) {
+		
+	}
 }

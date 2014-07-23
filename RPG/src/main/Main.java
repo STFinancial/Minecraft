@@ -1,5 +1,7 @@
 package main;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -13,9 +15,15 @@ public class Main extends JavaPlugin {
 	public void onEnable() {
 		this.getServer().getPluginManager().registerEvents(new EventManager(), this);
 		plugin = this;
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			EventManager.addGamePlayer(player);
+		}
 	}
 	
 	@Override
 	public void onDisable() {
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			EventManager.removeGamePlayer(player);
+		}
 	}
 }
