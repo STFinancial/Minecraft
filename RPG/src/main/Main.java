@@ -1,24 +1,21 @@
 package main;
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import combat.EventManager;
 
-public class Main extends JavaPlugin implements Listener {
+
+public class Main extends JavaPlugin {
+	public static Plugin plugin;
 	
 	@Override
 	public void onEnable() {
-		this.getServer().getPluginManager().registerEvents(this, this);
+		this.getServer().getPluginManager().registerEvents(new EventManager(), this);
+		plugin = this;
 	}
 	
 	@Override
 	public void onDisable() {
 	}
-	
-	@EventHandler
-	public void test(PlayerInteractEvent event) {
-		new Blizzard(this, event.getPlayer());
-	}	
 }
