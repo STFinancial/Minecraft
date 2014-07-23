@@ -1,0 +1,7 @@
+name: test
+main: main.Main
+description: combat test
+version: 1.0
+author: qsik
+
+commands:
