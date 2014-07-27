@@ -10,16 +10,18 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class Blizzard extends BukkitRunnable {
 	private static final int RADIUS = 5;
+	private final int duration;
 	private final Player player;
 	private int snowfall = 0;
 	
-	public Blizzard(Player player) {
+	public Blizzard(Player player, int duration) {
 		this.player = player;
+		this.duration = duration;
 	}
 	
 	@Override
 	public void run() {
-		if (player.isValid() && snowfall < 100) {
+		if (player.isValid() && snowfall < duration) {
 			World world = player.getWorld();
 			int x = ThreadLocalRandom.current().nextInt(-RADIUS, RADIUS + 1);
 			int z = ThreadLocalRandom.current().nextInt(-RADIUS, RADIUS + 1);
