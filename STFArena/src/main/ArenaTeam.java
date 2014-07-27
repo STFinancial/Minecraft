@@ -14,6 +14,7 @@ public class ArenaTeam {
 	ArrayList<UUID> players;
 	private int win, loss, rating, size;
 	public static DecimalFormat df = new DecimalFormat("00.0");
+	int timeInQueue = 0;
 
 
 	public ArenaTeam(String name, int size) {
@@ -67,5 +68,20 @@ public class ArenaTeam {
 
 	public ArrayList<UUID> getPlayers() {
 		return players;
+	}
+	
+	public void addTime(){
+		timeInQueue++;
+	}
+	
+	public void resetTime(){
+		timeInQueue = 0;
+	}
+	
+	public int getTimeInQueue(){
+		if(timeInQueue == 0){
+			return 0;
+		}
+		return timeInQueue * 10 - 5;
 	}
 }

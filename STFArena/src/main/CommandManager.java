@@ -78,12 +78,16 @@ public class CommandManager implements CommandExecutor {
 
 	private void leave(Player player, String[] args) {
 		if(args.length > 1){
-			if(dataManager.playerIsOnTeam(player, args[1])){
-				dataManager.disband(args[1]);
-			}else{
+			if(dataManager.getPlayer(player).getStatus() != Status.FREE){
+				player.sendMessage("Failed to leave team, busy");
+				player.sendMessage(doing(player));
+			}else if(dataManager.playerIsOnTeam(player, args[1]) == false){
 				player.sendMessage("Failed to leave team: " + args[1]);
 				player.sendMessage("Invalid team name given.");
-			}
+			
+			}else{
+				dataManager.disband(args[1]);
+				}
 		}else{
 			player.sendMessage("Use this command to leave a team you are currently on");
 			player.sendMessage("/arena leave [team name]");
@@ -92,15 +96,18 @@ public class CommandManager implements CommandExecutor {
 
 
 	void cancel(Player player) {
-		switch(dataManager.getStatus(player)){
+		switch(dataManager.getPlayer(player).getStatus()){
 		case CREATING:
 			dataManager.cancelCreateTeam(player);
 			break;
-		case QUEUED:
+		case MATCH_FOUND:
 			dataManager.dodgeQueue(player);
 			break;
+		case QUEUED:
+			dataManager.exitQueue(player);
+			break;
 		case TRYING_TO_QUEUE:
-			dataManager.stopQueue(player);
+			dataManager.cancelQueue(player);
 			break;
 		case IN_GAME:
 			dataManager.forfeit(player);
@@ -116,9 +123,9 @@ public class CommandManager implements CommandExecutor {
 
 
 	private void accept(Player player, String[] args) {
-		switch(dataManager.getStatus(player)){
-		case QUEUED:
-			dataManager.acceptQueue(player);
+		switch(dataManager.getPlayer(player).getStatus()){
+		case MATCH_FOUND:
+			dataManager.acceptMatch(player);
 			break;
 		case INVITED:
 			dataManager.acceptInvite(player);
@@ -131,20 +138,20 @@ public class CommandManager implements CommandExecutor {
 
 	private void invite(Player player, String[] args) {
 		if(args.length > 1){
-			if(dataManager.getStatus(player) != Status.CREATING){
+			if(dataManager.getPlayer(player).getStatus() != Status.CREATING){
 				player.sendMessage("Invalid invitation");
 				player.sendMessage("Create a team before you invite players");
-			}else if(dataManager.getArenaPlayer(args[1]) == null){ //@TODO currently failing
+			}else if(dataManager.getPlayer(args[1]) == null){ //@TODO currently failing
 				player.sendMessage("Invalid invitation");
 				player.sendMessage("Player " + args[1] + " was not found");
-			}else if(dataManager.getArenaPlayer(args[1]).getStatus() != Status.FREE){
+			}else if(dataManager.getPlayer(args[1]).getStatus() != Status.FREE){
 				player.sendMessage("Invalid invitation");
-				player.sendMessage("Player " + args[1] + " is currently " + dataManager.getArenaPlayer(args[1]).getStatus());
-			}else if(dataManager.getArenaPlayer(args[1]).getTeams().size() > 5 ){
+				player.sendMessage("Player " + args[1] + " is currently " + dataManager.getPlayer(args[1]).getStatus());
+			}else if(dataManager.getPlayer(args[1]).getTeams().size() > 5 ){
 				player.sendMessage("Invalid invitation");
 				player.sendMessage("Player " + args[1] + " is currently on too many teams");
 			}else{
-				dataManager.sendInvitation(player, dataManager.getArenaPlayer(args[1]), dataManager.getFocus(player));
+				dataManager.sendInvitation(player, dataManager.getPlayer(args[1]), dataManager.getPlayer(player).getFocus());
 			}
 		}else{
 			player.sendMessage("Invalid invitation, please use");
@@ -155,10 +162,10 @@ public class CommandManager implements CommandExecutor {
 
 	private void create(Player player, String[] args) {
 		if(args.length > 2){
-			if(dataManager.getStatus(player) != Status.FREE){
+			if(dataManager.getPlayer(player).getStatus() != Status.FREE){
 				player.sendMessage("Invalid creation, Busy");
 				player.sendMessage(doing(player));
-			}else if(dataManager.getTeams(player).size() > 5){
+			}else if(dataManager.getPlayer(player).getTeams().size() > 5){
 				player.sendMessage("Invalid creation");
 				player.sendMessage("You are already on 5 Arena Teams, to disband one type");
 				player.sendMessage("/arena leave [teamName]");
@@ -198,8 +205,15 @@ public class CommandManager implements CommandExecutor {
 
 	private void queue(Player player, String[] args) {
 		if(args.length > 1){
-			//make sure player is on team
-			//make sure all team members are free or trying to queue for this team
+			if(dataManager.playerIsOnTeam(player, args[1]) == false){
+				player.sendMessage("Queue attempt failed");
+				player.sendMessage("Invalid team: "+ args[1]);
+			}else if(dataManager.teamAvailable(args[1]) == false){
+				player.sendMessage("Queue attempt failed");
+				player.sendMessage("some team members are offline or busy");
+			}else{
+				dataManager.queue(player, args[1]);
+			}
 		}else{
 			player.sendMessage("Invalid queue, please use");
 			player.sendMessage("/arena queue [teamName]");
@@ -212,7 +226,7 @@ public class CommandManager implements CommandExecutor {
 	private void me(Player player) {
 		player.sendMessage("Arena Profile for Player: " + player.getName());
 		player.sendMessage(doing(player));
-		for(String t : dataManager.getTeams(player)){
+		for(String t : dataManager.getPlayer(player).getTeams()){
 			player.sendMessage("On "+ dataManager.getTeam(t));
 		}
 	}
@@ -256,10 +270,10 @@ public class CommandManager implements CommandExecutor {
 
 
 	private String doing(Player player){
-		if(dataManager.getStatus(player) == Status.FREE){
+		if(dataManager.getPlayer(player).getStatus() == Status.FREE){
 			return "You are currently Free" ;
 		}else{
-			return "You are currently "+ dataManager.getStatus(player) + " for " + dataManager.getFocus(player);
+			return "You are currently "+ dataManager.getPlayer(player).getStatus() + " for " + dataManager.getPlayer(player).getFocus();
 		}
 	}
 

@@ -4,6 +4,7 @@ package main;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -17,7 +18,6 @@ import org.bukkit.util.Vector;
 public class ArenaPlayer{
 	private Status status;
 	private String teamFocused;
-	private final Player player;
 	boolean saved;
 	private final ArrayList<String> teams;
 	private final String name;
@@ -40,16 +40,15 @@ public class ArenaPlayer{
 	public ArenaPlayer(Player player){
 		status = Status.FREE;
 		teamFocused = null;
-		this.player = player;
 		saved = false;
 		teams = new ArrayList<String>();
 		name = player.getName();
 		uuid = player.getUniqueId();
-		saveState(player);
 	}
 
 
-	public void saveState(Player player) {
+	public void saveState() {
+		Player player = Bukkit.getPlayer(uuid);
 		inVehicle = false;
 		
 		exhaustion = player.getExhaustion();
@@ -83,6 +82,7 @@ public class ArenaPlayer{
 
 	public void loadState() {
 		if(saved) {
+			Player player = Bukkit.getPlayer(uuid);
 			player.teleport(location);
 			player.setExhaustion(exhaustion);
 			player.setSaturation(saturation);
@@ -132,17 +132,13 @@ public class ArenaPlayer{
 		teams.add(teamName);
 	}
 
-
 	public void removeTeam(String teamName){
 		teams.remove(teamName);
 	}
 
-
 	public ArrayList<String> getTeams() {
 		return teams;
 	}
-
-
 	public String getName() {
 		return name;
 	}

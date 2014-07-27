@@ -6,6 +6,7 @@ public class Main extends JavaPlugin {
 	private DataManager dataManager;
 	private EventManager eventManager;
 	private CommandManager commandManager;
+	private QueueManager queueManager;
 
 	@Override
 	public void onEnable() {	
@@ -14,6 +15,7 @@ public class Main extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(eventManager, this);
 		commandManager = new CommandManager(this,dataManager);
 		getCommand("arena").setExecutor(commandManager);
+		queueManager = new QueueManager(this, dataManager);
 	}
 	
 	@Override
@@ -28,4 +30,11 @@ public class Main extends JavaPlugin {
 	public CommandManager getCommandManager(){
 		return commandManager;
 	}
+	
+	public QueueManager getQueueManager(){
+		return queueManager;
+	}
+
+	
+	
 }
