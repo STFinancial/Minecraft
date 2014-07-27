@@ -14,11 +14,12 @@ public class ArenaWorld {
 			WorldCreator creator = new WorldCreator("Arena");
 			creator.environment(Environment.NORMAL).generateStructures(false).type(WorldType.FLAT);
 			World arenaWorld = Bukkit.getServer().createWorld(creator);
-			arenaWorld.setSpawnFlags(false, false);
 			arenaWorld.setDifficulty(Difficulty.HARD);
+			arenaWorld.setSpawnFlags(false, false);
 			arenaWorld.setPVP(true);
 			arenaWorld.setAutoSave(true);
 		}
+		Bukkit.getWorlds().get(0).getEntities().clear();
 		return Bukkit.getWorld("Arena");
 	}
 }
