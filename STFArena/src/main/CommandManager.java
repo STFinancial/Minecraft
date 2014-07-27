@@ -1,5 +1,6 @@
 package main;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -61,6 +62,9 @@ public class CommandManager implements CommandExecutor {
 					break;
 				case "build":
 					build(player);
+					break;
+				case "home":
+					player.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
 					break;
 				default:
 					help(player, args);
