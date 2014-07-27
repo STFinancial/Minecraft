@@ -18,6 +18,7 @@ public class Main extends JavaPlugin {
 		getCommand("arena").setExecutor(commandManager);
 		queueManager = new QueueManager(this, dataManager);
 		matchManager = new MatchManager(this, dataManager);
+		MatchManager.addArena(new Arena("Test Arena",2, -30, 4, -15, -7, 4, -15, "WOOL", this));
 	}
 
 	@Override

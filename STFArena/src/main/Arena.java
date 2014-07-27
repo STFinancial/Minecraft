@@ -30,7 +30,7 @@ public class Arena extends BukkitRunnable {
 		this.name = name;
 		this.size = size;
 		redSpawn = new Location(Bukkit.getWorld("Arena"), redX, redY, redZ);
-		redSpawn = new Location(Bukkit.getWorld("Arena"), blueX, blueY, blueZ);
+		blueSpawn = new Location(Bukkit.getWorld("Arena"), blueX, blueY, blueZ);
 		
 		
 		door = Material.getMaterial(doorMaterial);
@@ -42,6 +42,8 @@ public class Arena extends BukkitRunnable {
 	}
 
 	public void add(ArenaTeam t1, ArenaTeam t2) {
+		redPlayersAlive = new HashSet<UUID>();
+		bluePlayersAlive = new HashSet<UUID>();
 		for(UUID p:t1.getPlayers()){
 			redPlayersAlive.add(p);
 		}
