@@ -40,5 +40,9 @@ public class Main extends JavaPlugin {
 	public MatchManager getMatchManager() {
 		return matchManager;
 	}
+	
+	public DataManager getDataManager(){
+		return dataManager;
+	}
 
 }
