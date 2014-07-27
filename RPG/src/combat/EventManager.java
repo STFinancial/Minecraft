@@ -3,75 +3,43 @@ package combat;
 import java.util.HashMap;
 import java.util.Map;
 
-import main.GamePlayer;
+import main.RPGClass;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
-import wizard.FrostMage;
-import wizard.Wizzard;
+import wizard.Wizard;
 
 public class EventManager implements Listener {
-	private static Map<Player, GamePlayer> players = new HashMap<Player, GamePlayer>();
-	
-	@EventHandler
-	private static void login(PlayerLoginEvent event) {
-		players.put(event.getPlayer(), new FrostMage(event.getPlayer(), 1, 0));
+	private static Map<Player, RPGClass> players = new HashMap<Player, RPGClass>();
+
+	public static void addPlayer(Player player) {
+		players.put(player, new Wizard(player, 100, 0));		
 	}
 	
-	@EventHandler
-	private static void projectileAttack(EntityDamageByEntityEvent event) {
-		if (event.getEntity() instanceof Projectile) {
-			Projectile missile = (Projectile) event.getEntity();
-			if (missile.getShooter() instanceof Player) {
-				switch(missile.getType().name().toLowerCase()) {
-				case "arrow":
-				case "snowball":
-				case "small_fireball":
-				case "large_fireball":
-				case "wither_skull":
-				default:
-				}
-			}
-		}
+	public static void addPlayer(Player player, RPGClass rpgClass){
+		players.put(player, rpgClass);
 	}
 	
-	@EventHandler
-	private static void secondaryAttack(PlayerInteractEvent event) {
-		if (event.getPlayer().getItemInHand().getType().equals(Material.DIAMOND_HOE)) {
-			if (event.getPlayer().isSneaking()) {
-				players.get(event.getPlayer()).specialAttack();
-			}
-			else {
-				players.get(event.getPlayer()).secondaryAttack();
-			}
-		}
+
+	public static void removePlayer(Player player) {
+		players.remove(player);		
 	}
 	
-//	private String getWeapon(Player player) {
-//		String[] weapon = player.getItemInHand().getType().name().split("_");
-//		if (weapon.length == 1) {
-//			return weapon[0].equalsIgnoreCase("bow")? "bow" : "none";
-//		}
-//		else if (weapon.length == 2) {
-//			switch (weapon[1].toLowerCase()) {
-//			case "sword":
-//			case "spade":
-//			case "pickaxe":
-//			case "rod":
-//			case "hoe":
-//				return weapon[1].toLowerCase();
-//				
-//			}
-//		}
-//		else {
-//			return "none";
-//		}
-//	}
+	public static RPGClass getPlayer(Player player) {
+		return players.get(player);
+	}
+
+	@EventHandler
+	private static void playerLogin(PlayerLoginEvent event) {
+		addPlayer(event.getPlayer());
+	}
+
+	@EventHandler
+	private static void playerQuit(PlayerQuitEvent event) {
+		removePlayer(event.getPlayer());
+	}
 }
