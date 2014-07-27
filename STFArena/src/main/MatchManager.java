@@ -17,8 +17,8 @@ public class MatchManager {
 	ArrayList<Arena> arena3sFree = new ArrayList<Arena>();
 	ArrayList<Arena> arena5sFree = new ArrayList<Arena>();
 
-	public MatchManager(Main main, DataManager dataManager) {
-		this.plugin = main;
+	public MatchManager(Main plugin, DataManager dataManager) {
+		this.plugin = plugin;
 		this.dataManager = dataManager;
 	}
 

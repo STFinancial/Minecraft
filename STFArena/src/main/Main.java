@@ -1,7 +1,5 @@
 package main;
 
-import java.util.ArrayList;
-
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {

@@ -1,6 +1,5 @@
 package main;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -60,6 +59,9 @@ public class CommandManager implements CommandExecutor {
 				case "who":
 					who(player, args);
 					break;
+				case "build":
+					build(player);
+					break;
 				default:
 					help(player, args);
 					break;
@@ -70,7 +72,11 @@ public class CommandManager implements CommandExecutor {
 
 		return true;
 	}
-
+	
+	private void build(Player player) {
+		player.teleport(ArenaWorld.build().getSpawnLocation());
+	}
+	
 	private void leave(Player player, String[] args) {
 		if (args.length > 1) {
 			if (dataManager.getPlayer(player).getStatus() != Status.FREE) {

@@ -14,8 +14,8 @@ public class QueueManager implements Runnable {
 	ArrayList<ArenaTeam> queue5s = new ArrayList<ArenaTeam>();
 	int taskID;
 
-	public QueueManager(Main main, DataManager dataManager) {
-		plugin = main;
+	public QueueManager(Main plugin, DataManager dataManager) {
+		this.plugin = plugin;
 		this.dataManager = dataManager;
 		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this, 200, 200);
 	}
