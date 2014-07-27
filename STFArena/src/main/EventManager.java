@@ -5,11 +5,11 @@ import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
@@ -94,24 +94,36 @@ public class EventManager implements Listener {
 
 	@EventHandler
 	private void preventFriendlyFire(EntityDamageByEntityEvent event) {
-		//		if (inArenaWorld(event.getEntity())) {
-		//			if (event.getEntity() instanceof Player) {
-		//				Player player = (Player) event.getEntity();
-		//				if (event.getCause())
-		//			}
-		//		}
+		if (inArenaWorld(event.getEntity())) {
+			if (event.getEntity() instanceof Player) {
+				Player target = (Player) event.getEntity();
+				if (event.getDamager() instanceof Projectile) {
+					Projectile missile = (Projectile) event.getDamager();
+					if (missile.getShooter() instanceof Player) {
+						if (dataManager.areAllies((Player) missile.getShooter(), target)) {
+							event.setCancelled(true);
+						}
+					}
+				}
+				else if (event.getDamager() instanceof Player) {
+					if (dataManager.areAllies((Player) event.getDamager(), target)) {
+						event.setCancelled(true);
+					}
+				}
+			}
+		}
 	}
 
 	@EventHandler
 	private void friendlyPotionEffect(PotionSplashEvent event) {
 		if (inArenaWorld(event.getEntity())) {
 			PotionEffect potionEffect = event.getPotion().getEffects().iterator().next();
+			Player thrower = (Player) event.getPotion().getShooter();
 			for (LivingEntity entity : event.getAffectedEntities()) {
 				if (ArenaPotion.isFriendly(potionEffect.getType().toString())) {
-					if ()
-				}
-				else if (ArenaPotion.isHostile(potionEffect.getType().toString())) {
-
+					if (dataManager.areAllies(thrower, (Player) entity) == false) {
+						event.setIntensity(entity, 0);
+					}
 				}
 			}			
 		}

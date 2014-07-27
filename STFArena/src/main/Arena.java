@@ -6,9 +6,10 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.scheduler.BukkitRunnable;
 
 //@TODO massive work in progress
-public class Arena implements Runnable {
+public class Arena extends BukkitRunnable {
 	String name;
 	int size;
 	Location redSpawn;
@@ -41,7 +42,7 @@ public class Arena implements Runnable {
 		blueTeam = t2;
 		timeTillTeleport = 10;
 		timeTillDoorOpen = 15;
-		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this, 20, 20);
+		this.runTaskTimer(plugin, 20, 20);
 	}
 
 	public String getName() {
@@ -110,9 +111,8 @@ public class Arena implements Runnable {
 		} else {
 			sendAllPlayers("The Match Begins!");
 			openDoors();
-			Bukkit.getScheduler().cancelTask(taskID);
+			this.cancel();
 		}
 
 	}
-
 }

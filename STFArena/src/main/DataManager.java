@@ -290,4 +290,8 @@ public class DataManager {
 		return true;
 	}
 
+	public boolean areAllies(Player p1, Player p2) {
+		return getPlayer(p1).getFocus().equals(getPlayer(p2).getFocus());
+	}
+
 }
