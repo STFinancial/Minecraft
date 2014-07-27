@@ -29,23 +29,23 @@ public class EventManager implements Listener {
 	}
 
 	@EventHandler
-	private void onInteractWithEntity(PlayerInteractEntityEvent event){
+	private void onInteractWithEntity(PlayerInteractEntityEvent event) {
 
 	}
 
 	@EventHandler
-	private void onInteract(PlayerInteractEvent event){
+	private void onInteract(PlayerInteractEvent event) {
 
 	}
 
 	@EventHandler
 	private void onDamage(EntityDamageByEntityEvent event) {
-		
+
 	}
 
 	@EventHandler
 	private void onPlayerAnimation(PlayerAnimationEvent event) {
-		
+
 	}
 
 	public void quit() {

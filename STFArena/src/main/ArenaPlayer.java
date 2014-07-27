@@ -1,6 +1,5 @@
 package main;
 
-
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -14,17 +13,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-
-public class ArenaPlayer{
+public class ArenaPlayer {
 	private Status status;
 	private String teamFocused;
+	private String matchLocation;
 	boolean saved;
 	private final ArrayList<String> teams;
 	private final String name;
 	private final UUID uuid;
 
-
-	//Data to save state on entering match;
+	// Data to save state on entering match;
 	private float exhaustion, saturation, exp;
 	private int level, remainingAir;
 	private ItemStack[] inventory;
@@ -36,8 +34,7 @@ public class ArenaPlayer{
 	private HorseData horse;
 	private boolean inVehicle = false;
 
-
-	public ArenaPlayer(Player player){
+	public ArenaPlayer(Player player) {
 		status = Status.FREE;
 		teamFocused = null;
 		saved = false;
@@ -46,11 +43,10 @@ public class ArenaPlayer{
 		uuid = player.getUniqueId();
 	}
 
-
 	public void saveState() {
 		Player player = Bukkit.getPlayer(uuid);
 		inVehicle = false;
-		
+
 		exhaustion = player.getExhaustion();
 		saturation = player.getSaturation();
 		level = player.getLevel();
@@ -71,17 +67,15 @@ public class ArenaPlayer{
 			player.leaveVehicle();
 			vehicle.remove();
 			inVehicle = true;
-		}
-		else {
+		} else {
 			velocity = player.getVelocity();
 		}
-		
+
 		saved = true;
 	}
 
-
 	public void loadState() {
-		if(saved) {
+		if (saved) {
 			Player player = Bukkit.getPlayer(uuid);
 			player.teleport(location);
 			player.setExhaustion(exhaustion);
@@ -93,64 +87,67 @@ public class ArenaPlayer{
 			player.getInventory().clear();
 			player.getInventory().setContents(inventory);
 			player.getInventory().setArmorContents(armor);
-			
+
 			if (inVehicle) {
 				Entity vehicle = location.getWorld().spawnEntity(location, vehicleType);
 				if (vehicleType.equals(EntityType.PIG)) {
 					((Pig) vehicle).setSaddle(true);
-				}
-				else if (vehicleType.equals(EntityType.HORSE)) {
+				} else if (vehicleType.equals(EntityType.HORSE)) {
 					horse.morphTarget((Horse) vehicle);
 					((Horse) vehicle).setOwner(player);
 				}
-				
+
 				vehicle.setPassenger(player);
 				vehicle.setVelocity(velocity);
-			}
-			else {
+			} else {
 				player.setVelocity(velocity);
 			}
 		}
-		
+
 		saved = false;
 	}
 
-
-	public Status getStatus(){
+	public Status getStatus() {
 		return status;
 	}
+
 	public void setStatus(Status status) {
 		this.status = status;
 	}
-	public String getFocus(){
+
+	public String getFocus() {
 		return teamFocused;
 	}
-	public void setFocus(String teamName){
+
+	public void setFocus(String teamName) {
 		teamFocused = teamName;
 	}
-	public void addTeam(String teamName){
+
+	public void addTeam(String teamName) {
 		teams.add(teamName);
 	}
 
-	public void removeTeam(String teamName){
+	public void removeTeam(String teamName) {
 		teams.remove(teamName);
 	}
 
 	public ArrayList<String> getTeams() {
 		return teams;
 	}
+
 	public String getName() {
 		return name;
 	}
 
-	public UUID getUUID(){
+	public UUID getUUID() {
 		return uuid;
 	}
 
-
-
-
-
-
-
+	public String getArena(){
+		return matchLocation;
+	}
+	public void setArena(String name){
+		matchLocation = name;
+	}
+	
 }

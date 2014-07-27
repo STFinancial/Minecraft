@@ -1,23 +1,17 @@
 package main;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
-
-
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-
 
 public class DataManager {
 	private final Main plugin;
 	HashMap<String, ArenaTeam> arenaTeams;
 	HashMap<UUID, ArenaPlayer> arenaPlayers;
 	HashMap<String, ArenaTeam> beingCreated;
-
 
 	public DataManager(Main plugin) {
 		this.plugin = plugin;
@@ -27,13 +21,11 @@ public class DataManager {
 		load();
 	}
 
-
 	private void load() {
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			add(player);
 		}
 	}
-
 
 	public void quit() {
 		for (Player player : Bukkit.getOnlinePlayers()) {
@@ -41,52 +33,48 @@ public class DataManager {
 		}
 	}
 
-
 	public void add(Player player) {
 		arenaPlayers.put(player.getUniqueId(), new ArenaPlayer(player));
-		for(ArenaTeam t: arenaTeams.values()){
-			if(t.getPlayers().contains(player.getUniqueId()))
+		for (ArenaTeam t : arenaTeams.values()) {
+			if (t.getPlayers().contains(player.getUniqueId()))
 				getPlayer(player).addTeam(t.getName());
 		}
 	}
-
 
 	public void remove(Player player) {
 		plugin.getCommandManager().cancel(player);
 		arenaPlayers.remove(player.getUniqueId());
 	}
 
-	public ArenaPlayer getPlayer(Player player){
+	public ArenaPlayer getPlayer(Player player) {
 		return arenaPlayers.get(player.getUniqueId());
 	}
 
 	public ArenaPlayer getPlayer(String name) {
-		for(ArenaPlayer p:arenaPlayers.values()){
-			if(p.getName().equalsIgnoreCase(name))
+		for (ArenaPlayer p : arenaPlayers.values()) {
+			if (p.getName().equalsIgnoreCase(name))
 				return p;
 		}
 
 		return null;
 	}
 
-	public ArenaPlayer getPlayer(UUID id){
+	public ArenaPlayer getPlayer(UUID id) {
 		return arenaPlayers.get(id);
 	}
 
-
-	public boolean playerIsOnTeam(Player player, String teamName){
+	public boolean playerIsOnTeam(Player player, String teamName) {
 		return getPlayer(player).getTeams().contains(teamName);
 	}
 
-
 	public void disband(String name) {
 		ArenaTeam t = getTeam(name);
-		for(UUID p:t.getPlayers()){
-			if(Bukkit.getPlayer(p) != null){
-				if(Bukkit.getPlayer(p).isOnline()){
+		for (UUID p : t.getPlayers()) {
+			if (Bukkit.getPlayer(p) != null) {
+				if (Bukkit.getPlayer(p).isOnline()) {
 					Bukkit.getPlayer(p).sendMessage("Your arena team " + name + " has been disbanded");
 					getPlayer(p).removeTeam(name);
-					if(getPlayer(p).getFocus() == name){
+					if (getPlayer(p).getFocus() == name) {
 						plugin.getCommandManager().cancel(Bukkit.getPlayer(p));
 					}
 				}
@@ -95,36 +83,25 @@ public class DataManager {
 
 	}
 
-
-	public boolean isNameUnique(String string){
-		if(arenaTeams.get(string) != null)
+	public boolean isNameUnique(String string) {
+		if (arenaTeams.get(string) != null)
 			return false;
-		if(beingCreated.get(string) != null)
+		if (beingCreated.get(string) != null)
 			return false;
 
 		return true;
 	}
 
-
 	public void forfeit(Player player) {
 		// TODO Auto-generated method stub
 
-
 	}
 
-
-	public void dodgeQueue(Player player) {
-		// TODO Auto-generated method stub
-
-
-	}
-
-
-	public void exitQueue(Player player) {	
+	public void exitQueue(Player player) {
 		ArenaTeam t = getTeam(getPlayer(player).getFocus());
-		for(UUID p : t.getPlayers()){
-			if(Bukkit.getPlayer(p) != null && Bukkit.getPlayer(p).isOnline()){
-				Bukkit.getPlayer(p).sendMessage("Your team "+getPlayer(player).getFocus()+ " has exited the queue");
+		for (UUID p : t.getPlayers()) {
+			if (Bukkit.getPlayer(p) != null && Bukkit.getPlayer(p).isOnline()) {
+				Bukkit.getPlayer(p).sendMessage("Your team " + getPlayer(player).getFocus() + " has exited the queue");
 				getPlayer(p).setStatus(Status.FREE);
 				getPlayer(p).setFocus(null);
 
@@ -135,10 +112,10 @@ public class DataManager {
 
 	public void cancelQueue(Player player) {
 		ArenaTeam t = getTeam(getPlayer(player).getFocus());
-		for(UUID p : t.getPlayers()){
-			if(Bukkit.getPlayer(p) != null && Bukkit.getPlayer(p).isOnline()){
-				Bukkit.getPlayer(p).sendMessage("Your team "+getPlayer(player).getFocus()+ " has stopped trying to queue");
-				if(getPlayer(p).getStatus() == Status.TRYING_TO_QUEUE){
+		for (UUID p : t.getPlayers()) {
+			if (Bukkit.getPlayer(p) != null && Bukkit.getPlayer(p).isOnline()) {
+				Bukkit.getPlayer(p).sendMessage("Your team " + getPlayer(player).getFocus() + " has stopped trying to queue");
+				if (getPlayer(p).getStatus() == Status.TRYING_TO_QUEUE) {
 					getPlayer(p).setStatus(Status.FREE);
 					getPlayer(p).setFocus(null);
 				}
@@ -146,23 +123,16 @@ public class DataManager {
 		}
 	}
 
-
-	public void acceptMatch(Player player) {
-		// TODO Auto-generated method stub
-
-	}
-
-
 	public void queue(Player player, String teamName) {
 
 		getPlayer(player).setStatus(Status.TRYING_TO_QUEUE);
 		getPlayer(player).setFocus(teamName);
 		ArenaTeam t = getTeam(teamName);
-		for(UUID p:t.getPlayers()){
+		for (UUID p : t.getPlayers()) {
 			Bukkit.getPlayer(p).sendMessage(player.getName() + " has queued for " + t.getSize() + "s on: " + teamName);
 		}
-		if(teamReadyToQueue(teamName)){
-			for(UUID p:t.getPlayers()){
+		if (teamReadyToQueue(teamName)) {
+			for (UUID p : t.getPlayers()) {
 				Bukkit.getPlayer(p).sendMessage("Your team " + t.getName() + " has entered queue for " + t.getSize() + "s");
 				getPlayer(p).setStatus(Status.QUEUED);
 			}
@@ -171,11 +141,11 @@ public class DataManager {
 
 	}
 
-
-	public void saveTest(Player player){
+	public void saveTest(Player player) {
 		getPlayer(player).saveState();
 	}
-	public void loadTest(Player player){
+
+	public void loadTest(Player player) {
 		getPlayer(player).loadState();
 	}
 
@@ -183,7 +153,7 @@ public class DataManager {
 		return arenaTeams.get(t);
 	}
 
-	public ArenaTeam getTempTeam(String teamName){
+	public ArenaTeam getTempTeam(String teamName) {
 		return beingCreated.get(teamName);
 	}
 
@@ -194,13 +164,12 @@ public class DataManager {
 		beingCreated.get(string).addPlayer(player);
 	}
 
-
-	public void cancelCreateTeam(Player player){
+	public void cancelCreateTeam(Player player) {
 		ArenaTeam t = beingCreated.get(getPlayer(player).getFocus());
-		if(t != null){
-			for(UUID p : t.getPlayers()){
-				if(Bukkit.getPlayer(p) != null){
-					if(Bukkit.getPlayer(p).isOnline()){
+		if (t != null) {
+			for (UUID p : t.getPlayers()) {
+				if (Bukkit.getPlayer(p) != null) {
+					if (Bukkit.getPlayer(p).isOnline()) {
 						Bukkit.getPlayer(p).sendMessage("Creation of the team " + t.getName() + " has been canceled");
 						getPlayer(p).setFocus(null);
 						getPlayer(p).setStatus(Status.FREE);
@@ -208,29 +177,28 @@ public class DataManager {
 				}
 			}
 			beingCreated.remove(t.getName());
-		}else{
+		} else {
 			plugin.getLogger().info("Seriouse problem canceling a team creation! team not found!");
 		}
 	}
 
-
 	public void acceptInvite(Player player) {
 		ArenaTeam t = beingCreated.get(getPlayer(player).getFocus());
-		if(t != null){
-			for(UUID p:t.getPlayers()){
-				if(Bukkit.getPlayer(p) != null){
-					if(Bukkit.getPlayer(p).isOnline()){
+		if (t != null) {
+			for (UUID p : t.getPlayers()) {
+				if (Bukkit.getPlayer(p) != null) {
+					if (Bukkit.getPlayer(p).isOnline()) {
 						Bukkit.getPlayer(p).sendMessage("Player " + player.getName() + " has accepted your team invite");
 					}
 				}
 			}
 			player.sendMessage("You have accepted the team invitation to " + getPlayer(player).getFocus());
 			t.addPlayer(player);
-			if(t.isFull()){
-				for(UUID p:t.getPlayers()){
-					if(Bukkit.getPlayer(p) != null){
-						if(Bukkit.getPlayer(p).isOnline()){
-							Bukkit.getPlayer(p).sendMessage("Your " +  t.getSize() + "s team " + t.getName() + " has been created!");
+			if (t.isFull()) {
+				for (UUID p : t.getPlayers()) {
+					if (Bukkit.getPlayer(p) != null) {
+						if (Bukkit.getPlayer(p).isOnline()) {
+							Bukkit.getPlayer(p).sendMessage("Your " + t.getSize() + "s team " + t.getName() + " has been created!");
 							addTeamToPlayer(Bukkit.getPlayer(p));
 							getPlayer(p).setFocus(null);
 							getPlayer(p).setStatus(Status.FREE);
@@ -239,25 +207,24 @@ public class DataManager {
 				}
 				arenaTeams.put(t.getName(), t);
 				beingCreated.remove(t.getName());
-			}else{
+			} else {
 				getPlayer(player).setStatus(Status.CREATING);
 			}
 
-		}else{
+		} else {
 			player.sendMessage("Invite accept has failed, the team has disbanded");
 			getPlayer(player).setFocus(null);
 			getPlayer(player).setStatus(Status.FREE);
 		}
 
-
 	}
 
 	public void cancelInvite(Player player) {
 		ArenaTeam t = beingCreated.get(getPlayer(player).getFocus());
-		if(t != null){
-			for(UUID p:t.getPlayers()){
-				if(Bukkit.getPlayer(p) != null){
-					if(Bukkit.getPlayer(p).isOnline()){
+		if (t != null) {
+			for (UUID p : t.getPlayers()) {
+				if (Bukkit.getPlayer(p) != null) {
+					if (Bukkit.getPlayer(p).isOnline()) {
 						Bukkit.getPlayer(p).sendMessage("Player " + player.getName() + " has declined your team invite");
 					}
 				}
@@ -269,53 +236,33 @@ public class DataManager {
 		player.sendMessage("You have cancelled your team Invite");
 	}
 
-
-
-	public void addTeamToPlayer(Player player){
+	public void addTeamToPlayer(Player player) {
 		getPlayer(player).addTeam(getPlayer(player).getFocus());
 	}
-
 
 	public void sendInvitation(Player sender, ArenaPlayer arenaPlayer, String focus) {
 		arenaPlayer.setFocus(focus);
 		arenaPlayer.setStatus(Status.INVITED);
-		Bukkit.getPlayer(arenaPlayer.getUUID()).sendMessage("You were just invited to join the " + getTempTeam(focus).getSize() + "s team " + focus ); //Gets to here, throws a null (obviously getting player by UUID)
+		Bukkit.getPlayer(arenaPlayer.getUUID()).sendMessage("You were just invited to join the " + getTempTeam(focus).getSize() + "s team " + focus);
 		Bukkit.getPlayer(arenaPlayer.getUUID()).sendMessage("by " + sender.getName() + " please type");
 		Bukkit.getPlayer(arenaPlayer.getUUID()).sendMessage("/arena accept or /arena cancel");
 		sender.sendMessage("You have successfully invited " + arenaPlayer.getName());
 	}
 
-
-	public boolean teamAvailable(String name){
-
-		ArenaTeam t = getTeam(name);
-		for(UUID p : t.getPlayers()){
-			if(getPlayer(p) == null){
-				return false;
-			}else if(getPlayer(p).getStatus() == Status.FREE){
-
-			}else if(getPlayer(p).getStatus() == Status.TRYING_TO_QUEUE){
-				if(getPlayer(p).getFocus() != name){
-					return false;
-				}
-			}else{
-				return false;
-			}
-		}
-
-		return true;
-	}
-	public boolean teamReadyToQueue(String name){
+	public boolean teamAvailable(String name) {
 
 		ArenaTeam t = getTeam(name);
-		for(UUID p : t.getPlayers()){
-			if(getPlayer(p) == null){
+		for (UUID p : t.getPlayers()) {
+			if (getPlayer(p) == null) {
 				return false;
-			}else if(getPlayer(p).getStatus() == Status.TRYING_TO_QUEUE){
-				if(getPlayer(p).getFocus() != name){
+			} else if (getPlayer(p).getStatus() == Status.FREE) {
+			} else if (getPlayer(p).getStatus() == Status.TRYING_TO_QUEUE) {
+				if (getPlayer(p).getFocus().equals(name)) {
+
+				} else {
 					return false;
 				}
-			}else{
+			} else {
 				return false;
 			}
 		}
@@ -323,7 +270,25 @@ public class DataManager {
 		return true;
 	}
 
+	public boolean teamReadyToQueue(String name) {
 
+		ArenaTeam t = getTeam(name);
+		for (UUID p : t.getPlayers()) {
+			if (getPlayer(p) == null) {
+				return false;
 
+			} else if (getPlayer(p).getStatus() == Status.TRYING_TO_QUEUE) {
+				if (getPlayer(p).getFocus().equals(name)) {
+
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
+
+		return true;
+	}
 
 }
