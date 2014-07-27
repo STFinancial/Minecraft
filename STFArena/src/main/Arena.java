@@ -27,6 +27,7 @@ public class Arena implements Runnable {
 		this.size = size;
 		redSpawn = new Location(Bukkit.getWorld("Arena"), redX, redY, redZ);
 		redSpawn = new Location(Bukkit.getWorld("Arena"), blueX, blueY, blueZ);
+		
 		door = Material.getMaterial(doorMaterial);
 		this.plugin = main;
 	}

@@ -86,8 +86,8 @@ public class MatchManager {
 		
 		//Calculate mmr differences
 		//Free up the Arena
-	
-
 	}
+	
+	recordDeath
 
 }
