@@ -29,6 +29,7 @@ public class Arena extends BukkitRunnable {
 	public Arena(String name, int size, int redX, int redY, int redZ, int blueX, int blueY, int blueZ, String doorMaterial, Main main) {
 		this.name = name;
 		this.size = size;
+		Bukkit.getLogger().info("We made it to here! creating "+ name);
 		redSpawn = new Location(Bukkit.getWorld("Arena"), redX, redY, redZ);
 		blueSpawn = new Location(Bukkit.getWorld("Arena"), blueX, blueY, blueZ);
 		
@@ -109,6 +110,10 @@ public class Arena extends BukkitRunnable {
 		} else if (timeTillDoorOpen == 15) {
 			for (UUID p : redTeam.getPlayers()) {
 				plugin.getDataManager().getPlayer(p).saveState();
+				Bukkit.getLogger().info("with arena "+ name);
+				Bukkit.getLogger().info("with ax location " + redSpawn.getBlockX());
+				Bukkit.getLogger().info("red spawn is in world " + redSpawn.getWorld().getName());
+				Bukkit.getLogger().info(" with player " + Bukkit.getPlayer(p).getName());
 				Bukkit.getPlayer(p).teleport(redSpawn);
 			}
 			for (UUID p : blueTeam.getPlayers()) {

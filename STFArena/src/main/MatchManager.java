@@ -14,7 +14,7 @@ public class MatchManager {
 	ArrayList<Arena> arena2sUsed = new ArrayList<Arena>();
 	ArrayList<Arena> arena3sUsed = new ArrayList<Arena>();
 	ArrayList<Arena> arena5sUsed = new ArrayList<Arena>();
-	static ArrayList<Arena> arena2sFree = new ArrayList<Arena>();
+	ArrayList<Arena> arena2sFree = new ArrayList<Arena>();
 	ArrayList<Arena> arena3sFree = new ArrayList<Arena>();
 	ArrayList<Arena> arena5sFree = new ArrayList<Arena>();
 
@@ -143,7 +143,7 @@ public class MatchManager {
 		
 	}
 
-	public static void addArena(Arena arena) {
+	public void addArena(Arena arena) {
 		arena2sFree.add(arena);
 	}
 	
