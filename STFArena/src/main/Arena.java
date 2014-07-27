@@ -1,6 +1,7 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -22,12 +23,15 @@ public class Arena extends BukkitRunnable {
 	Main plugin;
 	Material door;
 	ArrayList<Location> doors;
+	HashSet<UUID> redPlayersAlive;
+	HashSet<UUID> bluePlayersAlive;
 
 	public Arena(String name, int size, int redX, int redY, int redZ, int blueX, int blueY, int blueZ, String doorMaterial, Main main) {
 		this.name = name;
 		this.size = size;
 		redSpawn = new Location(Bukkit.getWorld("Arena"), redX, redY, redZ);
 		redSpawn = new Location(Bukkit.getWorld("Arena"), blueX, blueY, blueZ);
+		
 		
 		door = Material.getMaterial(doorMaterial);
 		this.plugin = main;
@@ -38,6 +42,12 @@ public class Arena extends BukkitRunnable {
 	}
 
 	public void add(ArenaTeam t1, ArenaTeam t2) {
+		for(UUID p:t1.getPlayers()){
+			redPlayersAlive.add(p);
+		}
+		for(UUID p:t2.getPlayers()){
+			bluePlayersAlive.add(p);
+		}
 		redTeam = t1;
 		blueTeam = t2;
 		timeTillTeleport = 10;
@@ -114,5 +124,32 @@ public class Arena extends BukkitRunnable {
 			this.cancel();
 		}
 
+	}
+
+	public void recordDeath(UUID ID) {
+		if(redPlayersAlive.contains(ID)){
+			redPlayersAlive.remove(ID);
+			sendAllPlayers(Bukkit.getPlayer(ID).getName() + " on Red team has been slain!");
+		}
+		if(bluePlayersAlive.contains(ID)){
+			bluePlayersAlive.remove(ID);
+			sendAllPlayers(Bukkit.getPlayer(ID).getName() + " on Blue team has been slain!");
+		}
+		if(redPlayersAlive.size() == 0){
+			sendAllPlayers("All members of Blue team have been slain!");
+			plugin.getMatchManager().gameFinished(this, false);
+		}else if(bluePlayersAlive.size() == 0){
+			sendAllPlayers("All members of Red team have been slain!");
+			plugin.getMatchManager().gameFinished(this, true);
+		}
+		
+	}
+	
+	public void clean(){
+		closeDoors();
+		redPlayersAlive = null;
+		bluePlayersAlive = null;
+		redTeam = null;
+		blueTeam = null;
 	}
 }

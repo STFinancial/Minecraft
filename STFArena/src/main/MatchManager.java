@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 //@TODO massive work in progress
 public class MatchManager {
@@ -65,7 +66,7 @@ public class MatchManager {
 		}
 	}
 
-	public void gameFinished(Arena arena) {
+	public void gameFinished(Arena arena, boolean redWon) {
 		switch (arena.getSize()) {
 		case 2:
 			arena2sUsed.remove(arena);
@@ -81,13 +82,65 @@ public class MatchManager {
 			break;
 
 		}
-		//Grab all players
-		//Make sure they are set to free
+		ArenaTeam winners, losers;
+		if(redWon){
+			winners = arena.getRedTeam();
+			losers = arena.getBlueTeam();
+		}else{
+			losers = arena.getRedTeam();
+			winners = arena.getBlueTeam();
+		}
 		
+	
 		//Calculate mmr differences
-		//Free up the Arena
+		int eloChange = eloChange(winners.getRating(), losers.getRating());
+		winners.addMatch(eloChange);
+		losers.addMatch(-1*eloChange);
+		for(UUID p:winners.getPlayers()){
+			if(Bukkit.getPlayer(p).getHealth() != 0){
+				dataManager.getPlayer(p).setStatus(Status.FREE);
+				dataManager.getPlayer(p).setFocus(null);
+				dataManager.getPlayer(p).loadState();
+				Bukkit.getPlayer(p).sendMessage("You have been teleported out of the arena");
+			}
+		}
+		arena.clean();
 	}
 	
-	recordDeath
+	public void recordDeath(Player player){
+		getArena(dataManager.getPlayer(player).getFocus()).recordDeath(player.getUniqueId());
+	}
+	
+	public Arena getArena(String teamName){
+		for(Arena a:arena2sUsed){
+			if(a.getRedTeam().getName().equals(teamName) || a.getBlueTeam().getName().equals(teamName)){
+				return a;
+			}
+		}
+		for(Arena a:arena3sUsed){
+			if(a.getRedTeam().getName().equals(teamName) || a.getBlueTeam().getName().equals(teamName)){
+				return a;
+			}
+		}
+		for(Arena a:arena5sUsed){
+			if(a.getRedTeam().getName().equals(teamName) || a.getBlueTeam().getName().equals(teamName)){
+				return a;
+			}
+		}
+		return null;
+	}
 
+	public int eloChange(int winning, int losing){
+		if(Math.abs(winning - losing) < 100){
+			return 10;
+		}else{
+			if(winning > losing){
+				return 5;
+			}else{
+				return 15;
+			}
+		}
+		
+	}
+	
 }

@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class ArenaTeam {
@@ -69,5 +70,18 @@ public class ArenaTeam {
 			return 0;
 		}
 		return timeInQueue * 10 - 5;
+	}
+
+	public void addMatch(int eloChange) {
+		if(eloChange > 0 ){
+			win++;
+		}else{
+			loss++;
+		}
+		rating+=eloChange;
+		for(UUID p :getPlayers()){
+			Bukkit.getPlayer(p).sendMessage("Your arena team " + name + " now has a " + rating + " rating");
+			Bukkit.getPlayer(p).sendMessage(getRecord());
+		}
 	}
 }

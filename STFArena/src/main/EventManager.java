@@ -131,13 +131,18 @@ public class EventManager implements Listener {
 
 	@EventHandler
 	private void onPlayerRespawn(PlayerRespawnEvent event) {
-		//WHAT TO DO!?
+		if (inArenaWorld(event.getPlayer())) {
+			dataManager.getPlayer(event.getPlayer()).setStatus(Status.FREE);
+			dataManager.getPlayer(event.getPlayer()).setFocus(null);
+			dataManager.getPlayer(event.getPlayer()).loadState();
+			event.getPlayer().sendMessage("You have respawned and left the arena");
+		}
 	}
 
 	@EventHandler
 	private void onPlayerDeath(PlayerDeathEvent event) {
-		if (inArenaWorld(event.getEntity())) {
-			//WHAT TO DO!?
+		if (inArenaWorld(event.getEntity()) && event.getEntity() instanceof Player) {
+			plugin.getMatchManager().recordDeath((Player) event.getEntity());
 		}
 	}
 
