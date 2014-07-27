@@ -39,6 +39,6 @@ public class BlazeMage extends Wizard {
 
 	@Override
 	public void primaryAttackEffect(EntityDamageByEntityEvent event) {
-		event.getEntity().setFireTicks(level);
+//		event.getEntity().setFireTicks(level);
 	}
 }

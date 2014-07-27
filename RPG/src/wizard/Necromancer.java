@@ -1,7 +1,6 @@
 package wizard;
 
 import org.bukkit.entity.EnderPearl;
-import org.bukkit.entity.LargeFireball;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.WitherSkull;
@@ -38,8 +37,6 @@ public class Necromancer extends Wizard {
 	
 	@Override
 	public void primaryAttackEffect(EntityDamageByEntityEvent event) {
-		((LivingEntity)event.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 40, 2));
-	}
-	
-	
+		((LivingEntity) event.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 40, 2));
+	}	
 }
