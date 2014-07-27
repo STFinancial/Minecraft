@@ -40,11 +40,7 @@ public class MatchManager {
 		if (possibleArenas.size() > 0) {
 
 			int r = (int) Math.random() * possibleArenas.size();
-			if (Math.random() > .5) {
-				possibleArenas.get(r).add(t1, t2);
-			} else {
-				possibleArenas.get(r).add(t2, t1);
-			}
+		
 			for (UUID p : t1.getPlayers()) {
 				Bukkit.getPlayer(p).sendMessage("A match has been found against " + t2.getName());
 				dataManager.getPlayer(p).setStatus(Status.IN_GAME);
@@ -55,6 +51,13 @@ public class MatchManager {
 				dataManager.getPlayer(p).setStatus(Status.IN_GAME);
 				dataManager.getPlayer(p).setArena(possibleArenas.get(r).getName());
 			}
+			
+			if (Math.random() > .5) {
+				possibleArenas.get(r).add(t1, t2);
+			} else {
+				possibleArenas.get(r).add(t2, t1);
+			}
+			
 			usedArenas.add(possibleArenas.get(r));
 			possibleArenas.remove(r);
 		} else {
