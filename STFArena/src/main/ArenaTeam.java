@@ -22,8 +22,9 @@ public class ArenaTeam {
 		rating = 1200;
 	}
 
-	public void addPlayer(Player player) {
+	public ArenaTeam addPlayer(Player player) {
 		players.add(player.getUniqueId());
+		return this;
 	}
 
 	public int getSize() {

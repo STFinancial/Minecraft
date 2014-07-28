@@ -7,10 +7,12 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 
 //@TODO massive work in progress
 public class Arena extends BukkitRunnable {
+	private final static World arenaWorld = ArenaWorld.build();
 	String name;
 	int size;
 	Location redSpawn;
@@ -30,8 +32,8 @@ public class Arena extends BukkitRunnable {
 		this.name = name;
 		this.size = size;
 		Bukkit.getLogger().info("We made it to here! creating "+ name);
-		redSpawn = new Location(Bukkit.getWorld("Arena"), redX, redY, redZ);
-		blueSpawn = new Location(Bukkit.getWorld("Arena"), blueX, blueY, blueZ);
+		redSpawn = new Location(arenaWorld, redX, redY, redZ);
+		blueSpawn = new Location(arenaWorld, blueX, blueY, blueZ);
 		
 		
 		door = Material.getMaterial(doorMaterial);
@@ -88,16 +90,28 @@ public class Arena extends BukkitRunnable {
 		for (int x = redSpawn.getBlockX() - 5; x < redSpawn.getBlockX() + 5; x++) {
 			for (int y = redSpawn.getBlockY() - 5; y < redSpawn.getBlockY() + 5; y++) {
 				for (int z = redSpawn.getBlockZ() - 5; z < redSpawn.getBlockZ() + 5; z++) {
-					Bukkit.getWorld("Arena").getBlockAt(x, y, z).setType(Material.AIR);
-					doors.add(new Location(Bukkit.getWorld("Arena"), x, y, z));
+					if (arenaWorld.getBlockAt(x, y, z).getType().equals(door)) { 
+						arenaWorld.getBlockAt(x, y, z).setType(Material.AIR);
+					}
+					doors.add(new Location(arenaWorld, x, y, z));
+				}
+			}
+		}
+		for (int x = blueSpawn.getBlockX() - 5; x < blueSpawn.getBlockX() + 5; x++) {
+			for (int y = blueSpawn.getBlockY() - 5; y < blueSpawn.getBlockY() + 5; y++) {
+				for (int z = blueSpawn.getBlockZ() - 5; z < blueSpawn.getBlockZ() + 5; z++) {
+					if (arenaWorld.getBlockAt(x, y, z).getType().equals(door)) { 
+						arenaWorld.getBlockAt(x, y, z).setType(Material.AIR);
+					}
+					doors.add(new Location(arenaWorld, x, y, z));
 				}
 			}
 		}
 	}
 
 	private void closeDoors() {
-		for(Location l : doors){
-			Bukkit.getWorld("Arena").getBlockAt(l).setType(door);
+		for(Location location : doors){
+			arenaWorld.getBlockAt(location).setType(door);
 		}
 	}
 
