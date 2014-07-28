@@ -63,11 +63,6 @@ public class CommandManager implements CommandExecutor {
 				case "build":
 					build(player);
 					break;
-				case "opendoors":
-					Arena arena = new Arena("Test Arena", 0, 0, 4, 0, 0, 4, 6, "WOOL", plugin);
-					arena.add(new ArenaTeam("test", 1).addPlayer(Bukkit.getPlayer("qsik777")), new ArenaTeam("dummy", 1).addPlayer(Bukkit.getPlayer("knifefish")));
-					arena.runTaskTimer(plugin, 0, 20);
-					break;
 				case "home":
 					player.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
 					break;

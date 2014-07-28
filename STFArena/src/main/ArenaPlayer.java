@@ -54,7 +54,7 @@ public class ArenaPlayer {
 		remainingAir = player.getRemainingAir();
 		inventory = player.getInventory().getContents();
 		armor = player.getInventory().getArmorContents();
-		player.getInventory().clear();
+		//player.getInventory().clear();
 		location = player.getLocation();
 		health = player.getHealth();
 		if (player.isInsideVehicle()) {
@@ -74,9 +74,18 @@ public class ArenaPlayer {
 		saved = true;
 	}
 
-	public void loadState() {
+	public void loadState(Player player) {
 		if (saved) {
-			Player player = Bukkit.getPlayer(uuid);
+			if(player == null){
+				Bukkit.getLogger().info("Serious problem, player not found " + name);
+			}
+			if(location == null){
+				Bukkit.getLogger().info("Location is null");
+			}else if(location.getWorld() == null){
+				Bukkit.getLogger().info("Location world is null");
+			}else{
+				Bukkit.getLogger().info("location world is " + location.getWorld().getName());
+			}
 			player.teleport(location);
 			player.setExhaustion(exhaustion);
 			player.setSaturation(saturation);

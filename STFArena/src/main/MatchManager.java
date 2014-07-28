@@ -92,7 +92,6 @@ public class MatchManager {
 		}
 		
 	
-		//Calculate mmr differences
 		int eloChange = eloChange(winners.getRating(), losers.getRating());
 		winners.addMatch(eloChange);
 		losers.addMatch(-1*eloChange);
@@ -100,7 +99,7 @@ public class MatchManager {
 			if(Bukkit.getPlayer(p).getHealth() != 0){
 				dataManager.getPlayer(p).setStatus(Status.FREE);
 				dataManager.getPlayer(p).setFocus(null);
-				dataManager.getPlayer(p).loadState();
+				dataManager.getPlayer(p).loadState(Bukkit.getPlayer(p));
 				Bukkit.getPlayer(p).sendMessage("You have been teleported out of the arena");
 			}
 		}

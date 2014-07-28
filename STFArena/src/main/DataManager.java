@@ -145,7 +145,7 @@ public class DataManager {
 	}
 
 	public void loadTest(Player player) {
-		getPlayer(player).loadState();
+		getPlayer(player).loadState(player);
 	}
 
 	public ArenaTeam getTeam(String t) {

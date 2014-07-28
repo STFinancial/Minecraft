@@ -8,10 +8,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.scheduler.BukkitRunnable;
 
 //@TODO massive work in progress
-public class Arena extends BukkitRunnable {
+public class Arena implements Runnable {
 	private final static World arenaWorld = ArenaWorld.build();
 	String name;
 	int size;
@@ -57,7 +56,7 @@ public class Arena extends BukkitRunnable {
 		blueTeam = t2;
 		timeTillTeleport = 10;
 		timeTillDoorOpen = 15;
-		this.runTaskTimer(plugin, 20, 20);
+		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this, 20, 20);
 	}
 
 	public String getName() {
@@ -92,8 +91,8 @@ public class Arena extends BukkitRunnable {
 				for (int z = redSpawn.getBlockZ() - 5; z < redSpawn.getBlockZ() + 5; z++) {
 					if (arenaWorld.getBlockAt(x, y, z).getType().equals(door)) { 
 						arenaWorld.getBlockAt(x, y, z).setType(Material.AIR);
+						doors.add(new Location(arenaWorld, x, y, z));
 					}
-					doors.add(new Location(arenaWorld, x, y, z));
 				}
 			}
 		}
@@ -102,8 +101,8 @@ public class Arena extends BukkitRunnable {
 				for (int z = blueSpawn.getBlockZ() - 5; z < blueSpawn.getBlockZ() + 5; z++) {
 					if (arenaWorld.getBlockAt(x, y, z).getType().equals(door)) { 
 						arenaWorld.getBlockAt(x, y, z).setType(Material.AIR);
+						doors.add(new Location(arenaWorld, x, y, z));
 					}
-					doors.add(new Location(arenaWorld, x, y, z));
 				}
 			}
 		}
@@ -142,7 +141,8 @@ public class Arena extends BukkitRunnable {
 		} else {
 			sendAllPlayers("The Match Begins!");
 			openDoors();
-			this.cancel();
+			Bukkit.getScheduler().cancelTask(taskID);
+			taskID = -1;
 		}
 
 	}
