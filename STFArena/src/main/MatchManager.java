@@ -6,7 +6,6 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-//@TODO massive work in progress
 public class MatchManager {
 
 	private Main plugin;
@@ -38,8 +37,11 @@ public class MatchManager {
 	}
 
 	private void add(ArenaTeam t1, ArenaTeam t2, ArrayList<Arena> possibleArenas, ArrayList<Arena> usedArenas) {
+		
+		//@TODO here we need to add check that all players are alive
+		
 		if (possibleArenas.size() > 0) {
-
+			
 			int r = (int) Math.random() * possibleArenas.size();
 		
 			for (UUID p : t1.getPlayers()) {
@@ -95,11 +97,13 @@ public class MatchManager {
 		int eloChange = eloChange(winners.getRating(), losers.getRating());
 		winners.addMatch(eloChange);
 		losers.addMatch(-1*eloChange);
+		//TODO do this after a 5 second delay
 		for(UUID p:winners.getPlayers()){
 			if(Bukkit.getPlayer(p).getHealth() != 0){
 				dataManager.getPlayer(p).setStatus(Status.FREE);
 				dataManager.getPlayer(p).setFocus(null);
 				dataManager.getPlayer(p).loadState(Bukkit.getPlayer(p));
+				//TODO load state does not teleport, add teleport here
 				Bukkit.getPlayer(p).sendMessage("You have been teleported out of the arena");
 			}
 		}
@@ -130,6 +134,7 @@ public class MatchManager {
 	}
 
 	public int eloChange(int winning, int losing){
+		//TODO refine
 		if(Math.abs(winning - losing) < 100){
 			return 10;
 		}else{
