@@ -98,8 +98,7 @@ public class DataManager {
 	}
 
 	public void forfeit(Player player) {
-		// TODO Auto-generated method stub
-
+		plugin.getMatchManager().recordDeath(player);
 	}
 
 	public void exitQueue(Player player) {
