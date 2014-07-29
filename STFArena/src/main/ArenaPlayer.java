@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -30,11 +31,11 @@ public class ArenaPlayer {
 	private final UUID uuid;
 
 	// Data to save state on entering match;
-	private float exhaustion, saturation, exp;
-	private int level, remainingAir;
-	private ItemStack[] inventory;
-	private ItemStack[] armor;
-	private Location location;
+//	private float exhaustion, saturation, exp;
+//	private int level, remainingAir;
+//	private ItemStack[] inventory;
+//	private ItemStack[] armor;
+//	private Location location;
 	private double health;
 	private Vector velocity;
 	private EntityType vehicleType;
@@ -57,6 +58,7 @@ public class ArenaPlayer {
 	public void saveState() {
 		Player player = Bukkit.getPlayer(uuid);
 		playerData.set("inventory", player.getInventory().getContents());
+		playerData.set("armor", player.getInventory().getArmorContents());
 		try {
 			playerData.save(playerFile);
 		} catch (IOException e) {
@@ -94,6 +96,10 @@ public class ArenaPlayer {
 
 	public void loadState(Player player) {
 		if (saved) {
+			List<ItemStack> inventory = (List<ItemStack>) playerData.get("inventory");
+			List<ItemStack> armor = (List<ItemStack>) playerData.get("armor");
+			player.getInventory().setContents(inventory.toArray(new ItemStack[inventory.size()]));
+			player.getInventory().setArmorContents((ItemStack[]) armor.toArray(new ItemStack[inventory.size()]));
 //			if(player == null){
 //				Bukkit.getLogger().info("Serious problem, player not found " + name);
 //			}
