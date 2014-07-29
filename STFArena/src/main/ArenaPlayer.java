@@ -3,6 +3,9 @@ package main;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -53,7 +56,13 @@ public class ArenaPlayer {
 
 	public void saveState() {
 		Player player = Bukkit.getPlayer(uuid);
-		playerData.addDefaults(player.serialize());
+		Set<String> keys = player.serialize().keySet();
+		Collection<Object> values = player.serialize().values(); 
+		Iterator<String> keysIterator = keys.iterator();
+		Iterator<Object> valuesIterator = values.iterator();
+		while (keysIterator.hasNext() && valuesIterator.hasNext()) {
+			playerData.set(keysIterator.next(), valuesIterator.next());
+		}
 		try {
 			playerData.save(playerFile);
 		} catch (IOException e) {
