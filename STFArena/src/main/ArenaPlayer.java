@@ -56,13 +56,7 @@ public class ArenaPlayer {
 
 	public void saveState() {
 		Player player = Bukkit.getPlayer(uuid);
-		Set<String> keys = player.serialize().keySet();
-		Collection<Object> values = player.serialize().values(); 
-		Iterator<String> keysIterator = keys.iterator();
-		Iterator<Object> valuesIterator = values.iterator();
-		while (keysIterator.hasNext() && valuesIterator.hasNext()) {
-			playerData.set(keysIterator.next(), valuesIterator.next());
-		}
+		playerData.set("data", player);
 		try {
 			playerData.save(playerFile);
 		} catch (IOException e) {
