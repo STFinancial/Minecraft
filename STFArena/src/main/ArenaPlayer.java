@@ -10,6 +10,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -52,8 +53,8 @@ public class ArenaPlayer {
 		level = player.getLevel();
 		exp = player.getExp();
 		remainingAir = player.getRemainingAir();
-		inventory = player.getInventory().getContents();
-		armor = player.getInventory().getArmorContents();
+		inventory = player.getInventory().getContents().clone();
+		armor = player.getInventory().getArmorContents().clone();
 		//player.getInventory().clear();
 		location = player.getLocation();
 		health = player.getHealth();
