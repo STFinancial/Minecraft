@@ -24,7 +24,7 @@ public class ArenaTeam {
 		this.size = size;
 		win = loss = 0;
 		rating = 1200;
-		arenaFile = new File(FileManager.getArenaFolder().getPath() + "/" + name + ".yml");
+		arenaFile = new File(FileManager.getTeamsFolder().getPath() + "/" + name + ".yml");
 	}
 	
 	public ArenaTeam(File arenaFile) {
