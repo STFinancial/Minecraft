@@ -9,9 +9,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
@@ -44,17 +42,17 @@ public class EventManager implements Listener {
 			}
 		}
 
-		public static boolean isHostile(String potionEffectType) {
-			switch (potionEffectType) {
-			case "HARM":
-			case "POISON":
-			case "SLOW":
-			case "WEAKNESS":
-				return true;
-			default:
-				return false;
-			}
-		}	
+//		public static boolean isHostile(String potionEffectType) {
+//			switch (potionEffectType) {
+//			case "HARM":
+//			case "POISON":
+//			case "SLOW":
+//			case "WEAKNESS":
+//				return true;
+//			default:
+//				return false;
+//			}
+//		}	
 	};
 	private final Main plugin;
 	private final DataManager dataManager;

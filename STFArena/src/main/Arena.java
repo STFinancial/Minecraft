@@ -4,15 +4,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.UUID;
 
-import net.minecraft.util.io.netty.handler.codec.http.Cookie;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
-import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.inventory.ItemStack;
 
 //@TODO massive work in progress
