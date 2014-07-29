@@ -33,11 +33,9 @@ public class Arena implements Runnable {
 	public Arena(String name, int size, int redX, int redY, int redZ, int blueX, int blueY, int blueZ, String doorMaterial, Main main) {
 		this.name = name;
 		this.size = size;
-		Bukkit.getLogger().info("We made it to here! creating "+ name);
+		Bukkit.getLogger().info("Loading " + size + "s map "+ name);
 		redSpawn = new Location(arenaWorld, redX, redY, redZ);
 		blueSpawn = new Location(arenaWorld, blueX, blueY, blueZ);
-		
-		
 		door = Material.getMaterial(doorMaterial);
 		this.plugin = main;
 	}
@@ -89,6 +87,7 @@ public class Arena implements Runnable {
 	
 	private void clearFloor() {
 		double radius = redSpawn.distance(blueSpawn) / 2;
+		radius = radius * 1.2
 		Location center = redSpawn.add(redSpawn.getDirection().midpoint(blueSpawn.getDirection()));
 		center = arenaWorld.getHighestBlockAt(center).getLocation();
 		Item cookie = arenaWorld.dropItem(center, new ItemStack(Material.COOKIE));
@@ -138,15 +137,13 @@ public class Arena implements Runnable {
 		} else if (timeTillDoorOpen == 15) {
 			for (UUID p : redTeam.getPlayers()) {
 				plugin.getDataManager().getPlayer(p).saveState();
-				Bukkit.getLogger().info("with arena "+ name);
-				Bukkit.getLogger().info("with ax location " + redSpawn.getBlockX());
-				Bukkit.getLogger().info("red spawn is in world " + redSpawn.getWorld().getName());
-				Bukkit.getLogger().info(" with player " + Bukkit.getPlayer(p).getName());
 				Bukkit.getPlayer(p).teleport(redSpawn);
+				plugin.getDataManager().getPlayer(p).matchStart();
 			}
 			for (UUID p : blueTeam.getPlayers()) {
 				plugin.getDataManager().getPlayer(p).saveState();
 				Bukkit.getPlayer(p).teleport(blueSpawn);
+				plugin.getDataManager().getPlayer(p).matchStart();
 			}
 			timeTillDoorOpen--;
 		} else if (timeTillDoorOpen > 0) {
