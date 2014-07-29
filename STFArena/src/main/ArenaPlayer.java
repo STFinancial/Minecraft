@@ -27,6 +27,7 @@ public class ArenaPlayer {
 	private final UUID uuid;
 	private final File playerFile;
 	private final YamlConfiguration playerData;
+	private Location location = null;
 
 	public ArenaPlayer(Player player) {
 		status = Status.FREE;
@@ -56,7 +57,7 @@ public class ArenaPlayer {
 
 	public void saveState() {
 		Player player = Bukkit.getPlayer(uuid);
-		
+		location = player.getLocation();
 		List<Object> inventory = new ArrayList<Object>();
 		for (ItemStack item : player.getInventory().getContents()) {
 			if (item != null) {
@@ -163,6 +164,10 @@ public class ArenaPlayer {
 	}
 	
 
+	public Locatoin getLocation(){
+		return location;	
+	}
+	
 	public Status getStatus() {
 		return status;
 	}
