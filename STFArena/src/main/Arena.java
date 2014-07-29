@@ -87,6 +87,9 @@ public class Arena implements Runnable {
 	}
 
 	private void openDoors() {
+		for (Item item: arenaWorld.getEntitiesByClass(Item.class)) {
+			item.remove();
+		}
 		doors = new ArrayList<Location>();
 		for (int x = redSpawn.getBlockX() - 5; x < redSpawn.getBlockX() + 5; x++) {
 			for (int y = redSpawn.getBlockY() - 5; y < redSpawn.getBlockY() + 5; y++) {
@@ -113,9 +116,6 @@ public class Arena implements Runnable {
 	private void closeDoors() {
 		for(Location location : doors){
 			arenaWorld.getBlockAt(location).setType(door);
-		}
-		for (Item item: arenaWorld.getEntitiesByClass(Item.class)) {
-			item.remove();
 		}
 	}
 
