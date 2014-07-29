@@ -98,6 +98,7 @@ public class Arena implements Runnable {
 		for (Entity item : cookie.getNearbyEntities(radius, radius, radius)) {
 			item.remove();
 		}
+		cookie.remove();
 	}
 
 	private void openDoors() {
