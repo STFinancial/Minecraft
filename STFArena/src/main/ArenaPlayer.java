@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -13,6 +14,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
+
+import com.google.common.cache.AbstractCache.StatsCounter;
 
 public class ArenaPlayer {
 	private Status status;
@@ -65,12 +68,14 @@ public class ArenaPlayer {
 		stats.put("exhaustion", player.getExhaustion());
 		stats.put("foodLevel", player.getFoodLevel());
 		stats.put("saturation", player.getSaturation());
-		stats.put("totalExp", player.getTotalExperience());
+		stats.put("exp", player.getExp());
+		stats.put("level", player.getLevel());
 		stats.put("health", player.getHealth());
 		stats.put("remainingAir", player.getRemainingAir());
 		stats.put("fallDistance", player.getFallDistance());
-		stats.put("fireTicks", player.getFireTicks());		
-		playerData.set("stats", stats);
+		stats.put("fireTicks", player.getFireTicks());	
+		
+		playerData.createSection("stats", stats);
 		
 		try {
 			playerData.save(playerFile);
@@ -104,7 +109,9 @@ public class ArenaPlayer {
 			player.addPotionEffects(potionEffects);
 			
 			for (String key : playerData.getConfigurationSection("stats").getKeys(false)) {
-				switch (key) {
+				String rawKey = key;
+				key = "stats." + key;
+				switch (rawKey) {
 				case "exhaustion":
 					player.setExhaustion(playerData.getLong(key));
 					break;
@@ -114,11 +121,15 @@ public class ArenaPlayer {
 				case "saturation":
 					player.setSaturation(playerData.getLong(key));
 					break;
-				case "totalExp":
-					player.setTotalExperience(playerData.getInt(key));
+				case "exp":
+					player.setExp(playerData.getLong(key));
+					break;
+				case "level":
+					player.setLevel(playerData.getInt(key));
 					break;
 				case "health":
 					player.setHealth(playerData.getDouble(key));
+					Bukkit.getLogger().info("" + playerData.getDouble(key));
 					break;
 				case "remainingAir":
 					player.setRemainingAir(playerData.getInt(key));
@@ -128,8 +139,6 @@ public class ArenaPlayer {
 					break;
 				case "fireTicks":
 					player.setFireTicks(playerData.getInt(key));
-					break;
-				default:
 					break;
 				}
 			}
