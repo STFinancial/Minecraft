@@ -4,12 +4,16 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.UUID;
 
+import net.minecraft.util.io.netty.handler.codec.http.Cookie;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.inventory.ItemStack;
 
 //@TODO massive work in progress
 public class Arena implements Runnable {
@@ -85,11 +89,19 @@ public class Arena implements Runnable {
 			Bukkit.getPlayer(p).sendMessage(message);
 		}
 	}
-
-	private void openDoors() {
-		for (Item item: arenaWorld.getEntitiesByClass(Item.class)) {
+	
+	private void clearFloor() {
+		double radius = redSpawn.distance(blueSpawn) / 2;
+		Location center = redSpawn.add(redSpawn.getDirection().midpoint(blueSpawn.getDirection()));
+		center = arenaWorld.getHighestBlockAt(center).getLocation();
+		Item cookie = arenaWorld.dropItem(center, new ItemStack(Material.COOKIE));
+		for (Entity item : cookie.getNearbyEntities(radius, radius, radius)) {
 			item.remove();
 		}
+	}
+
+	private void openDoors() {
+		clearFloor();
 		doors = new ArrayList<Location>();
 		for (int x = redSpawn.getBlockX() - 5; x < redSpawn.getBlockX() + 5; x++) {
 			for (int y = redSpawn.getBlockY() - 5; y < redSpawn.getBlockY() + 5; y++) {
