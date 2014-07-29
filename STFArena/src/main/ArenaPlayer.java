@@ -96,10 +96,10 @@ public class ArenaPlayer {
 
 	public void loadState(Player player) {
 		if (saved) {
-			List<ItemStack> inventory = (List<ItemStack>) playerData.get("inventory");
-			List<ItemStack> armor = (List<ItemStack>) playerData.get("armor");
+			List<ItemStack> inventory = (List<ItemStack>) playerData.getList("inventory");
+//			List<ItemStack> armor = (List<ItemStack>) playerData.get("armor");
 			player.getInventory().setContents(inventory.toArray(new ItemStack[inventory.size()]));
-			player.getInventory().setArmorContents((ItemStack[]) armor.toArray(new ItemStack[inventory.size()]));
+//			player.getInventory().setArmorContents((ItemStack[]) armor.toArray(new ItemStack[inventory.size()]));
 //			if(player == null){
 //				Bukkit.getLogger().info("Serious problem, player not found " + name);
 //			}
