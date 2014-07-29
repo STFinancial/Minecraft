@@ -131,7 +131,7 @@ public class EventManager implements Listener {
 
 	@EventHandler
 	private void onPlayerRespawn(PlayerRespawnEvent event) {
-		if (dataManager.getPlayer(event.getPlayer().getStatus() == Status.IN_GAME) {
+		if (dataManager.getPlayer(event.getPlayer()).getStatus() == Status.IN_GAME) {
 			dataManager.getPlayer(event.getPlayer()).setStatus(Status.FREE);
 			dataManager.getPlayer(event.getPlayer()).setFocus(null);
 			event.setRespawnLocation(dataManager.getPlayer(event.getPlayer()).getLocation());

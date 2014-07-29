@@ -87,7 +87,7 @@ public class Arena implements Runnable {
 	
 	private void clearFloor() {
 		double radius = redSpawn.distance(blueSpawn) / 2;
-		radius = radius * 1.2
+		radius = radius * 1.2;
 		Location center = redSpawn.add(redSpawn.getDirection().midpoint(blueSpawn.getDirection()));
 		center = arenaWorld.getHighestBlockAt(center).getLocation();
 		Item cookie = arenaWorld.dropItem(center, new ItemStack(Material.COOKIE));

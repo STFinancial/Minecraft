@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -164,7 +165,7 @@ public class ArenaPlayer {
 	}
 	
 
-	public Locatoin getLocation(){
+	public Location getLocation(){
 		return location;	
 	}
 	
