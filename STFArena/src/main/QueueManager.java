@@ -25,36 +25,26 @@ public class QueueManager implements Runnable {
 	}
 
 	private void update(boolean fromScheduler) {
-		// Here I check queues for how many people they have
-		// 2 or more i start at the top and work my way down
-		// if teams elo are close enough given the time the queue is at and
-		// given the number of players online
-		// match up those teams and send to matchManager
-		// remove from queue(after loop or use iterator)
 
-		// If queue has person I increment their timers, else reset them
 		if (fromScheduler) {
 			for (ArenaTeam t : queue2s) {
 				t.addTime();
 				for (UUID p : t.getPlayers()) {
-					Bukkit.getPlayer(p).sendMessage("This is the queue debug, you are currently in queue for 2s with " + t.getName());
-					Bukkit.getPlayer(p).sendMessage("You are one of the " + queue2s.size() + " teams in queue for this size");
+					Bukkit.getPlayer(p).sendMessage("You are one of the " + queue2s.size() + " teams in queue for 2s");
 					Bukkit.getPlayer(p).sendMessage("You have been in queue for about " + t.getTimeInQueue() + " seconds");
 				}
 			}
 			for (ArenaTeam t : queue3s) {
 				t.addTime();
 				for (UUID p : t.getPlayers()) {
-					Bukkit.getPlayer(p).sendMessage("This is the queue debug, you are currently in queue for 3s with " + t.getName());
-					Bukkit.getPlayer(p).sendMessage("You are one of the " + queue3s.size() + " teams in queue for this size");
+					Bukkit.getPlayer(p).sendMessage("You are one of the " + queue3s.size() + " teams in queue for 3s");
 					Bukkit.getPlayer(p).sendMessage("You have been in queue for about " + t.getTimeInQueue() + " seconds");
 				}
 			}
 			for (ArenaTeam t : queue5s) {
 				t.addTime();
 				for (UUID p : t.getPlayers()) {
-					Bukkit.getPlayer(p).sendMessage("This is the queue debug, you are currently in queue for 5s with " + t.getName());
-					Bukkit.getPlayer(p).sendMessage("You are one of the " + queue5s.size() + " teams in queue for this size");
+					Bukkit.getPlayer(p).sendMessage("You are one of the " + queue5s.size() + " teams in queue for 5s");
 					Bukkit.getPlayer(p).sendMessage("You have been in queue for about " + t.getTimeInQueue() + " seconds");
 				}
 			}
