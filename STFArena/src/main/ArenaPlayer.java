@@ -56,7 +56,7 @@ public class ArenaPlayer {
 
 	public void saveState() {
 		Player player = Bukkit.getPlayer(uuid);
-		playerData.set("data", player);
+		playerData.set("inventory", player.getInventory().getContents());
 		try {
 			playerData.save(playerFile);
 		} catch (IOException e) {
