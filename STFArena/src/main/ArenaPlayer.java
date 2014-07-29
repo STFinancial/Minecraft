@@ -38,6 +38,21 @@ public class ArenaPlayer {
 		playerFile = new File(FileManager.getPlayersFolder().getPath() + "/" + name + ".yml");
 		playerData = YamlConfiguration.loadConfiguration(playerFile);
 	}
+	
+	public void matchStart(){
+		Player player = Bukkit.getPlayer(uuid);
+	
+		//TODO items checking go here
+	
+	
+		player.setHealth(20);
+		//player.setExhaustion(5);
+		player.setFoodLevel(20);
+		//player.setSaturation(5);
+		player.setFireTicks(0);
+		for (PotionEffect effect : player.getActivePotionEffects())
+	   		player.removePotionEffect(effect.getType());
+	}
 
 	public void saveState() {
 		Player player = Bukkit.getPlayer(uuid);
