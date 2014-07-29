@@ -1,6 +1,7 @@
 package main;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -8,13 +9,15 @@ import org.bukkit.entity.Player;
 
 public class DataManager {
 	private final Main plugin;
-	HashMap<String, ArenaTeam> arenaTeams;
-	HashMap<UUID, ArenaPlayer> arenaPlayers;
-	HashMap<String, ArenaTeam> beingCreated;
+	private final FileManager fileManager;
+	Map<String, ArenaTeam> arenaTeams;
+	Map<UUID, ArenaPlayer> arenaPlayers;
+	Map<String, ArenaTeam> beingCreated;
 
 	public DataManager(Main plugin) {
 		this.plugin = plugin;
-		arenaTeams = new HashMap<String, ArenaTeam>();
+		fileManager = new FileManager();
+		arenaTeams = fileManager.loadArenaTeams();
 		arenaPlayers = new HashMap<UUID, ArenaPlayer>();
 		beingCreated = new HashMap<String, ArenaTeam>();
 		load();
@@ -27,6 +30,9 @@ public class DataManager {
 	}
 
 	public void quit() {
+		for (ArenaTeam team : arenaTeams.values()) {
+			team.save();
+		}
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			remove(player);
 		}

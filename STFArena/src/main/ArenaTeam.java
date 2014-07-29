@@ -1,25 +1,62 @@
 package main;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 public class ArenaTeam {
-	String name;
-	ArrayList<UUID> players;
+	private final String name;
+	private final List<UUID> players = new ArrayList<UUID>();
 	private int win, loss, rating, size;
-	public static DecimalFormat df = new DecimalFormat("00.0");
-	int timeInQueue = 0;
+	public final static DecimalFormat df = new DecimalFormat("00.0");
+	private int timeInQueue = 0;
+	private final File arenaFile;
 
 	public ArenaTeam(String name, int size) {
 		this.name = name;
 		this.size = size;
-		players = new ArrayList<UUID>();
 		win = loss = 0;
 		rating = 1200;
+		arenaFile = new File(FileManager.getArenaFolder().getPath() + "/" + name + ".yml");
+	}
+	
+	public ArenaTeam(File arenaFile) {
+		this.arenaFile = arenaFile;
+		YamlConfiguration arenaConfiguration = YamlConfiguration.loadConfiguration(arenaFile);
+		this.name = arenaConfiguration.getString("name");
+		this.size = arenaConfiguration.getInt("size");
+		this.win = arenaConfiguration.getInt("win");
+		this.loss = arenaConfiguration.getInt("loss");
+		this.rating = arenaConfiguration.getInt("rating");
+		for (String uuid : arenaConfiguration.getStringList("players")) {
+			players.add(UUID.fromString(uuid));
+		}
+	}
+	
+	public void save() {
+		YamlConfiguration arenaConfiguration = YamlConfiguration.loadConfiguration(arenaFile);
+		arenaConfiguration.set("name", name);
+		arenaConfiguration.set("win", win);
+		arenaConfiguration.set("loss", loss);
+		arenaConfiguration.set("rating", rating);
+		arenaConfiguration.set("size", size);
+		List<String> playerList = new ArrayList<String>();
+		for (UUID playerUuid : players) {
+			playerList.add(playerUuid.toString());
+		}
+		arenaConfiguration.set("players", playerList);
+		try {
+			arenaConfiguration.save(arenaFile);
+		} catch (IOException e) {
+			Bukkit.getLogger().info("Unable to save Arena file for " + name);
+		}
 	}
 
 	public ArenaTeam addPlayer(Player player) {
@@ -54,7 +91,7 @@ public class ArenaTeam {
 		return "Team: " + name + " (" + size + ") Rating: " + rating;
 	}
 
-	public ArrayList<UUID> getPlayers() {
+	public List<UUID> getPlayers() {
 		return players;
 	}
 

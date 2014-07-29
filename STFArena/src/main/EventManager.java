@@ -148,8 +148,10 @@ public class EventManager implements Listener {
 
 	@EventHandler
 	private void preventBlockBreak(BlockBreakEvent event) {
-		if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE) == false) {
-			event.setCancelled(true);
+		if (inArenaWorld(event.getPlayer())) {
+			if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE) == false) {
+				event.setCancelled(true);
+			}
 		}
 	}
 
