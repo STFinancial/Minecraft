@@ -9,7 +9,9 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
@@ -141,7 +143,7 @@ public class EventManager implements Listener {
 
 	@EventHandler
 	private void onPlayerDeath(PlayerDeathEvent event) {
-		if (inArenaWorld(event.getEntity()) && event.getEntity() instanceof Player) {
+		if (inArenaWorld(event.getEntity())) {
 			plugin.getMatchManager().recordDeath((Player) event.getEntity());
 		}
 	}

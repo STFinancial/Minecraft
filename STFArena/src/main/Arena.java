@@ -8,6 +8,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.Item;
+import org.bukkit.event.entity.ItemSpawnEvent;
 
 //@TODO massive work in progress
 public class Arena implements Runnable {
@@ -111,6 +113,9 @@ public class Arena implements Runnable {
 	private void closeDoors() {
 		for(Location location : doors){
 			arenaWorld.getBlockAt(location).setType(door);
+		}
+		for (Item item: arenaWorld.getEntitiesByClass(Item.class)) {
+			item.remove();
 		}
 	}
 
