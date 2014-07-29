@@ -3,8 +3,6 @@ package main;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import net.minecraft.util.org.apache.commons.lang3.ArrayUtils;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -12,6 +10,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -54,7 +53,7 @@ public class ArenaPlayer {
 		level = player.getLevel();
 		exp = player.getExp();
 		remainingAir = player.getRemainingAir();
-		inventory = ArrayUtils.clone(player.getInventory().getContents());
+		inventory = player.getInventory().getContents().clone();
 		armor = player.getInventory().getArmorContents().clone();
 		//player.getInventory().clear();
 		location = player.getLocation();
