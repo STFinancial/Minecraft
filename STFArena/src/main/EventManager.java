@@ -2,15 +2,21 @@ package main;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Tameable;
+import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
@@ -164,6 +170,25 @@ public class EventManager implements Listener {
 			if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE) == false) {
 				event.setCancelled(true);
 			}
+		}
+	}
+	
+	@EventHandler
+	private void preventPets(EntityTeleportEvent event) {
+		if (event.getEntity() instanceof Wolf || event.getEntity() instanceof Ocelot) {
+			Tameable pet = (Tameable) event.getEntity();
+			Player player = Bukkit.getPlayer(pet.getOwner().getUniqueId());
+			Location location = event.getFrom();
+			if (player.getBedSpawnLocation() != null) {
+				location = player.getBedSpawnLocation();
+			}
+			event.getEntity().teleport(location);
+			if (pet instanceof Wolf) {
+				((Wolf) pet).setSitting(true);
+			}
+			else if (pet instanceof Ocelot) {
+				((Ocelot) pet).setSitting(true);
+			}			
 		}
 	}
 
