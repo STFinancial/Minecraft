@@ -38,11 +38,11 @@ public class ArenaPlayer {
 		name = player.getName();
 		uuid = player.getUniqueId();
 		playerFile = new File(FileManager.getPlayersFolder().getPath() + "/" + name + ".yml");
+		playerData = YamlConfiguration.loadConfiguration(playerFile);
 		if (playerFile.exists()) {
 			saved = true;
 			loadState(player);
 		}
-		playerData = YamlConfiguration.loadConfiguration(playerFile);
 	}
 
 	public void matchStart(){
@@ -104,7 +104,6 @@ public class ArenaPlayer {
 			} 
 		}
 
-
 		player.setHealth(20);
 		player.setFoodLevel(20);
 		player.setSaturation(1);
@@ -140,7 +139,7 @@ public class ArenaPlayer {
 			potionEffects.add(potionEffect.serialize());
 		}
 
-		playerData.set("potionEffects", potionEffects); //Threw null pointer last game
+		playerData.set("potionEffects", potionEffects);
 
 		Map<String, Object> stats = new HashMap<String, Object>();
 		stats.put("exhaustion", player.getExhaustion());
@@ -169,7 +168,7 @@ public class ArenaPlayer {
 		if (saved) {
 
 			location = loadLocation();
-
+			
 			List<ItemStack> inventory = new ArrayList<ItemStack>();
 			for (Object item : playerData.getList("inventory")) {
 				inventory.add(ItemStack.deserialize((Map<String, Object>) item));
@@ -240,7 +239,7 @@ public class ArenaPlayer {
 	private Location loadLocation() {
 		double x, y, z;
 		float yaw, pitch;
-		World world = Bukkit.getWorld(playerData.getString("location.world")); //failed on reload mid game
+		World world = Bukkit.getWorld(playerData.getString("location.world"));
 		x = playerData.getDouble("location.x");
 		y = playerData.getDouble("location.y");
 		z = playerData.getDouble("location.z");
