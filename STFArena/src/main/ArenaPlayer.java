@@ -251,9 +251,11 @@ public class ArenaPlayer {
 		}
 		catch (Exception e) {
 			try {
+				Bukkit.getLogger().info("Error loading location of " + name);
 				return Bukkit.getPlayer(uuid).getBedSpawnLocation();
 			}
 			catch (NullPointerException n) {
+				Bukkit.getLogger().info("defaulted to world spawn");
 				return Bukkit.getWorlds().get(0).getSpawnLocation();
 			}
 		}
