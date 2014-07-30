@@ -2,6 +2,7 @@ package main;
 
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -41,13 +42,13 @@ public class MatchManager {
 		//@TODO here we need to add check that all players are alive
 
 		if (possibleArenas.size() > 0) {
-
-			int r = (int) Math.random() * possibleArenas.size();
+			int r = ThreadLocalRandom.current().nextInt(possibleArenas.size());
 
 			for (UUID p : t1.getPlayers()) {
 				Bukkit.getPlayer(p).sendMessage("A match has been found against " + t2.getName());
 				dataManager.getPlayer(p).setStatus(Status.IN_GAME);
 				dataManager.getPlayer(p).setArena(possibleArenas.get(r).getName());
+
 			}
 			for (UUID p : t2.getPlayers()) {
 				Bukkit.getPlayer(p).sendMessage("A match has been found against " + t1.getName());
