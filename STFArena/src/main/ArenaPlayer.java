@@ -11,8 +11,10 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
@@ -40,19 +42,44 @@ public class ArenaPlayer {
 		playerFile = new File(FileManager.getPlayersFolder().getPath() + "/" + name + ".yml");
 		playerData = YamlConfiguration.loadConfiguration(playerFile);
 	}
-	
+
 	public void matchStart(){
 		Player player = Bukkit.getPlayer(uuid);
-	
+
 		//TODO items checking go here
-	
-	
+		Inventory inv = player.getInventory();
+		ItemStack[] contents = inv.getContents();
+		ItemStack[] banned = new ItemStack[7];
+		banned[0] = new ItemStack(Material.ENDER_PEARL, 1);
+		banned[1] = new ItemStack(Material.GOLDEN_APPLE, 1, (short) 1);
+		banned[2] = new ItemStack(Material.GOLDEN_APPLE, 1, (short) 0);
+		banned[3] = new ItemStack(Material.POTION, 1, (short) 8238);
+		banned[4] = new ItemStack(Material.POTION, 1, (short) 8270);
+		banned[5] = new ItemStack(Material.POTION, 1, (short) 16430);
+		banned[6] = new ItemStack(Material.POTION, 1, (short) 16462);
+		for (int i = 0; i < contents.length; i++) {
+			ItemStack item = contents[i];
+
+			if (item == null) {
+				
+			}else{
+				for(ItemStack b:banned){
+					if(item.getType().equals(b.getType())){
+						if(item.getDurability() == b.getDurability()){
+							player.sendMessage("removed banned item " + b.getType() + ":"  + b.getDurability());
+							item = null;
+						}
+					}
+				}
+			} 
+		}
+
 		player.setHealth(20);
 		player.setFoodLevel(20);
 		player.setSaturation(1);
 		player.setFireTicks(0);
 		for (PotionEffect effect : player.getActivePotionEffects())
-	   		player.removePotionEffect(effect.getType());
+			player.removePotionEffect(effect.getType());
 	}
 
 	public void saveState() {
@@ -65,7 +92,7 @@ public class ArenaPlayer {
 			}
 		}
 		playerData.set("inventory", inventory);
-		
+
 		List<Object> armor = new ArrayList<Object>();
 		for (ItemStack item : player.getInventory().getArmorContents()) {
 			if (item != null) {
@@ -73,13 +100,13 @@ public class ArenaPlayer {
 			}
 		}
 		playerData.set("armor", armor);
-		
+
 		List<Object> potionEffects = new ArrayList<Object>();
 		for (PotionEffect potionEffect : player.getActivePotionEffects()) {
 			potionEffects.add(potionEffect.serialize());
 		}
 		playerData.set("potionEffects", potionEffects);//Threw null pointer last game
-		
+
 		Map<String, Object> stats = new HashMap<String, Object>();
 		stats.put("exhaustion", player.getExhaustion());
 		stats.put("foodLevel", player.getFoodLevel());
@@ -90,40 +117,40 @@ public class ArenaPlayer {
 		stats.put("remainingAir", player.getRemainingAir());
 		stats.put("fallDistance", player.getFallDistance());
 		stats.put("fireTicks", player.getFireTicks());	
-		
+
 		playerData.createSection("stats", stats);
-		
+
 		try {
 			playerData.save(playerFile);
 		} catch (IOException e) {
 			Bukkit.getLogger().info("Unable to save player data for " + name);
 		}
-		
+
 		saved = true;
 	}
 
 	@SuppressWarnings("unchecked")
 	public void loadState(Player player) {
 		if (saved) {
-			
+
 			List<ItemStack> inventory = new ArrayList<ItemStack>();
 			for (Object item : playerData.getList("inventory")) {
 				inventory.add(ItemStack.deserialize((Map<String, Object>) item));
 			}
 			player.getInventory().setContents(inventory.toArray(new ItemStack[inventory.size()]));
-			
+
 			List<ItemStack> armor = new ArrayList<ItemStack>();
 			for (Object item : playerData.getList("armor")) {
 				inventory.add(ItemStack.deserialize((Map<String, Object>) item));
 			}			
 			player.getInventory().setArmorContents(armor.toArray(new ItemStack[armor.size()]));
-			
+
 			List<PotionEffect> potionEffects = new ArrayList<PotionEffect>();
 			for (Object potionEffect : playerData.getList("potionEffects")) {
 				potionEffects.add(new PotionEffect((Map<String, Object>) potionEffect));
 			}
 			player.addPotionEffects(potionEffects);
-			
+
 			for (String key : playerData.getConfigurationSection("stats").getKeys(false)) {
 				String rawKey = key;
 				key = "stats." + key;
@@ -158,16 +185,16 @@ public class ArenaPlayer {
 					break;
 				}
 			}
-			
+
 			saved = false;
 		}
 	}
-	
+
 
 	public Location getLocation(){
 		return location;	
 	}
-	
+
 	public Status getStatus() {
 		return status;
 	}

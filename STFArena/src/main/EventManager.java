@@ -9,6 +9,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
@@ -138,6 +139,15 @@ public class EventManager implements Listener {
 			event.setRespawnLocation(dataManager.getPlayer(event.getPlayer()).getLocation());
 			dataManager.getPlayer(event.getPlayer()).loadState(event.getPlayer());
 			event.getPlayer().sendMessage("You have respawned and left the arena");
+		}
+	}
+
+	@EventHandler
+	private void blockPlaceEvent(BlockPlaceEvent event) {
+		if (inArenaWorld(event.getPlayer())) {
+			if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE) == false) {
+				event.setCancelled(true);
+			}
 		}
 	}
 

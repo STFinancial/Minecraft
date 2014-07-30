@@ -79,15 +79,19 @@ public class Arena implements Runnable {
 
 	private void sendAllPlayers(String message) {
 		for (UUID p : redTeam.getPlayers()) {
-			if(Bukkit.getPlayer(p).isOnline())
-				Bukkit.getPlayer(p).sendMessage(message);
+			if(Bukkit.getPlayer(p) != null){
+				if(Bukkit.getPlayer(p).isOnline())
+					Bukkit.getPlayer(p).sendMessage(message);
+			}
 		}
 		for (UUID p : blueTeam.getPlayers()) {
-			if(Bukkit.getPlayer(p).isOnline())
-				Bukkit.getPlayer(p).sendMessage(message);
+			if(Bukkit.getPlayer(p) != null){
+				if(Bukkit.getPlayer(p).isOnline())
+					Bukkit.getPlayer(p).sendMessage(message);
+			}
 		}
 	}
-	
+
 	private void clearFloor() {
 		double radius = redSpawn.distance(blueSpawn) / 2;
 		radius = radius * 1.2;
@@ -180,9 +184,9 @@ public class Arena implements Runnable {
 			sendAllPlayers("All members of Red team have been slain!");
 			plugin.getMatchManager().gameFinished(this, true);
 		}
-		
+
 	}
-	
+
 	public void clean(){
 		closeDoors();
 		redPlayersAlive = null;
