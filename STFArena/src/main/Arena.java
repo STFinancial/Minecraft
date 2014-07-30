@@ -171,17 +171,18 @@ public class Arena implements Runnable {
 		if(redPlayersAlive.contains(ID)){
 			redPlayersAlive.remove(ID);
 			sendAllPlayers(Bukkit.getPlayer(ID).getName() + " on Red team has been slain!");
+			if(redPlayersAlive.size() == 0 && bluePlayersAlive.size() != 0){
+				sendAllPlayers("All members of Blue team have been slain!");
+				plugin.getMatchManager().gameFinished(this, false);
+			}
 		}
 		if(bluePlayersAlive.contains(ID)){
 			bluePlayersAlive.remove(ID);
 			sendAllPlayers(Bukkit.getPlayer(ID).getName() + " on Blue team has been slain!");
-		}
-		if(redPlayersAlive.size() == 0){
-			sendAllPlayers("All members of Blue team have been slain!");
-			plugin.getMatchManager().gameFinished(this, false);
-		}else if(bluePlayersAlive.size() == 0){
-			sendAllPlayers("All members of Red team have been slain!");
-			plugin.getMatchManager().gameFinished(this, true);
+			if(bluePlayersAlive.size() == 0 && redPlayersAlive.size() != 0){
+				sendAllPlayers("All members of Red team have been slain!");
+				plugin.getMatchManager().gameFinished(this, true);
+			}
 		}
 
 	}
