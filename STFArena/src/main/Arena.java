@@ -78,10 +78,12 @@ public class Arena implements Runnable {
 
 	private void sendAllPlayers(String message) {
 		for (UUID p : redTeam.getPlayers()) {
-			Bukkit.getPlayer(p).sendMessage(message);
+			if(Bukkit.getPlayer(p).isOnline())
+				Bukkit.getPlayer(p).sendMessage(message);
 		}
 		for (UUID p : blueTeam.getPlayers()) {
-			Bukkit.getPlayer(p).sendMessage(message);
+			if(Bukkit.getPlayer(p).isOnline())
+				Bukkit.getPlayer(p).sendMessage(message);
 		}
 	}
 	

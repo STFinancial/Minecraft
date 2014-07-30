@@ -48,9 +48,8 @@ public class ArenaPlayer {
 	
 	
 		player.setHealth(20);
-		//player.setExhaustion(5);
 		player.setFoodLevel(20);
-		//player.setSaturation(5);
+		player.setSaturation(10);
 		player.setFireTicks(0);
 		for (PotionEffect effect : player.getActivePotionEffects())
 	   		player.removePotionEffect(effect.getType());
@@ -79,7 +78,7 @@ public class ArenaPlayer {
 		for (PotionEffect potionEffect : player.getActivePotionEffects()) {
 			potionEffects.add(potionEffect.serialize());
 		}
-		playerData.set("potionEffects", potionEffects);
+		playerData.set("potionEffects", potionEffects);//Threw null pointer last game
 		
 		Map<String, Object> stats = new HashMap<String, Object>();
 		stats.put("exhaustion", player.getExhaustion());

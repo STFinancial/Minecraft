@@ -296,6 +296,9 @@ public class DataManager {
 	}
 
 	public boolean areAllies(Player p1, Player p2) {
+		if(getPlayer(p1).getFocus() == null || getPlayer(p1).getFocus() == null){
+			return false;
+		}
 		return getPlayer(p1).getFocus().equals(getPlayer(p2).getFocus());
 	}
 
