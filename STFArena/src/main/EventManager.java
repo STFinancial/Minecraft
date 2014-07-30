@@ -175,20 +175,22 @@ public class EventManager implements Listener {
 	
 	@EventHandler
 	private void preventPets(EntityTeleportEvent event) {
-		if (event.getEntity() instanceof Wolf || event.getEntity() instanceof Ocelot) {
-			Tameable pet = (Tameable) event.getEntity();
-			Player player = Bukkit.getPlayer(pet.getOwner().getUniqueId());
-			Location location = event.getFrom();
-			if (player.getBedSpawnLocation() != null) {
-				location = player.getBedSpawnLocation();
+		if (event.getTo().getWorld().equals(Bukkit.getWorld("Arena"))) {
+			if (event.getEntity() instanceof Wolf || event.getEntity() instanceof Ocelot) {
+				Tameable pet = (Tameable) event.getEntity();
+				Player player = Bukkit.getPlayer(pet.getOwner().getUniqueId());
+				Location location = event.getFrom();
+				if (player.getBedSpawnLocation() != null) {
+					location = player.getBedSpawnLocation();
+				}
+				event.getEntity().teleport(location);
+				if (pet instanceof Wolf) {
+					((Wolf) pet).setSitting(true);
+				}
+				else if (pet instanceof Ocelot) {
+					((Ocelot) pet).setSitting(true);
+				}			
 			}
-			event.getEntity().teleport(location);
-			if (pet instanceof Wolf) {
-				((Wolf) pet).setSitting(true);
-			}
-			else if (pet instanceof Ocelot) {
-				((Ocelot) pet).setSitting(true);
-			}			
 		}
 	}
 
