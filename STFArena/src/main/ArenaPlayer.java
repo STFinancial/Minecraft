@@ -18,8 +18,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
-import com.google.common.cache.AbstractCache.StatsCounter;
-
 public class ArenaPlayer {
 	private Status status;
 	private String teamFocused;
@@ -140,6 +138,8 @@ public class ArenaPlayer {
 	@SuppressWarnings("unchecked")
 	public void loadState(Player player) {
 		if (saved) {
+			
+			location = loadLocation();
 
 			List<ItemStack> inventory = new ArrayList<ItemStack>();
 			for (Object item : playerData.getList("inventory")) {
