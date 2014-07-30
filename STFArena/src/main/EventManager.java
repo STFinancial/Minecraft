@@ -134,6 +134,7 @@ public class EventManager implements Listener {
 		if (dataManager.getPlayer(event.getPlayer()).getStatus() == Status.IN_GAME) {
 			dataManager.getPlayer(event.getPlayer()).setStatus(Status.FREE);
 			dataManager.getPlayer(event.getPlayer()).setFocus(null);
+			dataManager.getPlayer(event.getPlayer()).setArena(null);
 			event.setRespawnLocation(dataManager.getPlayer(event.getPlayer()).getLocation());
 			dataManager.getPlayer(event.getPlayer()).loadState(event.getPlayer());
 			event.getPlayer().sendMessage("You have respawned and left the arena");

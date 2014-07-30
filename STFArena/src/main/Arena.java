@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 //@TODO massive work in progress
@@ -94,7 +95,9 @@ public class Arena implements Runnable {
 		center = arenaWorld.getHighestBlockAt(center).getLocation();
 		Item cookie = arenaWorld.dropItem(center, new ItemStack(Material.COOKIE));
 		for (Entity item : cookie.getNearbyEntities(radius, radius, radius)) {
-			item.remove();
+			if(item instanceof Player == false){
+				item.remove();
+			}
 		}
 		cookie.remove();
 	}

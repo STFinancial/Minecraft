@@ -49,7 +49,7 @@ public class ArenaPlayer {
 	
 		player.setHealth(20);
 		player.setFoodLevel(20);
-		player.setSaturation(10);
+		player.setSaturation(1);
 		player.setFireTicks(0);
 		for (PotionEffect effect : player.getActivePotionEffects())
 	   		player.removePotionEffect(effect.getType());
