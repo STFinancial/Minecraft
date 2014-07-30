@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -40,6 +40,10 @@ public class ArenaPlayer {
 		name = player.getName();
 		uuid = player.getUniqueId();
 		playerFile = new File(FileManager.getPlayersFolder().getPath() + "/" + name + ".yml");
+		if (playerFile.exists()) {
+			saved = true;
+			loadState(player);
+		}
 		playerData = YamlConfiguration.loadConfiguration(playerFile);
 	}
 
@@ -85,6 +89,9 @@ public class ArenaPlayer {
 	public void saveState() {
 		Player player = Bukkit.getPlayer(uuid);
 		location = player.getLocation();
+		
+		playerData.createSection("location", saveLocation(location));
+		
 		List<Object> inventory = new ArrayList<Object>();
 		for (ItemStack item : player.getInventory().getContents()) {
 			if (item != null) {
@@ -105,8 +112,9 @@ public class ArenaPlayer {
 		for (PotionEffect potionEffect : player.getActivePotionEffects()) {
 			potionEffects.add(potionEffect.serialize());
 		}
-		playerData.set("potionEffects", potionEffects);//Threw null pointer last game
 
+		playerData.set("potionEffects", potionEffects); //Threw null pointer last game
+		
 		Map<String, Object> stats = new HashMap<String, Object>();
 		stats.put("exhaustion", player.getExhaustion());
 		stats.put("foodLevel", player.getFoodLevel());
@@ -141,7 +149,7 @@ public class ArenaPlayer {
 
 			List<ItemStack> armor = new ArrayList<ItemStack>();
 			for (Object item : playerData.getList("armor")) {
-				inventory.add(ItemStack.deserialize((Map<String, Object>) item));
+				armor.add(ItemStack.deserialize((Map<String, Object>) item));
 			}			
 			player.getInventory().setArmorContents(armor.toArray(new ItemStack[armor.size()]));
 
@@ -172,7 +180,6 @@ public class ArenaPlayer {
 					break;
 				case "health":
 					player.setHealth(playerData.getDouble(key));
-					Bukkit.getLogger().info("" + playerData.getDouble(key));
 					break;
 				case "remainingAir":
 					player.setRemainingAir(playerData.getInt(key));
@@ -186,12 +193,45 @@ public class ArenaPlayer {
 				}
 			}
 
+			playerFile.delete();
 			saved = false;
 		}
 	}
+	private Map<String, Object> saveLocation(Location playerLocation) {
+		Map<String, Object> locationData = new HashMap<String, Object>();
+		locationData.put("world", playerLocation.getWorld().getName());
+		locationData.put("x", playerLocation.getX());
+		locationData.put("y", playerLocation.getY());
+		locationData.put("z", playerLocation.getZ());
+		locationData.put("yaw", playerLocation.getYaw());
+		locationData.put("pitch", playerLocation.getPitch());
+		return locationData;
+	}
+	
+	private Location loadLocation() {
+		double x, y, z;
+		float yaw, pitch;
+		World world = Bukkit.getWorld(playerData.getString("location.world"));
+		x = playerData.getDouble("location.x");
+		y = playerData.getDouble("location.y");
+		z = playerData.getDouble("location.z");
+		yaw = playerData.getLong("location.yaw");
+		pitch = playerData.getLong("location.pitch");
 
-
-	public Location getLocation(){
+		try {
+			return new Location(world, x, y, z, yaw, pitch);
+		}
+		catch (Exception e) {
+			try {
+				return Bukkit.getPlayer(uuid).getBedSpawnLocation();
+			}
+			catch (NullPointerException n) {
+				return Bukkit.getWorlds().get(0).getSpawnLocation();
+			}
+		}
+	}
+	
+	public Location getLocation() {
 		return location;	
 	}
 
