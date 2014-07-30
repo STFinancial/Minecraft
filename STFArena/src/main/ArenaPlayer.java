@@ -36,6 +36,10 @@ public class ArenaPlayer {
 		name = player.getName();
 		uuid = player.getUniqueId();
 		playerFile = new File(FileManager.getPlayersFolder().getPath() + "/" + name + ".yml");
+		if (playerFile.exists()) {
+			saved = true;
+			loadState(player);
+		}
 		playerData = YamlConfiguration.loadConfiguration(playerFile);
 	}
 	
@@ -161,6 +165,7 @@ public class ArenaPlayer {
 				}
 			}
 			
+			playerFile.delete();
 			saved = false;
 		}
 	}
