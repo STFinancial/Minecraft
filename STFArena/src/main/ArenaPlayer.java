@@ -51,7 +51,7 @@ public class ArenaPlayer {
 		//TODO items checking go here
 		Inventory inv = player.getInventory();
 		ItemStack[] contents = inv.getContents();
-		ItemStack[] banned = new ItemStack[7];
+		ItemStack[] banned = new ItemStack[11];
 		banned[0] = new ItemStack(Material.ENDER_PEARL, 1);
 		banned[1] = new ItemStack(Material.GOLDEN_APPLE, 1, (short) 1);
 		banned[2] = new ItemStack(Material.GOLDEN_APPLE, 1, (short) 0);
@@ -59,22 +59,51 @@ public class ArenaPlayer {
 		banned[4] = new ItemStack(Material.POTION, 1, (short) 8270);
 		banned[5] = new ItemStack(Material.POTION, 1, (short) 16430);
 		banned[6] = new ItemStack(Material.POTION, 1, (short) 16462);
+		banned[7] = new ItemStack(Material.FLINT_AND_STEEL);
+		banned[8] = new ItemStack(Material.BUCKET);
+		banned[9] = new ItemStack(Material.LAVA_BUCKET);
+		banned[10] = new ItemStack(Material.WATER_BUCKET);
+		
 		for (int i = 0; i < contents.length; i++) {
 			ItemStack item = contents[i];
 
 			if (item == null) {
-				
+
 			}else{
 				for(ItemStack b:banned){
-					if(item.getType().equals(b.getType())){
-						if(item.getDurability() == b.getDurability()){
-							player.sendMessage("removed banned item " + b.getType() + ":"  + b.getDurability());
-							item = null;
+					if(item != null){
+						if(item.getType().equals(b.getType())){
+							if(item.getType() == Material.FLINT_AND_STEEL){
+								player.sendMessage("removed banned item " + b.getType());
+								player.getInventory().remove(new ItemStack(item.getType(), item.getAmount(), item.getDurability()));
+							}else if(item.getDurability() == b.getDurability()){
+								player.sendMessage("removed banned item " + b.getType() + ":"  + b.getDurability());
+								player.getInventory().remove(new ItemStack(item.getType(), item.getAmount(), item.getDurability()));
+							}
 						}
 					}
 				}
 			} 
 		}
+		contents = inv.getContents();
+		int counter = 0;
+		for (int i = 0; i < contents.length; i++) {
+			ItemStack item = contents[i];
+
+			if (item == null) {
+
+			}else{
+				if(item.getType().equals(Material.POTION)){
+					counter++;
+					if(counter > 3){
+						player.sendMessage("You exceeded 3 potion limit");
+						player.getInventory().remove(new ItemStack(item.getType(), item.getAmount(), item.getDurability()));
+					}
+				}
+
+			} 
+		}
+
 
 		player.setHealth(20);
 		player.setFoodLevel(20);
@@ -87,9 +116,9 @@ public class ArenaPlayer {
 	public void saveState() {
 		Player player = Bukkit.getPlayer(uuid);
 		location = player.getLocation();
-		
+
 		playerData.createSection("location", saveLocation(location));
-		
+
 		List<Object> inventory = new ArrayList<Object>();
 		for (ItemStack item : player.getInventory().getContents()) {
 			if (item != null) {
@@ -112,7 +141,7 @@ public class ArenaPlayer {
 		}
 
 		playerData.set("potionEffects", potionEffects); //Threw null pointer last game
-		
+
 		Map<String, Object> stats = new HashMap<String, Object>();
 		stats.put("exhaustion", player.getExhaustion());
 		stats.put("foodLevel", player.getFoodLevel());
@@ -138,7 +167,7 @@ public class ArenaPlayer {
 	@SuppressWarnings("unchecked")
 	public void loadState(Player player) {
 		if (saved) {
-			
+
 			location = loadLocation();
 
 			List<ItemStack> inventory = new ArrayList<ItemStack>();
@@ -207,11 +236,11 @@ public class ArenaPlayer {
 		locationData.put("pitch", playerLocation.getPitch());
 		return locationData;
 	}
-	
+
 	private Location loadLocation() {
 		double x, y, z;
 		float yaw, pitch;
-		World world = Bukkit.getWorld(playerData.getString("location.world"));
+		World world = Bukkit.getWorld(playerData.getString("location.world")); //failed on reload mid game
 		x = playerData.getDouble("location.x");
 		y = playerData.getDouble("location.y");
 		z = playerData.getDouble("location.z");
@@ -230,7 +259,7 @@ public class ArenaPlayer {
 			}
 		}
 	}
-	
+
 	public Location getLocation() {
 		return location;	
 	}
