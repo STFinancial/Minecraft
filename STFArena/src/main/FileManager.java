@@ -1,6 +1,7 @@
 package main;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ public class FileManager {
 	private static File arenaFolder;
 	private static File teamsFolder;
 	private static File playersFolder;
+	private static File mapsFolder;
 	
 	public FileManager() {
 		arenaFolder = new File(new File("").getAbsolutePath() + "/plugins/STFArena");
@@ -30,7 +32,14 @@ public class FileManager {
 				Bukkit.getLogger().info("Unable to create Players folder");
 			}
 		}
+		mapsFolder = new File(arenaFolder.getPath() + "/Maps");
+		if (mapsFolder.exists() == false) {
+			if (mapsFolder.mkdir() == false) {
+				Bukkit.getLogger().info("Unable to create Maps folder");
+			}
+		}
 		loadArenaTeams();
+		//loadArenas();
 	}
 	
 	public static File getArenaFolder() {
@@ -45,6 +54,10 @@ public class FileManager {
 		return playersFolder;
 	}
 	
+	public static File getMapsFolder() {
+		return mapsFolder;
+	}
+	
 	public Map<String, ArenaTeam> loadArenaTeams() {
 		Map<String, ArenaTeam> arenaTeams = new HashMap<String, ArenaTeam>();
 		for (File arenaFile : teamsFolder.listFiles()) {
@@ -54,5 +67,16 @@ public class FileManager {
 			}
 		}
 		return arenaTeams;
+	}
+	
+	public ArrayList<Arena> loadArenas(Main plugin) {
+		ArrayList<Arena> arenas = new ArrayList<Arena>();
+		for (File arenaFile: arenaFolder.listFiles()) {
+			if (arenaFile.isFile() && arenaFile.getAbsolutePath().contains(".yml")) {
+				Arena arena  = new Arena(arenaFile, plugin);
+				arenas.add(arena);
+			}
+		}
+		return arenas;
 	}
 }

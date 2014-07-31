@@ -163,5 +163,9 @@ public class MatchManager {
 	public void addArena(Arena arena) {
 		arena2sFree.add(arena);
 	}
+	
+	public void addArenas(ArrayList<Arena> arenas) {
+		arena2sFree.addAll(arenas);
+	}
 
 }

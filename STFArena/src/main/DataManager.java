@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 
 public class DataManager {
 	private final Main plugin;
-	private final FileManager fileManager;
 	Map<String, ArenaTeam> arenaTeams;
 	Map<UUID, ArenaPlayer> arenaPlayers;
 	Map<String, ArenaTeam> beingCreated;
@@ -19,8 +18,6 @@ public class DataManager {
 
 	public DataManager(Main plugin) {
 		this.plugin = plugin;
-		fileManager = new FileManager();
-		arenaTeams = fileManager.loadArenaTeams();
 		arenaPlayers = new HashMap<UUID, ArenaPlayer>();
 		beingCreated = new HashMap<String, ArenaTeam>();
 		arenaLadder = getLadder();
