@@ -149,12 +149,12 @@ public class MatchManager {
 		//The logFactor signifies how many points of difference are required for a team to be expected to 
 		//win 10 times more often than the other team
 		
-		double winnerEV = 1.0/(1 + Math.pow(10, (loserRating - winnerRating / logFactor)));
-		double loserEV = 1 - winnerEV;
+		double winnerEV = 1.0/(1.0 + Math.pow(10.0, (loserRating - winnerRating / logFactor)));
+		double loserEV = 1.0 - winnerEV;
 		
 		
-		double winnerPoints = winningKFactor * (1 - winnerEV);
-		double loserPoints = losingKFactor * (0 - loserEV);
+		double winnerPoints = (double)winningKFactor * (1.0 - winnerEV);
+		double loserPoints = (double)losingKFactor * (0.0 - loserEV);
 		
 		winners.addMatch(winnerPoints);
 		losers.addMatch(loserPoints);
