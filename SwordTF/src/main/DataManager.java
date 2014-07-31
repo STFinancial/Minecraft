@@ -5,10 +5,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class DataManager {
-	private final Main plugin;
+	private final SwordMain plugin;
 	private HashMap<Player, SwordData> swordData;
 
-	public DataManager(Main plugin) {
+	public DataManager(SwordMain plugin) {
 		this.plugin = plugin;
 		swordData = new HashMap<Player, SwordData>();
 		load();

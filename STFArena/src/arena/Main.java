@@ -1,4 +1,4 @@
-package main;
+package arena;
 
 import org.bukkit.plugin.java.JavaPlugin;
 

@@ -1,5 +1,5 @@
 name: SwordTF
-main: main.Main
+main: main.SwordMain
 description: STF presents a better Minecraft combat
 version: 1.2
 author: Boxxy

@@ -20,7 +20,7 @@ public class SwordData implements Runnable {
 	private int taskID = -1;
 	private int blockID = -1;
 	private final BukkitScheduler scheduler;
-	private final Main plugin;
+	private final SwordMain plugin;
 	boolean damageReady = false;
 	private final Scoreboard board = Bukkit.getScoreboardManager()
 			.getNewScoreboard();
@@ -29,7 +29,7 @@ public class SwordData implements Runnable {
 	private final Player player;
 	boolean criticalBlock = false;
 
-	public SwordData(Main plugin, Player player) {
+	public SwordData(SwordMain plugin, Player player) {
 		scheduler = Bukkit.getServer().getScheduler();
 		this.plugin = plugin;
 		this.player = player;
@@ -74,7 +74,7 @@ public class SwordData implements Runnable {
 	public boolean blockReady() {
 		if(energy < ENERGY_PER_SWING){
 			if (player.hasPotionEffect(PotionEffectType.SLOW_DIGGING) == false) 
-				player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 40, 10, true));			
+				player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 40, 127, true));			
 			return false;
 		}else{
 			return true;

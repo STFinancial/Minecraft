@@ -1,5 +1,5 @@
 name: STFArena
-main: main.Main
+main: arena.Main
 description: STF presents an arena mini-game for Minecraft
 version: 1.0
 author: Boxxy

@@ -2,7 +2,7 @@ package main;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class Main extends JavaPlugin {
+public class SwordMain extends JavaPlugin {
 	private DataManager dataManager;
 	private EventManager eventManager;
 

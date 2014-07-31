@@ -1,4 +1,4 @@
-package main;
+package arena;
 
 import java.util.HashSet;
 import java.util.Set;

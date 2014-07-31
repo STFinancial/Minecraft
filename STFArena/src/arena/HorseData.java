@@ -1,4 +1,4 @@
-package main;
+package arena;
 
 import net.minecraft.server.v1_7_R3.AttributeInstance;
 import net.minecraft.server.v1_7_R3.EntityInsentient;

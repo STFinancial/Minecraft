@@ -14,10 +14,10 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class EventManager implements Listener {
-	private final Main plugin;
+	private final SwordMain plugin;
 	private final DataManager dataManager;
 
-	public EventManager(Main plugin, DataManager dataManager) {
+	public EventManager(SwordMain plugin, DataManager dataManager) {
 		this.plugin = plugin;
 		this.dataManager = dataManager;
 	}
@@ -60,12 +60,14 @@ public class EventManager implements Listener {
 
 	@EventHandler
 	private void onDamage(EntityDamageByEntityEvent event) {
-		if (event.getDamager() instanceof Player) {
-			Player damager = (Player) event.getDamager();
-			if (holdingSword(damager)) {
-				if (dataManager.canPlayerDamage(damager)) {
-				} else {
-					event.setCancelled(true);
+		if(event.isCancelled() == false){
+			if (event.getDamager() instanceof Player) {
+				Player damager = (Player) event.getDamager();
+				if (holdingSword(damager)) {
+					if (dataManager.canPlayerDamage(damager)) {
+					} else {
+						event.setCancelled(true);
+					}
 				}
 			}
 		}

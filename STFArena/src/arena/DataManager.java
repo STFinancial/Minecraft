@@ -1,4 +1,4 @@
-package main;
+package arena;
 
 import java.util.HashMap;
 import java.util.Map;
