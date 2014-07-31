@@ -97,7 +97,7 @@ public class ArenaPlayer {
 					counter++;
 					if(counter > 3){
 						player.sendMessage("You exceeded 3 potion limit");
-						player.getInventory().remove(new ItemStack(item.getType(), item.getAmount(), item.getDurability()));
+						contents[i] = null; //Hoping this doesn't throw errors
 					}
 				}
 

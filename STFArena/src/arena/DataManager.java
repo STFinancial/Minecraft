@@ -332,6 +332,17 @@ public class DataManager {
 			//TODO: Update the arena ladder by sorting it or adding teams or something
 		}
 	}
+	
+	public ArrayList<ArenaTeam> getTop() {
+		updateLadder();
+		ArrayList<ArenaTeam> top = new ArrayList<ArenaTeam>();
+		top.add(arenaLadder.get(0));
+		top.add(arenaLadder.get(1));
+		top.add(arenaLadder.get(2));
+		top.add(arenaLadder.get(3));
+		top.add(arenaLadder.get(4));
+		return top;
+	}
 	 
 
 }
