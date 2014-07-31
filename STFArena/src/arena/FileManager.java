@@ -71,7 +71,7 @@ public class FileManager {
 	
 	public ArrayList<Arena> loadArenas(Main plugin) {
 		ArrayList<Arena> arenas = new ArrayList<Arena>();
-		for (File arenaFile: arenaFolder.listFiles()) {
+		for (File arenaFile: mapsFolder.listFiles()) {
 			if (arenaFile.isFile() && arenaFile.getAbsolutePath().contains(".yml")) {
 				Arena arena  = new Arena(arenaFile, plugin);
 				arenas.add(arena);
