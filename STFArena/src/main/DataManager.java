@@ -1,5 +1,7 @@
 package main;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -13,6 +15,7 @@ public class DataManager {
 	Map<String, ArenaTeam> arenaTeams;
 	Map<UUID, ArenaPlayer> arenaPlayers;
 	Map<String, ArenaTeam> beingCreated;
+	ArrayList<ArenaTeam> arenaLadder;
 
 	public DataManager(Main plugin) {
 		this.plugin = plugin;
@@ -20,6 +23,7 @@ public class DataManager {
 		arenaTeams = fileManager.loadArenaTeams();
 		arenaPlayers = new HashMap<UUID, ArenaPlayer>();
 		beingCreated = new HashMap<String, ArenaTeam>();
+		arenaLadder = getLadder();
 		load();
 	}
 
@@ -301,5 +305,28 @@ public class DataManager {
 		}
 		return getPlayer(p1).getFocus().equals(getPlayer(p2).getFocus());
 	}
+	
+	public ArrayList<ArenaTeam> getLadder() {
+		ArrayList<ArenaTeam> ladder = new ArrayList<ArenaTeam>();
+		
+		for (Map.Entry<String, ArenaTeam> entry: arenaTeams.entrySet()) {
+			ladder.add(entry.getValue());
+		}
+		boolean swapped = true;
+		int length = arenaTeams.size();
+		while (!swapped) {
+			swapped = false;
+			for (int i = 1; i < length; ++i) {
+				if (ladder.get(i - 1).getRating() < ladder.get(i).getRating()) {
+					Collections.swap(ladder, i, i-1);
+					swapped = true;
+				}
+			}
+			length = length - 1;
+		}
+		
+		return ladder;
+	}
+	 
 
 }

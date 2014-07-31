@@ -39,7 +39,7 @@ public class MatchManager {
 
 	private void add(ArenaTeam t1, ArenaTeam t2, ArrayList<Arena> possibleArenas, ArrayList<Arena> usedArenas) {
 
-		//@TODO here we need to add check that all players are alive
+		//@TODO: here we need to add check that all players are alive
 
 		if (possibleArenas.size() > 0) {
 			int r = ThreadLocalRandom.current().nextInt(possibleArenas.size());
