@@ -48,7 +48,7 @@ public class SwordData implements Runnable {
 		damageReady = false;
 		if(energy < ENERGY_PER_SWING){
 			if (player.hasPotionEffect(PotionEffectType.SLOW_DIGGING) == false) 
-				player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 40, 10, true));
+				player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 40, 127, true));
 
 			return false;
 		}else{
