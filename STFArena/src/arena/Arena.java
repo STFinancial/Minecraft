@@ -53,6 +53,7 @@ public class Arena implements Runnable {
 		redSpawn = new Location(arenaWorld, aC.getInt("redX"), aC.getInt("redY"), aC.getInt("redZ"));
 		blueSpawn = new Location(arenaWorld, aC.getInt("blueX"), aC.getInt("blueY"), aC.getInt("blueZ"));
 		door = Material.getMaterial(aC.getString("door material"));
+		Bukkit.getLogger().info("Loading " + size + "s map "+ name);
 		this.plugin = main;
 	}
 
