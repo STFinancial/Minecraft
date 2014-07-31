@@ -42,19 +42,19 @@ public class FileManager {
 		//loadArenas();
 	}
 	
-	public static File getArenaFolder() {
+	public File getArenaFolder() {
 		return arenaFolder;
 	}
 	
-	public static File getTeamsFolder() {
+	public File getTeamsFolder() {
 		return teamsFolder;
 	}
 	
-	public static File getPlayersFolder() {
+	public File getPlayersFolder() {
 		return playersFolder;
 	}
 	
-	public static File getMapsFolder() {
+	public File getMapsFolder() {
 		return mapsFolder;
 	}
 	

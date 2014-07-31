@@ -12,8 +12,9 @@ public class Main extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		dataManager = new DataManager(this);
 		fileManager = new FileManager();
+		dataManager = new DataManager(this);
+		
 		dataManager.arenaTeams = fileManager.loadArenaTeams();
 		dataManager.updateLadder();
 		
@@ -43,6 +44,10 @@ public class Main extends JavaPlugin {
 
 	public CommandManager getCommandManager() {
 		return commandManager;
+	}
+	
+	public FileManager getFileManager() {
+		return fileManager;
 	}
 
 	public QueueManager getQueueManager() {

@@ -39,7 +39,7 @@ public class DataManager {
 	}
 
 	public void add(Player player) {
-		arenaPlayers.put(player.getUniqueId(), new ArenaPlayer(player));
+		arenaPlayers.put(player.getUniqueId(), new ArenaPlayer(player, plugin.getFileManager()));
 		for (ArenaTeam t : arenaTeams.values()) {
 			if (t.getPlayers().contains(player.getUniqueId()))
 				getPlayer(player).addTeam(t.getName());

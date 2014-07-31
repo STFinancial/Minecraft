@@ -30,14 +30,14 @@ public class ArenaPlayer {
 	private final YamlConfiguration playerData;
 	private Location location = null;
 
-	public ArenaPlayer(Player player) {
+	public ArenaPlayer(Player player, FileManager fileManager) {
 		status = Status.FREE;
 		teamFocused = null;
 		saved = false;
 		teams = new ArrayList<String>();
 		name = player.getName();
 		uuid = player.getUniqueId();
-		playerFile = new File(FileManager.getPlayersFolder().getPath() + "/" + name + ".yml");
+		playerFile = new File(fileManager.getPlayersFolder().getPath() + "/" + name + ".yml");
 		playerData = YamlConfiguration.loadConfiguration(playerFile);
 		if (playerFile.exists()) {
 			saved = true;
