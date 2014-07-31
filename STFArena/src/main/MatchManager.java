@@ -95,9 +95,8 @@ public class MatchManager {
 		}
 
 
-		int eloChange = eloChange(winners.getRating(), losers.getRating());
-		winners.addMatch(eloChange);
-		losers.addMatch(-1*eloChange);
+		updateELO(winners, losers);
+		
 		//TODO do this after a 5 second delay
 		for(UUID p:winners.getPlayers()){
 			if(Bukkit.getPlayer(p).isOnline()){
@@ -138,18 +137,25 @@ public class MatchManager {
 		return null;
 	}
 
-	public int eloChange(int winning, int losing){
+	public void updateELO(ArenaTeam winners, ArenaTeam losers){
 		//TODO refine
-		if(Math.abs(winning - losing) < 100){
-			return 10;
-		}else{
-			if(winning > losing){
-				return 5;
-			}else{
-				return 15;
-			}
-		}
-
+		double winnerRating = winners.getRating();
+		double loserRating = losers.getRating();
+		
+		//Adjustable Parameters
+		int kFactor = 20; //This is essentially the number of points wagered per game
+		double logFactor = 500.0; 
+		//The logFactor signifies how many points of difference are required for a team to be expected to 
+		//win 10 times more often than the other team
+		
+		double winnerEV = 1.0/(1 + Math.pow(10, (winnerRating - loserRating / logFactor)));
+		double loserEV = 1 - winnerEV;
+		
+		double winnerPoints = kFactor * (1 - winnerEV);
+		double loserPoints = kFactor * (0 - loserEV);
+		
+		winners.addMatch(winnerPoints);
+		losers.addMatch(loserPoints);
 	}
 
 	public void addArena(Arena arena) {

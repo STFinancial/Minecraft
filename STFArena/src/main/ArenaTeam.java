@@ -14,7 +14,8 @@ import org.bukkit.entity.Player;
 public class ArenaTeam {
 	private final String name;
 	private final List<UUID> players = new ArrayList<UUID>();
-	private int win, loss, rating, size;
+	private int win, loss, size;
+	private double rating;
 	public final static DecimalFormat df = new DecimalFormat("00.0");
 	private int timeInQueue = 0;
 	private final File arenaFile;
@@ -34,7 +35,7 @@ public class ArenaTeam {
 		this.size = arenaConfiguration.getInt("size");
 		this.win = arenaConfiguration.getInt("win");
 		this.loss = arenaConfiguration.getInt("loss");
-		this.rating = arenaConfiguration.getInt("rating");
+		this.rating = arenaConfiguration.getDouble("rating");
 		for (String uuid : arenaConfiguration.getStringList("players")) {
 			players.add(UUID.fromString(uuid));
 		}
@@ -72,7 +73,7 @@ public class ArenaTeam {
 		return players.size() == size;
 	}
 
-	public int getRating() {
+	public double getRating() {
 		return rating;
 	}
 
@@ -110,7 +111,7 @@ public class ArenaTeam {
 		return timeInQueue * 10 - 5;
 	}
 
-	public void addMatch(int eloChange) {
+	public void addMatch(double eloChange) {
 		if(eloChange > 0 ){
 			win++;
 		}else{
@@ -118,7 +119,7 @@ public class ArenaTeam {
 		}
 		rating+=eloChange;
 		for(UUID p :getPlayers()){
-			Bukkit.getPlayer(p).sendMessage("Your arena team " + name + " now has a " + rating + " rating");
+			Bukkit.getPlayer(p).sendMessage("Your arena team " + name + " now has a " + (int) rating + " rating");
 			Bukkit.getPlayer(p).sendMessage(getRecord());
 		}
 	}
