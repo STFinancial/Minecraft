@@ -6,10 +6,17 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 
 public class ArenaQueue {
-	private static final Set<ArenaTeam> queue = new HashSet<ArenaTeam>();
-	private static final Set<ArenaMatch> inProgress = new HashSet<ArenaMatch>();
+	private final Set<ArenaTeam> queue = new HashSet<ArenaTeam>();
+	private final Set<ArenaMatch> inProgress = new HashSet<ArenaMatch>();
+	private final Main plugin;
+	private final DataManager dataManager;
 	
-	public static void addTeam(ArenaTeam team) {
+	public ArenaQueue(Main plugin, DataManager dataManager) {
+		this.plugin = plugin;
+		this.dataManager = dataManager;
+	}
+	
+	public void addTeam(ArenaTeam team) {
 		ArenaTeam removeTeam = null;
 		for (ArenaTeam inQueue : queue) {
 			if (inQueue.getSize() == team.getSize()) {
@@ -21,13 +28,13 @@ public class ArenaQueue {
 		queue.remove(removeTeam);		
 	}
 	
-	public static void removeTeam(ArenaTeam team) {
+	public void removeTeam(ArenaTeam team) {
 		if (queue.contains(team)) {
 			queue.remove(team);
 		}
 	}
 	
-	public static void cancelMatch(ArenaMatch match) {
+	public void cancelMatch(ArenaMatch match) {
 		if (inProgress.contains(match)) {
 			inProgress.removeAll(match.getTeams());
 			queue.addAll(match.getTeams());
@@ -36,5 +43,9 @@ public class ArenaQueue {
 		else {
 			Bukkit.getLogger().info("Match not found!");
 		}
+	}
+	
+	private void match() {
+		
 	}
 }

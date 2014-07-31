@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.UUID;
 
+import javax.security.auth.x500.X500Principal;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -108,10 +110,13 @@ public class Arena implements Runnable {
 	}
 
 	private void clearFloor() {
-		double radius = redSpawn.distance(blueSpawn) / 2;
-		radius = radius * 1.2;
-		Location center = redSpawn.add(redSpawn.getDirection().midpoint(blueSpawn.getDirection()));
-		Item cookie = arenaWorld.dropItem(center, new ItemStack(Material.COOKIE));
+		int redX = redSpawn.getChunk().getX();
+		int redZ = redSpawn.getChunk().getZ();
+		int blueX = blueSpawn.getChunk().getX();
+		int blueZ = blueSpawn.getChunk().getZ();
+		for (int x = Math.min(redX, blueX); x < Math.max(redX, blueX); x++) {
+			
+		}
 		for (Entity item : cookie.getNearbyEntities(radius, radius, radius)) {
 			if(item instanceof Player == false){
 				item.remove();
