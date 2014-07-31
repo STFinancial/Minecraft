@@ -38,7 +38,7 @@ public class FileManager {
 				Bukkit.getLogger().info("Unable to create Maps folder");
 			}
 		}
-		loadArenaTeams();
+		//loadArenaTeams();
 		//loadArenas();
 	}
 	

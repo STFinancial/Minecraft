@@ -20,7 +20,6 @@ public class DataManager {
 		this.plugin = plugin;
 		arenaPlayers = new HashMap<UUID, ArenaPlayer>();
 		beingCreated = new HashMap<String, ArenaTeam>();
-		arenaLadder = getLadder();
 		load();
 	}
 
@@ -309,6 +308,7 @@ public class DataManager {
 		for (Map.Entry<String, ArenaTeam> entry: arenaTeams.entrySet()) {
 			ladder.add(entry.getValue());
 		}
+		
 		boolean swapped = true;
 		int length = arenaTeams.size();
 		while (!swapped) {
@@ -323,6 +323,14 @@ public class DataManager {
 		}
 		
 		return ladder;
+	}
+	
+	public void updateLadder() {
+		if (arenaLadder == null) {
+			arenaLadder = getLadder();
+		} else {
+			//TODO: Update the arena ladder by sorting it or adding teams or something
+		}
 	}
 	 
 

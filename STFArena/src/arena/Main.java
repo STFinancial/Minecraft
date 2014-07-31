@@ -13,14 +13,19 @@ public class Main extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		dataManager = new DataManager(this);
+		fileManager = new FileManager();
+		dataManager.arenaTeams = fileManager.loadArenaTeams();
+		dataManager.updateLadder();
+		
+		
 		eventManager = new EventManager(this, dataManager);
 		this.getServer().getPluginManager().registerEvents(eventManager, this);
 		commandManager = new CommandManager(this, dataManager);
 		getCommand("arena").setExecutor(commandManager);
 		queueManager = new QueueManager(this, dataManager);
 		matchManager = new MatchManager(this, dataManager);
-		fileManager = new FileManager();
-		dataManager.arenaTeams = fileManager.loadArenaTeams();
+		
+		
 		//matchManager.addArenas(fileManager.loadArenas(this));
 		matchManager.addArena(new Arena("Sewers 1", 2, -68, 15, 177, -38, 15, 159, "IRON_FENCE", this));
 		  
