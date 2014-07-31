@@ -1,5 +1,6 @@
 package arena;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.UUID;
@@ -8,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -30,7 +32,8 @@ public class Arena implements Runnable {
 	ArrayList<Location> doors;
 	HashSet<UUID> redPlayersAlive;
 	HashSet<UUID> bluePlayersAlive;
-
+	File arenaFile;
+	
 	public Arena(String name, int size, int redX, int redY, int redZ, int blueX, int blueY, int blueZ, String doorMaterial, Main main) {
 		this.name = name;
 		this.size = size;
@@ -38,6 +41,18 @@ public class Arena implements Runnable {
 		redSpawn = new Location(arenaWorld, redX, redY, redZ);
 		blueSpawn = new Location(arenaWorld, blueX, blueY, blueZ);
 		door = Material.getMaterial(doorMaterial);
+		this.plugin = main;
+	}
+	
+	public Arena(File arenaFile, Main main) {
+		this.arenaFile = arenaFile;
+		YamlConfiguration aC = YamlConfiguration.loadConfiguration(arenaFile);
+		//TODO
+		this.name = aC.getString("name");
+		this.size = aC.getInt("main");
+		redSpawn = new Location(arenaWorld, aC.getInt("redX"), aC.getInt("redY"), aC.getInt("redZ"));
+		blueSpawn = new Location(arenaWorld, aC.getInt("blueX"), aC.getInt("blueY"), aC.getInt("blueZ"));
+		door = Material.getMaterial(aC.getString("door material"));
 		this.plugin = main;
 	}
 

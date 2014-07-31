@@ -8,6 +8,7 @@ public class Main extends JavaPlugin {
 	private CommandManager commandManager;
 	private QueueManager queueManager;
 	private MatchManager matchManager;
+	private FileManager fileManager;
 
 	@Override
 	public void onEnable() {
@@ -18,8 +19,12 @@ public class Main extends JavaPlugin {
 		getCommand("arena").setExecutor(commandManager);
 		queueManager = new QueueManager(this, dataManager);
 		matchManager = new MatchManager(this, dataManager);
+		fileManager = new FileManager();
+		dataManager.arenaTeams = fileManager.loadArenaTeams();
+		//matchManager.addArenas(fileManager.loadArenas(this));
 		matchManager.addArena(new Arena("Sewers 1", 2, -68, 15, 177, -38, 15, 159, "IRON_FENCE", this));
-		//matchManager.addArena(new Arena("Chum's Forest", 2, 27, 5, 211, 79, 5, 251, "IRON_FENCE", this));
+		  
+		matchManager.addArena(new Arena("Chum's Forest", 2, 27, 5, 211, 79, 5, 251, "IRON_FENCE", this));
 	}
 
 	@Override

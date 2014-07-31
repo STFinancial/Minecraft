@@ -1,5 +1,7 @@
 package arena;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -9,17 +11,16 @@ import org.bukkit.entity.Player;
 
 public class DataManager {
 	private final Main plugin;
-	private final FileManager fileManager;
 	Map<String, ArenaTeam> arenaTeams;
 	Map<UUID, ArenaPlayer> arenaPlayers;
 	Map<String, ArenaTeam> beingCreated;
+	ArrayList<ArenaTeam> arenaLadder;
 
 	public DataManager(Main plugin) {
 		this.plugin = plugin;
-		fileManager = new FileManager();
-		arenaTeams = fileManager.loadArenaTeams();
 		arenaPlayers = new HashMap<UUID, ArenaPlayer>();
 		beingCreated = new HashMap<String, ArenaTeam>();
+		arenaLadder = getLadder();
 		load();
 	}
 
@@ -301,5 +302,28 @@ public class DataManager {
 		}
 		return getPlayer(p1).getFocus().equals(getPlayer(p2).getFocus());
 	}
+	
+	public ArrayList<ArenaTeam> getLadder() {
+		ArrayList<ArenaTeam> ladder = new ArrayList<ArenaTeam>();
+		
+		for (Map.Entry<String, ArenaTeam> entry: arenaTeams.entrySet()) {
+			ladder.add(entry.getValue());
+		}
+		boolean swapped = true;
+		int length = arenaTeams.size();
+		while (!swapped) {
+			swapped = false;
+			for (int i = 1; i < length; ++i) {
+				if (ladder.get(i - 1).getRating() < ladder.get(i).getRating()) {
+					Collections.swap(ladder, i, i-1);
+					swapped = true;
+				}
+			}
+			length = length - 1;
+		}
+		
+		return ladder;
+	}
+	 
 
 }
