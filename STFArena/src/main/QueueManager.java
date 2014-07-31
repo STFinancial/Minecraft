@@ -88,8 +88,8 @@ public class QueueManager implements Runnable {
 	}
 
 	private boolean inEloRange(ArenaTeam t1, ArenaTeam t2) {
-		int r1 = t1.getRating();
-		int r2 = t2.getRating();
+		double r1 = t1.getRating();
+		double r2 = t2.getRating();
 		int w1 = t1.getTimeInQueue();
 		int w2 = t2.getTimeInQueue();
 		int online = Bukkit.getOnlinePlayers().length;
