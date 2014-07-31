@@ -164,7 +164,7 @@ public class DataManager {
 	public void createTeam(Player player, String string, int parseInt) {
 		getPlayer(player).setStatus(Status.CREATING);
 		getPlayer(player).setFocus(string);
-		beingCreated.put(string, new ArenaTeam(string, parseInt));
+		beingCreated.put(string, new ArenaTeam(string, parseInt, plugin));
 		beingCreated.get(string).addPlayer(player);
 	}
 
