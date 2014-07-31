@@ -143,7 +143,8 @@ public class MatchManager {
 		double loserRating = losers.getRating();
 		
 		//Adjustable Parameters
-		int kFactor = 20; //This is essentially the number of points wagered per game
+		int winningKFactor = winners.getNumberOfGames() > 10 ? 80 : 30; //This is essentially the number of points wagered per game
+		int losingKFactor = losers.getNumberOfGames() > 10 ? 80 : 30;
 		double logFactor = 500.0; 
 		//The logFactor signifies how many points of difference are required for a team to be expected to 
 		//win 10 times more often than the other team
@@ -151,8 +152,9 @@ public class MatchManager {
 		double winnerEV = 1.0/(1 + Math.pow(10, (winnerRating - loserRating / logFactor)));
 		double loserEV = 1 - winnerEV;
 		
-		double winnerPoints = kFactor * (1 - winnerEV);
-		double loserPoints = kFactor * (0 - loserEV);
+		
+		double winnerPoints = winningKFactor * (1 - winnerEV);
+		double loserPoints = losingKFactor * (0 - loserEV);
 		
 		winners.addMatch(winnerPoints);
 		losers.addMatch(loserPoints);

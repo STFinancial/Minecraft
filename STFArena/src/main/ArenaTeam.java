@@ -87,6 +87,10 @@ public class ArenaTeam {
 
 		return "Wins: " + win + " Losses: " + loss + " Win Rate: " + df.format((win * 100.0 / (win + loss))) + "%";
 	}
+	
+	public int getNumberOfGames() {
+		return win + loss;
+	}
 
 	public String toString() {
 		return "Team: " + name + " (" + size + ") Rating: " + rating;
