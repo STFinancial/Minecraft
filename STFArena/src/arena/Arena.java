@@ -49,7 +49,7 @@ public class Arena implements Runnable {
 		YamlConfiguration aC = YamlConfiguration.loadConfiguration(arenaFile);
 		//TODO
 		this.name = aC.getString("name");
-		this.size = aC.getInt("main");
+		this.size = aC.getInt("size");
 		redSpawn = new Location(arenaWorld, aC.getInt("redX"), aC.getInt("redY"), aC.getInt("redZ"));
 		blueSpawn = new Location(arenaWorld, aC.getInt("blueX"), aC.getInt("blueY"), aC.getInt("blueZ"));
 		door = Material.getMaterial(aC.getString("door material"));
