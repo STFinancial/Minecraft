@@ -1,7 +1,9 @@
-package arena;
+package qsik;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import arena.ArenaTeam;
 
 public class ArenaMatch {
 	private final ArenaTeam team1, team2;

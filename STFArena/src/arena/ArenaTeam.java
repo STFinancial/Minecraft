@@ -114,6 +114,12 @@ public class ArenaTeam {
 		}
 		return timeInQueue * 10 - 5;
 	}
+	
+	public void sendMessage(String message) {
+		for (UUID id : players) {
+			Bukkit.getPlayer(id).sendMessage(message);
+		}
+	}
 
 	public void addMatch(double eloChange) {
 		if(eloChange > 0 ){

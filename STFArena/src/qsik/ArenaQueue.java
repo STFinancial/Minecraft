@@ -1,9 +1,11 @@
-package arena;
+package qsik;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+
+import arena.ArenaTeam;
 
 public class ArenaQueue {
 	private static final Set<ArenaTeam> queue = new HashSet<ArenaTeam>();

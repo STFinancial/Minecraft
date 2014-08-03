@@ -27,6 +27,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.potion.PotionEffect;
 
+import arena.ArenaPlayer.Status;
+
 public class EventManager implements Listener {
 	private static enum ArenaPotion {
 		FIRE_RESISTANCE, HARM, HEAL, INCREASE_DAMAGE, INVISIBILITY, JUMP, NIGHT_VISION,
