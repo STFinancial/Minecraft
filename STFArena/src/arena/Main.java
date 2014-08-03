@@ -27,10 +27,10 @@ public class Main extends JavaPlugin {
 		matchManager = new MatchManager(this, dataManager);
 		
 		
-		//matchManager.addArenas(fileManager.loadArenas(this));
-		matchManager.addArena(new Arena("Sewers 1", 2, -68, 15, 177, -38, 15, 159, "IRON_FENCE", this));
+		matchManager.addArenas(fileManager.loadArenas(this));
+		//matchManager.addArena(new Arena("Sewers 1", 2, -68, 15, 177, -38, 15, 159, "IRON_FENCE", this));
 		  
-		matchManager.addArena(new Arena("Chum's Forest", 2, 27, 5, 211, 79, 5, 251, "IRON_FENCE", this));
+		//matchManager.addArena(new Arena("Chum's Forest", 2, 27, 5, 211, 79, 5, 251, "IRON_FENCE", this));
 	}
 
 	@Override
