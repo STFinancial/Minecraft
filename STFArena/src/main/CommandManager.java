@@ -1,4 +1,4 @@
-package arena;
+package main;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -6,11 +6,16 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import arena.Arena;
+import arena.ArenaPlayer;
+import arena.ArenaTeam;
+import arena.ArenaPlayer.Status;
+
 public class CommandManager implements CommandExecutor {
-	private final Main plugin;
+	private final STFArena plugin;
 	private final DataManager dataManager;
 
-	public CommandManager(Main plugin, DataManager dataManager) {
+	public CommandManager(STFArena plugin, DataManager dataManager) {
 		this.plugin = plugin;
 		this.dataManager = dataManager;
 	}
@@ -78,7 +83,7 @@ public class CommandManager implements CommandExecutor {
 	}
 	
 	private void build(Player player) {
-		player.teleport(ArenaWorld.build().getSpawnLocation());
+		player.teleport(Arena.buildWorld().getSpawnLocation());
 	}
 	
 	private void leave(Player player, String[] args) {

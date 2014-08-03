@@ -3,15 +3,17 @@ package arena;
 import java.util.HashSet;
 import java.util.Set;
 
+import main.DataManager;
+import main.STFArena;
+
 import org.bukkit.Bukkit;
 
 public class ArenaQueue {
-	private final Set<ArenaTeam> queue = new HashSet<ArenaTeam>();
-	private final Set<ArenaMatch> inProgress = new HashSet<ArenaMatch>();
-	private final Main plugin;
+
+	private final STFArena plugin;
 	private final DataManager dataManager;
 	
-	public ArenaQueue(Main plugin, DataManager dataManager) {
+	public ArenaQueue(STFArena plugin, DataManager dataManager) {
 		this.plugin = plugin;
 		this.dataManager = dataManager;
 	}

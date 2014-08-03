@@ -1,4 +1,4 @@
-package arena;
+package main;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -61,10 +61,11 @@ public class EventManager implements Listener {
 //			}
 //		}	
 	};
-	private final Main plugin;
+	
+	private final STFArena plugin;
 	private final DataManager dataManager;
 
-	public EventManager(Main plugin, DataManager dataManager) {
+	public EventManager(STFArena plugin, DataManager dataManager) {
 		this.plugin = plugin;
 		this.dataManager = dataManager;
 	}

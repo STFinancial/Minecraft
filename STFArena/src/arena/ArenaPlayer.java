@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import main.FileManager;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -19,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
 public class ArenaPlayer {
+	public enum Status {QUEUED, TRYING_TO_QUEUE, IN_GAME, INVITED, CREATING, FREE};
 	private Status status;
 	private String teamFocused;
 	private String matchLocation;
@@ -30,14 +33,14 @@ public class ArenaPlayer {
 	private final YamlConfiguration playerData;
 	private Location location = null;
 
-	public ArenaPlayer(Player player, FileManager fileManager) {
+	public ArenaPlayer(Player player) {
 		status = Status.FREE;
 		teamFocused = null;
 		saved = false;
 		teams = new ArrayList<String>();
 		name = player.getName();
 		uuid = player.getUniqueId();
-		playerFile = new File(fileManager.getPlayersFolder().getPath() + "/" + name + ".yml");
+		playerFile = new File(FileManager.getPlayersFolder().getPath() + "/" + name + ".yml");
 		playerData = YamlConfiguration.loadConfiguration(playerFile);
 		if (playerFile.exists()) {
 			saved = true;

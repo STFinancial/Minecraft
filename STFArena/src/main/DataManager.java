@@ -1,4 +1,4 @@
-package arena;
+package main;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,14 +9,17 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import arena.ArenaPlayer;
+import arena.ArenaTeam;
+
 public class DataManager {
-	private final Main plugin;
+	private final STFArena plugin;
 	Map<String, ArenaTeam> arenaTeams;
 	Map<UUID, ArenaPlayer> arenaPlayers;
 	Map<String, ArenaTeam> beingCreated;
 	ArrayList<ArenaTeam> arenaLadder;
 
-	public DataManager(Main plugin) {
+	public DataManager(STFArena plugin) {
 		this.plugin = plugin;
 		arenaPlayers = new HashMap<UUID, ArenaPlayer>();
 		beingCreated = new HashMap<String, ArenaTeam>();
@@ -39,7 +42,7 @@ public class DataManager {
 	}
 
 	public void add(Player player) {
-		arenaPlayers.put(player.getUniqueId(), new ArenaPlayer(player, plugin.getFileManager()));
+		arenaPlayers.put(player.getUniqueId(), new ArenaPlayer(player));
 		for (ArenaTeam t : arenaTeams.values()) {
 			if (t.getPlayers().contains(player.getUniqueId()))
 				getPlayer(player).addTeam(t.getName());

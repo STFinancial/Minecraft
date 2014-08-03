@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import main.FileManager;
+
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -14,18 +16,18 @@ import org.bukkit.entity.Player;
 public class ArenaTeam {
 	private final String name;
 	private final List<UUID> players = new ArrayList<UUID>();
-	private int win, loss, size;
+	private final int size;
+	private int win, loss;
 	private double rating;
 	public final static DecimalFormat df = new DecimalFormat("00.0");
-	private int timeInQueue = 0;
 	private final File arenaFile;
 
-	public ArenaTeam(String name, int size, Main plugin) {
+	public ArenaTeam(String name, int size) {
 		this.name = name;
 		this.size = size;
 		win = loss = 0;
 		rating = 1200;
-		arenaFile = new File(plugin.getFileManager().getTeamsFolder().getPath() + "/" + name + ".yml");
+		arenaFile = new File(FileManager.getTeamsFolder().getPath() + "/" + name + ".yml");
 	}
 	
 	public ArenaTeam(File arenaFile) {
@@ -65,7 +67,7 @@ public class ArenaTeam {
 		return this;
 	}
 
-	public int getSize() {
+	public int size() {
 		return size;
 	}
 
@@ -73,17 +75,18 @@ public class ArenaTeam {
 		return players.size() == size;
 	}
 
-	public double getRating() {
+	public double rating() {
 		return rating;
 	}
 
-	public String getName() {
+	public String name() {
 		return name;
 	}
 
-	public String getRecord() {
-		if (win + loss == 0)
+	public String record() {
+		if (win + loss == 0) {
 			return "Wins: " + win + " Losses: " + loss;
+		}
 
 		return "Wins: " + win + " Losses: " + loss + " Win Rate: " + df.format((win * 100.0 / (win + loss))) + "%";
 	}
@@ -98,21 +101,6 @@ public class ArenaTeam {
 
 	public List<UUID> getPlayers() {
 		return players;
-	}
-
-	public void addTime() {
-		timeInQueue++;
-	}
-
-	public void resetTime() {
-		timeInQueue = 0;
-	}
-
-	public int getTimeInQueue() {
-		if (timeInQueue == 0) {
-			return 0;
-		}
-		return timeInQueue * 10 - 5;
 	}
 
 	public void addMatch(double eloChange) {

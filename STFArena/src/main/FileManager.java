@@ -1,4 +1,4 @@
-package arena;
+package main;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
+
+import arena.Arena;
+import arena.ArenaTeam;
 
 public class FileManager {
 	private static File arenaFolder;
@@ -38,23 +41,21 @@ public class FileManager {
 				Bukkit.getLogger().info("Unable to create Maps folder");
 			}
 		}
-		//loadArenaTeams();
-		//loadArenas();
 	}
 	
-	public File getArenaFolder() {
+	public static File getArenaFolder() {
 		return arenaFolder;
 	}
 	
-	public File getTeamsFolder() {
+	public static File getTeamsFolder() {
 		return teamsFolder;
 	}
 	
-	public File getPlayersFolder() {
+	public static File getPlayersFolder() {
 		return playersFolder;
 	}
 	
-	public File getMapsFolder() {
+	public static File getMapsFolder() {
 		return mapsFolder;
 	}
 	
@@ -69,11 +70,11 @@ public class FileManager {
 		return arenaTeams;
 	}
 	
-	public ArrayList<Arena> loadArenas(Main plugin) {
+	public ArrayList<Arena> loadArenas(STFArena plugin) {
 		ArrayList<Arena> arenas = new ArrayList<Arena>();
 		for (File arenaFile: mapsFolder.listFiles()) {
 			if (arenaFile.isFile() && arenaFile.getAbsolutePath().contains(".yml")) {
-				Arena arena  = new Arena(arenaFile, plugin);
+				Arena arena  = new Arena(arenaFile);
 				arenas.add(arena);
 			}
 		}

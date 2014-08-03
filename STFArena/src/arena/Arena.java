@@ -2,87 +2,88 @@ package arena;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.UUID;
-
-import javax.security.auth.x500.X500Principal;
+import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.Difficulty;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.WorldCreator;
+import org.bukkit.WorldType;
+import org.bukkit.World.Environment;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
-//@TODO massive work in progress
-public class Arena implements Runnable {
-	private final static World arenaWorld = ArenaWorld.build();
-	String name;
-	int size;
-	Location redSpawn;
-	Location blueSpawn;
-	ArenaTeam redTeam;
-	ArenaTeam blueTeam;
-	int taskID;
-	int timeTillTeleport;
-	int timeTillDoorOpen;
-	Main plugin;
-	Material door;
-	ArrayList<Location> doors;
-	HashSet<UUID> redPlayersAlive;
-	HashSet<UUID> bluePlayersAlive;
-	File arenaFile;
-	
-	public Arena(String name, int size, int redX, int redY, int redZ, int blueX, int blueY, int blueZ, String doorMaterial, Main main) {
+public class Arena {
+	private final static World arenaWorld = buildWorld();
+	private final String name;
+	private final int size;
+	private final Location redSpawn;
+	private final Location blueSpawn;
+	private final Chunk arenaStart;
+	private final Chunk arenaEnd;
+	private ArenaTeam redTeam;
+	private ArenaTeam blueTeam;
+	private final Material doorMaterial;
+	private final List<Location> doors = new ArrayList<Location>();
+	private boolean available = true;
+
+	public Arena(String name, int size, Vector red, Vector blue, Vector cornerStart, Vector cornerEnd, String material) {
 		this.name = name;
 		this.size = size;
 		Bukkit.getLogger().info("Loading " + size + "s map "+ name);
-		redSpawn = new Location(arenaWorld, redX, redY, redZ);
-		blueSpawn = new Location(arenaWorld, blueX, blueY, blueZ);
-		door = Material.getMaterial(doorMaterial);
-		this.plugin = main;
+		redSpawn = new Location(arenaWorld, red.getX(), red.getY(), red.getZ());
+		blueSpawn = new Location(arenaWorld, blue.getX(), blue.getY(), blue.getZ());
+		arenaStart = arenaWorld.getChunkAt(cornerStart.getBlockX(), cornerStart.getBlockZ());
+		arenaEnd = arenaWorld.getChunkAt(cornerEnd.getBlockX(), cornerEnd.getBlockZ());		
+		doorMaterial = Material.getMaterial(material);
 	}
 	
-	public Arena(File arenaFile, Main main) {
-		this.arenaFile = arenaFile;
-		YamlConfiguration aC = YamlConfiguration.loadConfiguration(arenaFile);
-		//TODO
-		this.name = aC.getString("name");
-		this.size = aC.getInt("size");
-		redSpawn = new Location(arenaWorld, aC.getInt("redX"), aC.getInt("redY"), aC.getInt("redZ"));
-		blueSpawn = new Location(arenaWorld, aC.getInt("blueX"), aC.getInt("blueY"), aC.getInt("blueZ"));
-		door = Material.getMaterial(aC.getString("door material"));
-		this.plugin = main;
+	public Arena(File arenaFile) {
+		YamlConfiguration arenaData = YamlConfiguration.loadConfiguration(arenaFile);
+		this.name = arenaData.getString("name");
+		this.size = arenaData.getInt("size");
+		redSpawn = new Location(arenaWorld, arenaData.getInt("redX"), arenaData.getInt("redY"), arenaData.getInt("redZ"));
+		blueSpawn = new Location(arenaWorld, arenaData.getInt("blueX"), arenaData.getInt("blueY"), arenaData.getInt("blueZ"));
+		arenaStart = arenaWorld.getChunkAt(arenaData.getInt("startX"), arenaData.getInt("startZ"));
+		arenaEnd = arenaWorld.getChunkAt(arenaData.getInt("endX"), arenaData.getInt("endZ"));
+		doorMaterial = Material.getMaterial(arenaData.getString("door material"));
 	}
 
-	public boolean isEmpty() {
-		return (redTeam == null && blueTeam == null);
+	public boolean isAvailable() {
+		return available;
+	}
+	
+	public static World buildWorld() {
+		Bukkit.getLogger().info("Building Arena World");
+		WorldCreator creator = new WorldCreator("Arena");
+		creator.environment(Environment.NORMAL).generateStructures(false).type(WorldType.FLAT);
+		World world = Bukkit.getServer().createWorld(creator);
+		world.setDifficulty(Difficulty.HARD);
+		world.setSpawnFlags(false, false);
+		world.setAnimalSpawnLimit(0);
+		world.setMonsterSpawnLimit(0);
+		world.setWaterAnimalSpawnLimit(0);
+		world.setPVP(true);
+		world.setAutoSave(true);
+		return world;
 	}
 
-	public void add(ArenaTeam t1, ArenaTeam t2) {
-		redPlayersAlive = new HashSet<UUID>();
-		bluePlayersAlive = new HashSet<UUID>();
-		for(UUID p:t1.getPlayers()){
-			redPlayersAlive.add(p);
-		}
-		for(UUID p:t2.getPlayers()){
-			bluePlayersAlive.add(p);
-		}
-		redTeam = t1;
-		blueTeam = t2;
-		timeTillTeleport = 10;
-		timeTillDoorOpen = 15;
-		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this, 20, 20);
+	public void assignTeams(ArenaTeam redTeam, ArenaTeam blueTeam) {
+		this.redTeam = redTeam;
+		this.blueTeam = blueTeam;
+		available = false;
 	}
 
-	public String getName() {
+	public String name() {
 		return name;
 	}
 
-	public int getSize() {
+	public int size() {
 		return size;
 	}
 
@@ -94,44 +95,11 @@ public class Arena implements Runnable {
 		return blueTeam;
 	}
 
-	private void sendAllPlayers(String message) {
-		for (UUID p : redTeam.getPlayers()) {
-			if(Bukkit.getPlayer(p) != null){
-				if(Bukkit.getPlayer(p).isOnline())
-					Bukkit.getPlayer(p).sendMessage(message);
-			}
-		}
-		for (UUID p : blueTeam.getPlayers()) {
-			if(Bukkit.getPlayer(p) != null){
-				if(Bukkit.getPlayer(p).isOnline())
-					Bukkit.getPlayer(p).sendMessage(message);
-			}
-		}
-	}
-
-	private void clearFloor() {
-		int redX = redSpawn.getChunk().getX();
-		int redZ = redSpawn.getChunk().getZ();
-		int blueX = blueSpawn.getChunk().getX();
-		int blueZ = blueSpawn.getChunk().getZ();
-		for (int x = Math.min(redX, blueX); x < Math.max(redX, blueX); x++) {
-			
-		}
-		for (Entity item : cookie.getNearbyEntities(radius, radius, radius)) {
-			if(item instanceof Player == false){
-				item.remove();
-			}
-		}
-		cookie.remove();
-	}
-
-	private void openDoors() {
-		clearFloor();
-		doors = new ArrayList<Location>();
+	public void startMatch() {
 		for (int x = redSpawn.getBlockX() - 5; x < redSpawn.getBlockX() + 5; x++) {
 			for (int y = redSpawn.getBlockY() - 5; y < redSpawn.getBlockY() + 5; y++) {
 				for (int z = redSpawn.getBlockZ() - 5; z < redSpawn.getBlockZ() + 5; z++) {
-					if (arenaWorld.getBlockAt(x, y, z).getType().equals(door)) { 
+					if (arenaWorld.getBlockAt(x, y, z).getType().equals(doorMaterial)) { 
 						arenaWorld.getBlockAt(x, y, z).setType(Material.AIR);
 						doors.add(new Location(arenaWorld, x, y, z));
 					}
@@ -141,7 +109,7 @@ public class Arena implements Runnable {
 		for (int x = blueSpawn.getBlockX() - 5; x < blueSpawn.getBlockX() + 5; x++) {
 			for (int y = blueSpawn.getBlockY() - 5; y < blueSpawn.getBlockY() + 5; y++) {
 				for (int z = blueSpawn.getBlockZ() - 5; z < blueSpawn.getBlockZ() + 5; z++) {
-					if (arenaWorld.getBlockAt(x, y, z).getType().equals(door)) { 
+					if (arenaWorld.getBlockAt(x, y, z).getType().equals(doorMaterial)) { 
 						arenaWorld.getBlockAt(x, y, z).setType(Material.AIR);
 						doors.add(new Location(arenaWorld, x, y, z));
 					}
@@ -150,68 +118,21 @@ public class Arena implements Runnable {
 		}
 	}
 
-	private void closeDoors() {
-		for(Location location : doors){
-			arenaWorld.getBlockAt(location).setType(door);
+	public void cleanup() {
+		for(Location location : doors) {
+			arenaWorld.getBlockAt(location).setType(doorMaterial);
 		}
-	}
-
-	@Override
-	public void run() {
-		if (timeTillTeleport > 0) {
-			if (timeTillTeleport == 10 || timeTillTeleport < 4)
-				sendAllPlayers("Teleporting to arena: " + name + " in " + timeTillTeleport + "seconds");
-			timeTillTeleport--;
-		} else if (timeTillDoorOpen == 15) {
-			for (UUID p : redTeam.getPlayers()) {
-				plugin.getDataManager().getPlayer(p).saveState();
-				Bukkit.getPlayer(p).teleport(redSpawn);
-				plugin.getDataManager().getPlayer(p).matchStart();
-			}
-			for (UUID p : blueTeam.getPlayers()) {
-				plugin.getDataManager().getPlayer(p).saveState();
-				Bukkit.getPlayer(p).teleport(blueSpawn);
-				plugin.getDataManager().getPlayer(p).matchStart();
-			}
-			timeTillDoorOpen--;
-		} else if (timeTillDoorOpen > 0) {
-			if (timeTillDoorOpen == 10 || timeTillDoorOpen == 5 || timeTillDoorOpen < 4)
-				sendAllPlayers("Match will start in " + timeTillDoorOpen + "seconds");
-			timeTillDoorOpen--;
-		} else {
-			sendAllPlayers("The Match Begins!");
-			openDoors();
-			Bukkit.getScheduler().cancelTask(taskID);
-			taskID = -1;
-		}
-
-	}
-
-	public void recordDeath(UUID ID) {
-		if(redPlayersAlive.contains(ID)){
-			redPlayersAlive.remove(ID);
-			sendAllPlayers(Bukkit.getPlayer(ID).getName() + " on Red team has been slain!");
-			if(redPlayersAlive.size() == 0 && bluePlayersAlive.size() != 0){
-				sendAllPlayers("All members of Blue team have been slain!");
-				plugin.getMatchManager().gameFinished(this, false);
+		for (int x = arenaStart.getX(); x < arenaEnd.getX(); x++) {
+			for (int z = arenaStart.getZ(); z < arenaEnd.getZ(); z++) {
+				for (Entity entity : arenaWorld.getChunkAt(x, z).getEntities()) {
+					if (entity instanceof Player == false) {
+						entity.remove();
+					}
+				}
 			}
 		}
-		if(bluePlayersAlive.contains(ID)){
-			bluePlayersAlive.remove(ID);
-			sendAllPlayers(Bukkit.getPlayer(ID).getName() + " on Blue team has been slain!");
-			if(bluePlayersAlive.size() == 0 && redPlayersAlive.size() != 0){
-				sendAllPlayers("All members of Red team have been slain!");
-				plugin.getMatchManager().gameFinished(this, true);
-			}
-		}
-
-	}
-
-	public void clean(){
-		closeDoors();
-		redPlayersAlive = null;
-		bluePlayersAlive = null;
 		redTeam = null;
 		blueTeam = null;
+		available = true;
 	}
 }
