@@ -276,6 +276,7 @@ public class Arena implements Runnable {
 	}
 
 	public void clean(){
+		removeScoreboard();
 		closeDoors();
 		clearFloor();
 		redPlayersAlive = null;
@@ -288,8 +289,6 @@ public class Arena implements Runnable {
 	}
 	
 	public void buildScoreboard() {
-		Objective objective = scoreboard.registerNewObjective("Health", "health");
-		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 		rTeam = scoreboard.registerNewTeam("Red Team");
 		bTeam = scoreboard.registerNewTeam("Blue Team");
 		rTeam.setAllowFriendlyFire(false);
@@ -306,17 +305,12 @@ public class Arena implements Runnable {
 		for (UUID id : blueTeam.getPlayers()) {
 			bTeam.addPlayer(Bukkit.getPlayer(id));
 			Bukkit.getPlayer(id).setScoreboard(scoreboard);
-		}		
+		}
+		Objective objective = scoreboard.registerNewObjective("Health", "health");
+		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 	}
 	
 	public void removeScoreboard() {
-		for (UUID id : redTeam.getPlayers()) {
-			rTeam.removePlayer(Bukkit.getPlayer(id));
-			scoreboard.resetScores(Bukkit.getPlayer(id).getName());
-		}
-		for (UUID id : blueTeam.getPlayers()) {
-			bTeam.removePlayer(Bukkit.getPlayer(id));
-			scoreboard.resetScores(Bukkit.getPlayer(id).getName());
-		}
+		scoreboard.getObjective(DisplaySlot.SIDEBAR).unregister();
 	}
 }
