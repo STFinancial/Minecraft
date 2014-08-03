@@ -130,7 +130,6 @@ public class DataManager {
 	}
 
 	public void queue(Player player, String teamName) {
-
 		getPlayer(player).setStatus(Status.TRYING_TO_QUEUE);
 		getPlayer(player).setFocus(teamName);
 		ArenaTeam t = getTeam(teamName);
@@ -138,10 +137,6 @@ public class DataManager {
 			Bukkit.getPlayer(p).sendMessage(player.getName() + " has queued for " + t.getSize() + "s on: " + teamName);
 		}
 		if (teamReadyToQueue(teamName)) {
-			for (UUID p : t.getPlayers()) {
-				Bukkit.getPlayer(p).sendMessage("Your team " + t.getName() + " has entered queue for " + t.getSize() + "s");
-				getPlayer(p).setStatus(Status.QUEUED);
-			}
 			plugin.getQueueManager().addTeamToQueue(t);
 		}
 

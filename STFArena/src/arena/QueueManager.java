@@ -5,6 +5,8 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 
+import arena.ArenaPlayer.Status;
+
 public class QueueManager implements Runnable {
 
 	Main plugin;
@@ -110,6 +112,10 @@ public class QueueManager implements Runnable {
 	}
 
 	public void addTeamToQueue(ArenaTeam t) {
+		for (UUID p : t.getPlayers()) {
+			Bukkit.getPlayer(p).sendMessage("Your team " + t.getName() + " has entered queue for " + t.getSize() + "s");
+			plugin.getDataManager().getPlayer(p).setStatus(Status.QUEUED);
+		}
 		t.resetTime();
 		switch (t.getSize()) {
 		case 2:
