@@ -311,6 +311,12 @@ public class Arena implements Runnable {
 	}
 	
 	public void removeScoreboard() {
+		for (UUID id : redTeam.getPlayers()) {
+			rTeam.removePlayer(Bukkit.getPlayer(id));
+		}
+		for (UUID id : blueTeam.getPlayers()) {
+			bTeam.removePlayer(Bukkit.getPlayer(id));
+		}
 		scoreboard.getObjective(DisplaySlot.SIDEBAR).unregister();
 	}
 }
