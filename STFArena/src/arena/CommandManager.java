@@ -1,5 +1,7 @@
 package arena;
 
+import java.util.ArrayList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -68,6 +70,9 @@ public class CommandManager implements CommandExecutor {
 				case "home":
 					player.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
 					break;
+				case "top":
+					displayTeams(player, dataManager.getTop());
+					break;
 				default:
 					help(player, args);
 					break;
@@ -79,6 +84,12 @@ public class CommandManager implements CommandExecutor {
 		return true;
 	}
 	
+	private void displayTeams(Player player, ArrayList<ArenaTeam> top) {
+		for (ArenaTeam team: top) {
+			player.sendMessage(team.getName() +": " + (int)team.getRating());
+		}
+	}
+
 	private void build(Player player) {
 		player.teleport(Arena.buildWorld().getSpawnLocation());
 	}
