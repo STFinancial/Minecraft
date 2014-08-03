@@ -243,6 +243,7 @@ public class Arena implements Runnable {
 				matchOver = true;
 				redWon = false;
 				sendAllPlayers("Match over, teleporting in 5 seconds");
+				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, this, 100);
 			}
 		}
 		if(bluePlayersAlive.contains(ID)){
@@ -253,6 +254,7 @@ public class Arena implements Runnable {
 				matchOver = true;
 				redWon = true;
 				sendAllPlayers("Match over, teleporting in 5 seconds");
+				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, this, 100);
 			}
 		}
 	}
