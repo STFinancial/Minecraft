@@ -219,6 +219,7 @@ public class Arena implements Runnable {
 						Bukkit.getPlayer(p).teleport(blueSpawn);
 						plugin.getDataManager().getPlayer(p).matchStart();
 					}
+					buildScoreboard();
 				}
 				else {
 					sendAllPlayers("Match canceled due to invalid player");
