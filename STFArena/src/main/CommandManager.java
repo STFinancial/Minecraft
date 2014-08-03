@@ -245,9 +245,9 @@ public class CommandManager implements CommandExecutor {
 
 			ArenaTeam t = dataManager.getTeam(args[1]);
 			if (t != null) {
-				player.sendMessage("Team Profile for : " + t.getName());
+				player.sendMessage("Team Profile for : " + t.name());
 				player.sendMessage(t.toString());
-				player.sendMessage(t.getRecord());
+				player.sendMessage(t.record());
 			} else {
 				player.sendMessage("No team found named " + args[1]);
 			}

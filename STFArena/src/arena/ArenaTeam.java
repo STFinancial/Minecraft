@@ -102,17 +102,23 @@ public class ArenaTeam {
 	public List<UUID> getPlayers() {
 		return players;
 	}
+	
+	public void messagePlayers(String message) {
+		for (UUID id : players) {
+			Bukkit.getPlayer(id).sendMessage(message);
+		}
+	}
 
 	public void addMatch(double eloChange) {
-		if(eloChange > 0 ){
+		if (eloChange > 0) {
 			win++;
-		}else{
+		} else {
 			loss++;
 		}
-		rating+=eloChange;
-		for(UUID p :getPlayers()){
-			Bukkit.getPlayer(p).sendMessage("Your arena team " + name + " now has a " + (int) rating + " rating");
-			Bukkit.getPlayer(p).sendMessage(getRecord());
+		rating += eloChange;
+		for(UUID id : players){
+			Bukkit.getPlayer(id).sendMessage("Your arena team " + name + " now has a " + (int) rating + " rating");
+			Bukkit.getPlayer(id).sendMessage(record());
 		}
 	}
 }

@@ -45,7 +45,7 @@ public class DataManager {
 		arenaPlayers.put(player.getUniqueId(), new ArenaPlayer(player));
 		for (ArenaTeam t : arenaTeams.values()) {
 			if (t.getPlayers().contains(player.getUniqueId()))
-				getPlayer(player).addTeam(t.getName());
+				getPlayer(player).addTeam(t.name());
 		}
 	}
 
