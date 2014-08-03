@@ -7,6 +7,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import arena.ArenaPlayer.Status;
+
 public class MatchManager {
 
 	private Main plugin;

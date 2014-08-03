@@ -6,6 +6,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import arena.ArenaPlayer.Status;
+
 public class CommandManager implements CommandExecutor {
 	private final Main plugin;
 	private final DataManager dataManager;
@@ -78,7 +80,7 @@ public class CommandManager implements CommandExecutor {
 	}
 	
 	private void build(Player player) {
-		player.teleport(ArenaWorld.build().getSpawnLocation());
+		player.teleport(Arena.buildWorld().getSpawnLocation());
 	}
 	
 	private void leave(Player player, String[] args) {

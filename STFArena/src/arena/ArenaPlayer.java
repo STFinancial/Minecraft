@@ -19,6 +19,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
 public class ArenaPlayer {
+	public enum Status {
+		QUEUED, TRYING_TO_QUEUE, IN_GAME, INVITED, CREATING, FREE;
+	}
 	private Status status;
 	private String teamFocused;
 	private String matchLocation;
