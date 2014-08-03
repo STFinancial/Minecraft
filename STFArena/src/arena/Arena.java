@@ -216,8 +216,12 @@ public class Arena implements Runnable {
 				else {
 					sendAllPlayers("Match canceled due to invalid player");
 					Bukkit.getScheduler().cancelTask(taskId);
-					plugin.getQueueManager().addTeamToQueue(redTeam);
-					plugin.getQueueManager().addTeamToQueue(blueTeam);
+					if (redTeamValid) {
+						plugin.getQueueManager().addTeamToQueue(redTeam);
+					}
+					if (blueTeamValid) {
+						plugin.getQueueManager().addTeamToQueue(blueTeam);
+					}
 					clean();
 					plugin.getMatchManager().addArena(this);
 				}
