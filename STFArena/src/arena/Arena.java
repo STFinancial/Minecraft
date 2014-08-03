@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.UUID;
 
+import net.minecraft.server.v1_7_R3.ChatBaseComponent;
+
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,10 +19,14 @@ import org.bukkit.World.Environment;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
 //@TODO massive work in progress
 public class Arena implements Runnable {
 	private final static World arenaWorld = buildWorld();
+	private final Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 	String name;
 	int size;
 	Location redSpawn;
@@ -274,5 +281,23 @@ public class Arena implements Runnable {
 		matchOver = false;
 		redWon = false;
 		taskId = -1;
+	}
+	
+	public void buildScoreboard() {
+		Team rTeam = scoreboard.registerNewTeam(ChatColor.RED + "Red Team");
+		rTeam.setAllowFriendlyFire(false);
+		for (UUID id : redTeam.getPlayers()) {
+			rTeam.addPlayer(Bukkit.getOfflinePlayer(id));
+			Bukkit.getPlayer(id).setScoreboard(scoreboard);
+		}
+		
+		Team bTeam = scoreboard.registerNewTeam(ChatColor.BLUE + "Blue Team");
+		for (UUID id : blueTeam.getPlayers()) {
+			bTeam.addPlayer(Bukkit.getOfflinePlayer(id));
+			Bukkit.getPlayer(id).setScoreboard(scoreboard);
+		}
+		bTeam.setAllowFriendlyFire(false);
+		
+		Objective objective = scoreboard.registerNewObjective("Health", "health");
 	}
 }
