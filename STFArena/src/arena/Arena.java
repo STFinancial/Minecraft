@@ -35,6 +35,8 @@ public class Arena implements Runnable {
 	HashSet<UUID> redPlayersAlive;
 	HashSet<UUID> bluePlayersAlive;
 	File arenaFile;
+	boolean matchOver = false;
+	boolean redWon = false;
 	
 	public Arena(String name, int size, int redX, int redY, int redZ, int blueX, int blueY, int blueZ, String doorMaterial, Main main) {
 		this.name = name;
@@ -49,7 +51,6 @@ public class Arena implements Runnable {
 	public Arena(File arenaFile, Main main) {
 		this.arenaFile = arenaFile;
 		YamlConfiguration aC = YamlConfiguration.loadConfiguration(arenaFile);
-		//TODO
 		this.name = aC.getString("name");
 		this.size = aC.getInt("size");
 		redSpawn = new Location(arenaWorld, aC.getInt("redX"), aC.getInt("redY"), aC.getInt("redZ"));
@@ -176,75 +177,82 @@ public class Arena implements Runnable {
 
 	@Override
 	public void run() {
-		if (timeTillTeleport > 0) {
-			if (timeTillTeleport == 10 || timeTillTeleport < 4)
-				sendAllPlayers("Teleporting to arena: " + name + " in " + timeTillTeleport + "seconds");
-			timeTillTeleport--;
-		} else if (timeTillDoorOpen == 15) {
-			boolean redTeamValid = true;
-			boolean blueTeamValid = true;
-			for (UUID p : redTeam.getPlayers()) {
-				if (Bukkit.getPlayer(p).isValid() == false) {
-					redTeamValid = false;
-					break;
-				}	
-			}
-			for (UUID p : blueTeam.getPlayers()) {
-				if (Bukkit.getPlayer(p).isValid() == false) {
-					blueTeamValid = false;
-					break;
-				}	
-			}
-			if (redTeamValid && blueTeamValid) {
+		if (matchOver) {
+			plugin.getMatchManager().gameFinished(this, redWon);
+		}
+		else {
+			if (timeTillTeleport > 0) {
+				if (timeTillTeleport == 10 || timeTillTeleport < 4)
+					sendAllPlayers("Teleporting to arena: " + name + " in " + timeTillTeleport + "seconds");
+				timeTillTeleport--;
+			} else if (timeTillDoorOpen == 15) {
+				boolean redTeamValid = true;
+				boolean blueTeamValid = true;
 				for (UUID p : redTeam.getPlayers()) {
-					plugin.getDataManager().getPlayer(p).saveState();
-					Bukkit.getPlayer(p).teleport(redSpawn);
-					plugin.getDataManager().getPlayer(p).matchStart();
+					if (Bukkit.getPlayer(p).isValid() == false) {
+						redTeamValid = false;
+						break;
+					}	
 				}
 				for (UUID p : blueTeam.getPlayers()) {
-					plugin.getDataManager().getPlayer(p).saveState();
-					Bukkit.getPlayer(p).teleport(blueSpawn);
-					plugin.getDataManager().getPlayer(p).matchStart();
+					if (Bukkit.getPlayer(p).isValid() == false) {
+						blueTeamValid = false;
+						break;
+					}	
 				}
-			}
-			else {
-				redTeam.sendMessage("Match canceled due to invalid player");
-				blueTeam.sendMessage("Match canceled due to invalid player");
+				if (redTeamValid && blueTeamValid) {
+					for (UUID p : redTeam.getPlayers()) {
+						plugin.getDataManager().getPlayer(p).saveState();
+						Bukkit.getPlayer(p).teleport(redSpawn);
+						plugin.getDataManager().getPlayer(p).matchStart();
+					}
+					for (UUID p : blueTeam.getPlayers()) {
+						plugin.getDataManager().getPlayer(p).saveState();
+						Bukkit.getPlayer(p).teleport(blueSpawn);
+						plugin.getDataManager().getPlayer(p).matchStart();
+					}
+				}
+				else {
+					sendAllPlayers("Match canceled due to invalid player");
+					Bukkit.getScheduler().cancelTask(taskId);
+					plugin.getQueueManager().addTeamToQueue(redTeam);
+					plugin.getQueueManager().addTeamToQueue(blueTeam);
+					clean();
+					plugin.getMatchManager().addArena(this);
+				}
+				timeTillDoorOpen--;
+			} else if (timeTillDoorOpen > 0) {
+				if (timeTillDoorOpen == 10 || timeTillDoorOpen == 5 || timeTillDoorOpen < 4)
+					sendAllPlayers("Match will start in " + timeTillDoorOpen + "seconds");
+				timeTillDoorOpen--;
+			} else {
+				sendAllPlayers("The Match Begins!");
+				openDoors();
 				Bukkit.getScheduler().cancelTask(taskId);
-				plugin.getQueueManager().addTeamToQueue(redTeam);
-				plugin.getQueueManager().addTeamToQueue(blueTeam);
-				clean();
-				plugin.getMatchManager().addArena(this);
+				taskId = -1;
 			}
-			timeTillDoorOpen--;
-		} else if (timeTillDoorOpen > 0) {
-			if (timeTillDoorOpen == 10 || timeTillDoorOpen == 5 || timeTillDoorOpen < 4)
-				sendAllPlayers("Match will start in " + timeTillDoorOpen + "seconds");
-			timeTillDoorOpen--;
-		} else {
-			sendAllPlayers("The Match Begins!");
-			openDoors();
-			Bukkit.getScheduler().cancelTask(taskId);
-			taskId = -1;
 		}
-
 	}
 
 	public void recordDeath(UUID ID) {
 		if(redPlayersAlive.contains(ID)){
 			redPlayersAlive.remove(ID);
 			sendAllPlayers(Bukkit.getPlayer(ID).getName() + " on Red team has been slain!");
-			if(redPlayersAlive.size() == 0 && bluePlayersAlive.size() != 0){
+			if(redPlayersAlive.size() == 0 && bluePlayersAlive.size() > 0){
 				sendAllPlayers("All members of Blue team have been slain!");
-				plugin.getMatchManager().gameFinished(this, false);
+				matchOver = true;
+				redWon = false;
+				sendAllPlayers("Match over, teleporting in 5 seconds");
 			}
 		}
 		if(bluePlayersAlive.contains(ID)){
 			bluePlayersAlive.remove(ID);
 			sendAllPlayers(Bukkit.getPlayer(ID).getName() + " on Blue team has been slain!");
-			if(bluePlayersAlive.size() == 0 && redPlayersAlive.size() != 0){
+			if(bluePlayersAlive.size() == 0 && redPlayersAlive.size() > 0){
 				sendAllPlayers("All members of Red team have been slain!");
-				plugin.getMatchManager().gameFinished(this, true);
+				matchOver = true;
+				redWon = true;
+				sendAllPlayers("Match over, teleporting in 5 seconds");
 			}
 		}
 	}
@@ -256,6 +264,8 @@ public class Arena implements Runnable {
 		bluePlayersAlive = null;
 		redTeam = null;
 		blueTeam = null;
+		matchOver = false;
+		redWon = false;
 		taskId = -1;
 	}
 }

@@ -99,7 +99,6 @@ public class MatchManager {
 
 		updateELO(winners, losers);
 		
-		//TODO do this after a 5 second delay
 		for(UUID p:winners.getPlayers()){
 			if(Bukkit.getPlayer(p).isOnline()){
 				if(Bukkit.getPlayer(p).getHealth() != 0){
