@@ -285,20 +285,24 @@ public class Arena implements Runnable {
 	}
 	
 	public void buildScoreboard() {
+		scoreboard.registerNewObjective("Health", "health");
+		
 		Team rTeam = scoreboard.registerNewTeam(ChatColor.RED + "Red Team");
-		rTeam.setAllowFriendlyFire(false);
 		for (UUID id : redTeam.getPlayers()) {
-			rTeam.addPlayer(Bukkit.getOfflinePlayer(id));
-			Bukkit.getPlayer(id).setScoreboard(scoreboard);
+			rTeam.addPlayer(Bukkit.getPlayer(id));
 		}
+		rTeam.setAllowFriendlyFire(false);
 		
 		Team bTeam = scoreboard.registerNewTeam(ChatColor.BLUE + "Blue Team");
 		for (UUID id : blueTeam.getPlayers()) {
-			bTeam.addPlayer(Bukkit.getOfflinePlayer(id));
-			Bukkit.getPlayer(id).setScoreboard(scoreboard);
+			bTeam.addPlayer(Bukkit.getPlayer(id));
 		}
 		bTeam.setAllowFriendlyFire(false);
-		
-		Objective objective = scoreboard.registerNewObjective("Health", "health");
+		for (UUID id : redTeam.getPlayers()) {
+			Bukkit.getPlayer(id).setScoreboard(scoreboard);
+		}
+		for (UUID id : blueTeam.getPlayers()) {
+			Bukkit.getPlayer(id).setScoreboard(scoreboard);
+		}
 	}
 }
