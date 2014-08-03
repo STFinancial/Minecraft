@@ -72,6 +72,7 @@ public class MatchManager {
 	}
 
 	public void gameFinished(Arena arena, boolean redWon) {
+		arena.removeScoreboard();
 		switch (arena.getSize()) {
 		case 2:
 			arena2sUsed.remove(arena);

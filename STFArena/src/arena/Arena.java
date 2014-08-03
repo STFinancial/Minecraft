@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.UUID;
 
-import net.minecraft.server.v1_7_R3.ChatBaseComponent;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
@@ -28,6 +26,8 @@ import org.bukkit.scoreboard.Team;
 public class Arena implements Runnable {
 	private final static World arenaWorld = buildWorld();
 	private final Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+	private Team rTeam;
+	private Team bTeam;
 	String name;
 	int size;
 	Location redSpawn;
@@ -54,6 +54,7 @@ public class Arena implements Runnable {
 		blueSpawn = new Location(arenaWorld, blueX, blueY, blueZ);
 		door = Material.getMaterial(doorMaterial);
 		this.plugin = main;
+		buildScoreboard();
 	}
 	
 	public Arena(File arenaFile, Main main) {
@@ -66,6 +67,7 @@ public class Arena implements Runnable {
 		door = Material.getMaterial(aC.getString("door material"));
 		Bukkit.getLogger().info("Loading " + size + "s map "+ name);
 		this.plugin = main;
+		buildScoreboard();
 	}
 	
 	public static World buildWorld() {
@@ -220,7 +222,7 @@ public class Arena implements Runnable {
 						Bukkit.getPlayer(p).teleport(blueSpawn);
 						plugin.getDataManager().getPlayer(p).matchStart();
 					}
-					buildScoreboard();
+					assignScoreboard();
 				}
 				else {
 					sendAllPlayers("Match canceled due to invalid player");
@@ -249,7 +251,7 @@ public class Arena implements Runnable {
 	}
 
 	public void recordDeath(UUID ID) {
-		if(redPlayersAlive.contains(ID)){
+		if (redPlayersAlive.contains(ID)){
 			redPlayersAlive.remove(ID);
 			sendAllPlayers(Bukkit.getPlayer(ID).getName() + " on Red team has been slain!");
 			if(redPlayersAlive.size() == 0 && bluePlayersAlive.size() > 0){
@@ -260,7 +262,7 @@ public class Arena implements Runnable {
 				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, this, 100);
 			}
 		}
-		if(bluePlayersAlive.contains(ID)){
+		if (bluePlayersAlive.contains(ID)){
 			bluePlayersAlive.remove(ID);
 			sendAllPlayers(Bukkit.getPlayer(ID).getName() + " on Blue team has been slain!");
 			if(bluePlayersAlive.size() == 0 && redPlayersAlive.size() > 0){
@@ -288,19 +290,33 @@ public class Arena implements Runnable {
 	public void buildScoreboard() {
 		Objective objective = scoreboard.registerNewObjective("Health", "health");
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-		
-		Team rTeam = scoreboard.registerNewTeam(ChatColor.RED + "Red Team");
+		rTeam = scoreboard.registerNewTeam("Red Team");
+		bTeam = scoreboard.registerNewTeam("Blue Team");
+		rTeam.setAllowFriendlyFire(false);
+		bTeam.setAllowFriendlyFire(false);
+		rTeam.setPrefix(ChatColor.RED + "Red Team: ");
+		bTeam.setPrefix(ChatColor.BLUE + "Blue Team: ");
+	}
+	
+	public void assignScoreboard() {
 		for (UUID id : redTeam.getPlayers()) {
 			rTeam.addPlayer(Bukkit.getPlayer(id));
 			Bukkit.getPlayer(id).setScoreboard(scoreboard);
 		}
-		rTeam.setAllowFriendlyFire(false);
-		
-		Team bTeam = scoreboard.registerNewTeam(ChatColor.BLUE + "Blue Team");
 		for (UUID id : blueTeam.getPlayers()) {
 			bTeam.addPlayer(Bukkit.getPlayer(id));
 			Bukkit.getPlayer(id).setScoreboard(scoreboard);
+		}		
+	}
+	
+	public void removeScoreboard() {
+		for (UUID id : redTeam.getPlayers()) {
+			rTeam.removePlayer(Bukkit.getPlayer(id));
+			scoreboard.resetScores(Bukkit.getPlayer(id).getName());
 		}
-		bTeam.setAllowFriendlyFire(false);
+		for (UUID id : blueTeam.getPlayers()) {
+			bTeam.removePlayer(Bukkit.getPlayer(id));
+			scoreboard.resetScores(Bukkit.getPlayer(id).getName());
+		}
 	}
 }
