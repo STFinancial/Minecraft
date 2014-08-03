@@ -19,6 +19,7 @@ import org.bukkit.World.Environment;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -285,24 +286,21 @@ public class Arena implements Runnable {
 	}
 	
 	public void buildScoreboard() {
-		scoreboard.registerNewObjective("Health", "health");
+		Objective objective = scoreboard.registerNewObjective("Health", "health");
+		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 		
 		Team rTeam = scoreboard.registerNewTeam(ChatColor.RED + "Red Team");
 		for (UUID id : redTeam.getPlayers()) {
 			rTeam.addPlayer(Bukkit.getPlayer(id));
+			Bukkit.getPlayer(id).setScoreboard(scoreboard);
 		}
 		rTeam.setAllowFriendlyFire(false);
 		
 		Team bTeam = scoreboard.registerNewTeam(ChatColor.BLUE + "Blue Team");
 		for (UUID id : blueTeam.getPlayers()) {
 			bTeam.addPlayer(Bukkit.getPlayer(id));
+			Bukkit.getPlayer(id).setScoreboard(scoreboard);
 		}
 		bTeam.setAllowFriendlyFire(false);
-		for (UUID id : redTeam.getPlayers()) {
-			Bukkit.getPlayer(id).setScoreboard(scoreboard);
-		}
-		for (UUID id : blueTeam.getPlayers()) {
-			Bukkit.getPlayer(id).setScoreboard(scoreboard);
-		}
 	}
 }
