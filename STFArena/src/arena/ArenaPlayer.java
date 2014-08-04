@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -22,6 +24,7 @@ public class ArenaPlayer {
 	public enum Status {
 		QUEUED, TRYING_TO_QUEUE, IN_GAME, INVITED, CREATING, FREE;
 	}
+	private static final int POTIONLIMIT = 3;
 	private Status status;
 	private String teamFocused;
 	private String matchLocation;
@@ -50,63 +53,45 @@ public class ArenaPlayer {
 
 	public void matchStart(){
 		Player player = Bukkit.getPlayer(uuid);
-
-		//TODO items checking go here
-		Inventory inv = player.getInventory();
-		ItemStack[] contents = inv.getContents();
-		ItemStack[] banned = new ItemStack[11];
-		banned[0] = new ItemStack(Material.ENDER_PEARL, 1);
-		banned[1] = new ItemStack(Material.GOLDEN_APPLE, 1, (short) 1);
-		banned[2] = new ItemStack(Material.GOLDEN_APPLE, 1, (short) 0);
-		banned[3] = new ItemStack(Material.POTION, 1, (short) 8238);
-		banned[4] = new ItemStack(Material.POTION, 1, (short) 8270);
-		banned[5] = new ItemStack(Material.POTION, 1, (short) 16430);
-		banned[6] = new ItemStack(Material.POTION, 1, (short) 16462);
-		banned[7] = new ItemStack(Material.FLINT_AND_STEEL);
-		banned[8] = new ItemStack(Material.BUCKET);
-		banned[9] = new ItemStack(Material.LAVA_BUCKET);
-		banned[10] = new ItemStack(Material.WATER_BUCKET);
+		Set<ItemStack> banned = new HashSet<ItemStack>();
+		Set<ItemStack> allowed = new HashSet<ItemStack>();
+		banned.add(new ItemStack(Material.ENDER_PEARL, 1));
+		banned.add(new ItemStack(Material.GOLDEN_APPLE, 1, (short) 1));
+		banned.add(new ItemStack(Material.GOLDEN_APPLE, 1, (short) 0));
+		banned.add(new ItemStack(Material.POTION, 1, (short) 8238));
+		banned.add(new ItemStack(Material.POTION, 1, (short) 8270));
+		banned.add(new ItemStack(Material.POTION, 1, (short) 16430));
+		banned.add(new ItemStack(Material.POTION, 1, (short) 16462));
+		banned.add(new ItemStack(Material.FLINT_AND_STEEL));
+		banned.add(new ItemStack(Material.BUCKET));
+		banned.add(new ItemStack(Material.LAVA_BUCKET));
+		banned.add(new ItemStack(Material.WATER_BUCKET));
+		int potionsAllowed = POTIONLIMIT;
+		for (ItemStack item : player.getInventory().getContents()) {
+			if (banned.contains(item) == false) {
+				if (item.getType().equals(Material.POTION)) {
+					if (potionsAllowed > 0) {
+						allowed.add(item);
+						potionsAllowed--;
+					}
+					else {
+						player.sendMessage("You have exceeded potion limit!");
+					}
+				}
+				else if (item.getType().equals(Material.ENDER_PEARL)) {
+					player.sendMessage("removed banned item " + item.getType().name());
+				}
+				else {
+					allowed.add(item);
+				}
+			}
+			else {
+				player.sendMessage("removed banned item " + item.getType().name());
+			}
+		}
 		
-		for (int i = 0; i < contents.length; i++) {
-			ItemStack item = contents[i];
-
-			if (item == null) {
-
-			}else{
-				for(ItemStack b:banned){
-					if(item != null){
-						if(item.getType().equals(b.getType())){
-							if(item.getType() == Material.FLINT_AND_STEEL){
-								player.sendMessage("removed banned item " + b.getType());
-								player.getInventory().remove(new ItemStack(item.getType(), item.getAmount(), item.getDurability()));
-							}else if(item.getDurability() == b.getDurability()){
-								player.sendMessage("removed banned item " + b.getType() + ":"  + b.getDurability());
-								player.getInventory().remove(new ItemStack(item.getType(), item.getAmount(), item.getDurability()));
-							}
-						}
-					}
-				}
-			} 
-		}
-		contents = inv.getContents();
-		int counter = 0;
-		for (int i = 0; i < contents.length; i++) {
-			ItemStack item = contents[i];
-
-			if (item == null) {
-
-			}else{
-				if(item.getType().equals(Material.POTION)){
-					counter++;
-					if(counter > 3){
-						player.sendMessage("You exceeded 3 potion limit");
-						contents[i] = null; //Hoping this doesn't throw errors
-					}
-				}
-
-			} 
-		}
-
+		player.getInventory().clear();
+		player.getInventory().addItem(allowed.toArray(new ItemStack[allowed.size()]));
 		player.setHealth(20);
 		player.setFoodLevel(20);
 		player.setSaturation(1);
