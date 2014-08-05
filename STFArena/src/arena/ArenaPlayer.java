@@ -69,7 +69,6 @@ public class ArenaPlayer {
 				if(item != null){
 					if (item.getType().equals(Material.POTION)) {
 						if (potionsAllowed > 0) {
-							allowed.add(item);
 							potionsAllowed--;
 						}
 						else {
