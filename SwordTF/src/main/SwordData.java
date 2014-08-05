@@ -69,7 +69,6 @@ public class SwordData implements Runnable {
 
 	public void blockPerformed() {
 		energy -= ENERGY_PER_BLOCK;
-		score.setScore(energy);
 		if (taskID != -1) {
 			scheduler.cancelTask(taskID);
 		}

@@ -1,6 +1,7 @@
 package main;
 
 import org.bukkit.Sound;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,11 +15,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class EventManager implements Listener {
-	private final SwordMain plugin;
 	private final DataManager dataManager;
 
 	public EventManager(SwordMain plugin, DataManager dataManager) {
-		this.plugin = plugin;
 		this.dataManager = dataManager;
 	}
 
@@ -79,8 +78,6 @@ public class EventManager implements Listener {
 					if(event.getEntityType() != EntityType.CREEPER && event.getEntityType() != EntityType.FIREBALL && event.getEntityType() != EntityType.SPLASH_POTION 
 							&& event.getEntityType() != EntityType.PRIMED_TNT && event.getEntityType() != EntityType.FALLING_BLOCK ){
 						dataManager.criticalBlocked(player);
-						//plugin.getLogger().info("Critical BLOCK!!!!!!!!!!!!!!");
-						//player.sendMessage("Blocked!");
 						event.setCancelled(true);
 						if(event.getDamager() instanceof Player){
 							((Player) event.getDamager()).playSound(player.getLocation(), Sound.ANVIL_LAND, 1, 1.0f+(float)Math.random());
@@ -92,18 +89,31 @@ public class EventManager implements Listener {
 
 			}
 		}
+		
+
+		if(event.isCancelled() == false && event.getDamager() instanceof Arrow){
+			Arrow arrow = (Arrow) event.getDamager();
+			if(event.getEntity() instanceof Player && arrow.getShooter() instanceof Player){
+				
+				if(arrow.getLocation().getY() > (event.getEntity().getLocation().getY() + 1.6)){
+					event.setDamage(event.getDamage() * 1.5);
+				}else{
+					event.setDamage(event.getDamage() * 1.25);
+				}
+			}
+			
+			
+			
+		}
 	}
 
 	@EventHandler
 	private void onPlayerAnimation(PlayerAnimationEvent event) {
 		if (holdingSword(event.getPlayer())) {
 			Player player = event.getPlayer();
-			//plugin.getLogger().info(event.getPlayer().getName() + " Has just tried to swing with " + dataManager.currentEnergy(player) + " energy");
 			if (dataManager.canPlayerSwing(player)) {
 				dataManager.swing(player);
-				//plugin.getLogger().info("And it was good, now at " + dataManager.currentEnergy(player) + " energy");
 			} else {
-				//plugin.getLogger().info("Not enough energy");
 				event.setCancelled(true);
 			}
 		}
