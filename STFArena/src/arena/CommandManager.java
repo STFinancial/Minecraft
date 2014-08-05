@@ -71,7 +71,7 @@ public class CommandManager implements CommandExecutor {
 					player.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
 					break;
 				case "top":
-					displayTeams(player, dataManager.arenaLadder.getTop(5));
+					displayTeams(player, dataManager.arenaLadder.getTop());
 					break;
 				default:
 					help(player, args);

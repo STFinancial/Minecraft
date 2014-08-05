@@ -30,12 +30,10 @@ public class Ladder {
 		return ladder;
 	}
 	
-	public ArrayList<ArenaTeam> getTop(int index) {
-		if (index > ladder.size()) {
-			return (ArrayList<ArenaTeam>) ladder.subList(0, ladder.size());
-		} else {
-			return (ArrayList<ArenaTeam>) ladder.subList(0, index);
-		}
+	public ArrayList<ArenaTeam> getTop() {
+		
+			return (ArrayList<ArenaTeam>) ladder.subList(0, 5);
+		
 		
 	}
 	
