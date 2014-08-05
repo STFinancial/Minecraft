@@ -73,22 +73,22 @@ public class ArenaPlayer {
 						}
 						else {
 							player.sendMessage("You have exceeded potion limit!");
-							item = null;
+							item = new ItemStack(Material.AIR);
 						}
 					}
 					else if (item.getType().equals(Material.ENDER_PEARL)) {
 						player.sendMessage("removed banned item " + item.getType().name());
-						item = null;
+						item = new ItemStack(Material.AIR);
 					}
 					else if (item.getType().equals(Material.GOLDEN_APPLE)) {
 						player.sendMessage("removed banned item " + item.getType().name());
-						item = null;
+						item = new ItemStack(Material.AIR);
 					}
 				}
 			}
 			else {
 				player.sendMessage("removed banned item " + item.getType().name());
-				item = null;
+				item = new ItemStack(Material.AIR);
 			}
 				allowed.add(item);
 		}
