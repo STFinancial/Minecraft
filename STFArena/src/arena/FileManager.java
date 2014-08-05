@@ -1,11 +1,15 @@
 package arena;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 public class FileManager {
 	private static File arenaFolder;
@@ -67,6 +71,25 @@ public class FileManager {
 			}
 		}
 		return arenaTeams;
+	}
+	
+	public void save(ArenaTeam team) {
+		YamlConfiguration arenaConfiguration = YamlConfiguration.loadConfiguration(team.getFile());
+		arenaConfiguration.set("name", team.getName());
+		arenaConfiguration.set("win", team.getNumberOfWins());
+		arenaConfiguration.set("loss", team.getNumberOfLosses());
+		arenaConfiguration.set("rating", team.getRating());
+		arenaConfiguration.set("size", team.getSize());
+		List<String> playerList = new ArrayList<String>();
+		for (UUID playerUuid : team.getPlayers()) {
+			playerList.add(playerUuid.toString());
+		}
+		arenaConfiguration.set("players", playerList);
+		try {
+			arenaConfiguration.save(team.getFile());
+		} catch (IOException e) {
+			Bukkit.getLogger().info("Unable to save Arena file for " + team.getName());
+		}
 	}
 	
 	public ArrayList<Arena> loadArenas(Main plugin) {

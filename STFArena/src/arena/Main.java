@@ -15,10 +15,6 @@ public class Main extends JavaPlugin {
 		fileManager = new FileManager();
 		dataManager = new DataManager(this);
 		
-		dataManager.arenaTeams = fileManager.loadArenaTeams();
-		dataManager.updateLadder();
-		
-		
 		eventManager = new EventManager(this, dataManager);
 		this.getServer().getPluginManager().registerEvents(eventManager, this);
 		commandManager = new CommandManager(this, dataManager);

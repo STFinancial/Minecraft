@@ -44,24 +44,7 @@ public class ArenaTeam {
 		}
 	}
 	
-	public void save() {
-		YamlConfiguration arenaConfiguration = YamlConfiguration.loadConfiguration(arenaFile);
-		arenaConfiguration.set("name", name);
-		arenaConfiguration.set("win", win);
-		arenaConfiguration.set("loss", loss);
-		arenaConfiguration.set("rating", rating);
-		arenaConfiguration.set("size", size);
-		List<String> playerList = new ArrayList<String>();
-		for (UUID playerUuid : players) {
-			playerList.add(playerUuid.toString());
-		}
-		arenaConfiguration.set("players", playerList);
-		try {
-			arenaConfiguration.save(arenaFile);
-		} catch (IOException e) {
-			Bukkit.getLogger().info("Unable to save Arena file for " + name);
-		}
-	}
+	
 
 	public ArenaTeam addPlayer(Player player) {
 		players.add(player.getUniqueId());
@@ -79,6 +62,10 @@ public class ArenaTeam {
 	public double getRating() {
 		return rating;
 	}
+	
+	File getFile() {
+		return arenaFile;
+	}
 
 	public String getName() {
 		return name;
@@ -93,6 +80,14 @@ public class ArenaTeam {
 	
 	public int getNumberOfGames() {
 		return win + loss;
+	}
+	
+	public int getNumberOfWins() {
+		return win;
+	}
+	
+	public int getNumberOfLosses() {
+		return loss;
 	}
 
 	public String toString() {
@@ -135,5 +130,9 @@ public class ArenaTeam {
 			Bukkit.getPlayer(p).sendMessage("Your arena team " + name + " now has a " + (int) rating + " rating");
 			Bukkit.getPlayer(p).sendMessage(getRecord());
 		}
+	}
+	
+	public boolean equals(ArenaTeam team) {
+		return team.getName().equals(name);
 	}
 }

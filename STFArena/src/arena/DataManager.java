@@ -1,7 +1,5 @@
 package arena;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -16,12 +14,14 @@ public class DataManager {
 	Map<String, ArenaTeam> arenaTeams;
 	Map<UUID, ArenaPlayer> arenaPlayers;
 	Map<String, ArenaTeam> beingCreated;
-	ArrayList<ArenaTeam> arenaLadder;
+	Ladder arenaLadder;
 
 	public DataManager(Main plugin) {
 		this.plugin = plugin;
 		arenaPlayers = new HashMap<UUID, ArenaPlayer>();
 		beingCreated = new HashMap<String, ArenaTeam>();
+		arenaTeams = plugin.getFileManager().loadArenaTeams();
+		arenaLadder = new Ladder(arenaTeams);
 		load();
 	}
 
@@ -32,8 +32,9 @@ public class DataManager {
 	}
 
 	public void quit() {
+		FileManager fm = plugin.getFileManager();
 		for (ArenaTeam team : arenaTeams.values()) {
-			team.save();
+			fm.save(team);
 		}
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			remove(player);
@@ -299,47 +300,6 @@ public class DataManager {
 		return getPlayer(p1).getFocus().equals(getPlayer(p2).getFocus());
 	}
 	
-	public ArrayList<ArenaTeam> getLadder() {
-		ArrayList<ArenaTeam> ladder = new ArrayList<ArenaTeam>();
-		
-		for (Map.Entry<String, ArenaTeam> entry: arenaTeams.entrySet()) {
-			ladder.add(entry.getValue());
-		}
-		
-		boolean swapped = true;
-		int length = arenaTeams.size();
-		while (!swapped) {
-			swapped = false;
-			for (int i = 1; i < length; ++i) {
-				if (ladder.get(i - 1).getRating() < ladder.get(i).getRating()) {
-					Collections.swap(ladder, i, i-1);
-					swapped = true;
-				}
-			}
-			length = length - 1;
-		}
-		
-		return ladder;
-	}
 	
-	public void updateLadder() {
-		if (arenaLadder == null) {
-			arenaLadder = getLadder();
-		} else {
-			//TODO: Update the arena ladder by sorting it or adding teams or something
-		}
-	}
-	
-	public ArrayList<ArenaTeam> getTop() {
-		updateLadder();
-		ArrayList<ArenaTeam> top = new ArrayList<ArenaTeam>();
-		top.add(arenaLadder.get(0));
-		top.add(arenaLadder.get(1));
-		top.add(arenaLadder.get(2));
-		top.add(arenaLadder.get(3));
-		top.add(arenaLadder.get(4));
-		return top;
-	}
-	 
 
 }
