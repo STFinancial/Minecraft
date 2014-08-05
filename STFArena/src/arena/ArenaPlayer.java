@@ -79,11 +79,11 @@ public class ArenaPlayer {
 					}
 					else if (item.getType().equals(Material.ENDER_PEARL)) {
 						player.sendMessage("removed banned item " + item.getType().name());
-						item = null
+						item = null;
 					}
 					else if (item.getType().equals(Material.GOLDEN_APPLE)) {
 						player.sendMessage("removed banned item " + item.getType().name());
-						item = null
+						item = null;
 					}
 				}
 			}
