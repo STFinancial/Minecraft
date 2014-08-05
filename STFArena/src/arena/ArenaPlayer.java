@@ -55,9 +55,6 @@ public class ArenaPlayer {
 		Player player = Bukkit.getPlayer(uuid);
 		Set<ItemStack> banned = new HashSet<ItemStack>();
 		Set<ItemStack> allowed = new HashSet<ItemStack>();
-		banned.add(new ItemStack(Material.ENDER_PEARL, 1));
-		banned.add(new ItemStack(Material.GOLDEN_APPLE, 1, (short) 1));
-		banned.add(new ItemStack(Material.GOLDEN_APPLE, 1, (short) 0));
 		banned.add(new ItemStack(Material.POTION, 1, (short) 8238));
 		banned.add(new ItemStack(Material.POTION, 1, (short) 8270));
 		banned.add(new ItemStack(Material.POTION, 1, (short) 16430));
@@ -69,25 +66,32 @@ public class ArenaPlayer {
 		int potionsAllowed = POTIONLIMIT;
 		for (ItemStack item : player.getInventory().getContents()) {
 			if (banned.contains(item) == false) {
-				if (item.getType().equals(Material.POTION)) {
-					if (potionsAllowed > 0) {
-						allowed.add(item);
-						potionsAllowed--;
+				if(item != null){
+					if (item.getType().equals(Material.POTION)) {
+						if (potionsAllowed > 0) {
+							allowed.add(item);
+							potionsAllowed--;
+						}
+						else {
+							player.sendMessage("You have exceeded potion limit!");
+							item = null;
+						}
 					}
-					else {
-						player.sendMessage("You have exceeded potion limit!");
+					else if (item.getType().equals(Material.ENDER_PEARL)) {
+						player.sendMessage("removed banned item " + item.getType().name());
+						item = null
 					}
-				}
-				else if (item.getType().equals(Material.ENDER_PEARL)) {
-					player.sendMessage("removed banned item " + item.getType().name());
-				}
-				else {
-					allowed.add(item);
+					else if (item.getType().equals(Material.GOLDEN_APPLE)) {
+						player.sendMessage("removed banned item " + item.getType().name());
+						item = null
+					}
 				}
 			}
 			else {
 				player.sendMessage("removed banned item " + item.getType().name());
+				item = null;
 			}
+				allowed.add(item);
 		}
 		
 		player.getInventory().clear();
