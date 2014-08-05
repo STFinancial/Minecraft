@@ -53,8 +53,8 @@ public class ArenaPlayer {
 
 	public void matchStart(){
 		Player player = Bukkit.getPlayer(uuid);
+		ItemStack[] allowed = player.getInventory().getContents();
 		Set<ItemStack> banned = new HashSet<ItemStack>();
-		Set<ItemStack> allowed = new HashSet<ItemStack>();
 		banned.add(new ItemStack(Material.POTION, 1, (short) 8238));
 		banned.add(new ItemStack(Material.POTION, 1, (short) 8270));
 		banned.add(new ItemStack(Material.POTION, 1, (short) 16430));
@@ -64,37 +64,34 @@ public class ArenaPlayer {
 		banned.add(new ItemStack(Material.LAVA_BUCKET));
 		banned.add(new ItemStack(Material.WATER_BUCKET));
 		int potionsAllowed = POTIONLIMIT;
-		for (ItemStack item : player.getInventory().getContents()) {
-			if (banned.contains(item) == false) {
-				if(item != null){
-					if (item.getType().equals(Material.POTION)) {
+		for (int i = 0; i < allowed.length; i++) {
+			if (allowed[i] != null) {
+				if (banned.contains(allowed[i])) {
+					player.sendMessage("removed banned item " + allowed[i].getType().name());
+					player.getInventory().setItem(i, null);	
+				}
+				else {
+					if (allowed[i].getType().equals(Material.POTION)) {
 						if (potionsAllowed > 0) {
 							potionsAllowed--;
 						}
 						else {
 							player.sendMessage("You have exceeded potion limit!");
-							item = new ItemStack(Material.AIR);
+							player.getInventory().setItem(i, null);	
 						}
 					}
-					else if (item.getType().equals(Material.ENDER_PEARL)) {
-						player.sendMessage("removed banned item " + item.getType().name());
-						item = new ItemStack(Material.AIR);
+					else if (allowed[i].getType().equals(Material.ENDER_PEARL)) {
+						player.sendMessage("removed banned item " + allowed[i].getType().name());
+						player.getInventory().setItem(i, null);
 					}
-					else if (item.getType().equals(Material.GOLDEN_APPLE)) {
-						player.sendMessage("removed banned item " + item.getType().name());
-						item = new ItemStack(Material.AIR);
+					else if (allowed[i].getType().equals(Material.GOLDEN_APPLE)) {
+						player.sendMessage("removed banned item " + allowed[i].getType().name());
+						player.getInventory().setItem(i, null);
 					}
 				}
 			}
-			else {
-				player.sendMessage("removed banned item " + item.getType().name());
-				item = new ItemStack(Material.AIR);
-			}
-				allowed.add(item);
 		}
 		
-		player.getInventory().clear();
-		player.getInventory().addItem(allowed.toArray(new ItemStack[allowed.size()]));
 		player.setHealth(20);
 		player.setFoodLevel(20);
 		player.setSaturation(1);
