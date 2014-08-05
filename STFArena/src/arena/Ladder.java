@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
+
 public class Ladder {
 	
 	private ArrayList<ArenaTeam> ladder;
@@ -30,8 +32,7 @@ public class Ladder {
 	
 	public ArrayList<ArenaTeam> getTop(int index) {
 		if (index > ladder.size()) {
-			System.out.println("Index cannot be larger than the size of the list");
-			return null;
+			return (ArrayList<ArenaTeam>) ladder.subList(0, ladder.size());
 		} else {
 			return (ArrayList<ArenaTeam>) ladder.subList(0, index);
 		}

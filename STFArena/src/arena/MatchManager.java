@@ -98,6 +98,7 @@ public class MatchManager {
 
 
 		updateELO(winners, losers);
+		dataManager.arenaLadder.sortLadder();
 		
 		for(UUID p:winners.getPlayers()){
 			if(Bukkit.getPlayer(p).isOnline()){
