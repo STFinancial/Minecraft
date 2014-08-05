@@ -101,10 +101,8 @@ public class EventManager implements Listener {
 					event.setDamage(event.getDamage() * 1.25);
 				}
 			}
-			
-			
-			
 		}
+		
 	}
 
 	@EventHandler
