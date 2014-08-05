@@ -142,7 +142,7 @@ public class Arena implements Runnable {
 		int distance = (int) Math.ceil(redSpawn.distance(blueSpawn));
 		int x = Math.min(redSpawn.getBlockX(), blueSpawn.getBlockX()) - distance;
 		int z = Math.min(redSpawn.getBlockZ(), blueSpawn.getBlockZ()) - distance;
-		int maxX = Math.max(redSpawn.getBlockX(), blueSpawn.getBlockZ()) + distance;
+		int maxX = Math.max(redSpawn.getBlockX(), blueSpawn.getBlockX()) + distance;
 		int maxZ = Math.max(redSpawn.getBlockZ(), blueSpawn.getBlockZ()) + distance;
 		for(; x < maxX; x++) {
 			for (; z < maxZ; z++) {
