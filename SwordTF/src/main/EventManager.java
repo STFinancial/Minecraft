@@ -59,19 +59,17 @@ public class EventManager implements Listener {
 
 	@EventHandler
 	private void onDamage(EntityDamageByEntityEvent event) {
-		if(event.isCancelled() == false){
-			if (event.getDamager() instanceof Player) {
-				Player damager = (Player) event.getDamager();
-				if (holdingSword(damager)) {
-					if (dataManager.canPlayerDamage(damager)) {
-					} else {
-						event.setCancelled(true);
-					}
+		if (event.getDamager() instanceof Player) {
+			Player damager = (Player) event.getDamager();
+			if (holdingSword(damager)) {
+				if (dataManager.canPlayerDamage(damager)) {
+				} else {
+					event.setCancelled(true);
 				}
 			}
 		}
 
-		if(event.isCancelled() == false && event.getEntity() instanceof Player){
+		if(event.getEntity() instanceof Player){
 			Player player = (Player) event.getEntity();
 			if(player.isBlocking()){
 				if(dataManager.canCriticalBlock(player)){
@@ -91,7 +89,7 @@ public class EventManager implements Listener {
 		}
 		
 
-		if(event.isCancelled() == false && event.getDamager() instanceof Arrow){
+		if(event.getDamager() instanceof Arrow){
 			Arrow arrow = (Arrow) event.getDamager();
 			if(event.getEntity() instanceof Player && arrow.getShooter() instanceof Player){
 				
