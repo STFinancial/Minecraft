@@ -123,20 +123,20 @@ public class EventManager implements Listener {
 //		}
 //	}
 
-//	@EventHandler
-//	private void friendlyPotionEffect(PotionSplashEvent event) {
-//		if (inArenaWorld(event.getEntity())) {
-//			PotionEffect potionEffect = event.getPotion().getEffects().iterator().next();
-//			Player thrower = (Player) event.getPotion().getShooter();
-//			for (LivingEntity entity : event.getAffectedEntities()) {
-//				if (ArenaPotion.isFriendly(potionEffect.getType().toString())) {
-//					if (dataManager.areAllies(thrower, (Player) entity) == false) {
-//						event.setIntensity(entity, 0);
-//					}
-//				}
-//			}			
-//		}
-//	}
+	@EventHandler
+	private void friendlyPotionEffect(PotionSplashEvent event) {
+		if (inArenaWorld(event.getEntity())) {
+			PotionEffect potionEffect = event.getPotion().getEffects().iterator().next();
+			Player thrower = (Player) event.getPotion().getShooter();
+			for (LivingEntity entity : event.getAffectedEntities()) {
+				if (ArenaPotion.isFriendly(potionEffect.getType().toString())) {
+					if (dataManager.areAllies(thrower, (Player) entity) == false) {
+						event.setIntensity(entity, 0);
+					}
+				}
+			}			
+		}
+	}
 
 	@EventHandler
 	private void onPlayerRespawn(PlayerRespawnEvent event) {
