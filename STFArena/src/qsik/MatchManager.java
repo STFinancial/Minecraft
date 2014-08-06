@@ -1,6 +1,10 @@
 package qsik;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -10,35 +14,44 @@ import org.bukkit.entity.Player;
 import arena.ArenaPlayer.Status;
 import arena.ArenaTeam;
 import arena.DataManager;
+import arena.QueueManager;
 
 public class MatchManager {
-	private DataManager dataManager;
-	ArrayList<Arena> arena2sUsed = new ArrayList<Arena>();
-	ArrayList<Arena> arena3sUsed = new ArrayList<Arena>();
-	ArrayList<Arena> arena5sUsed = new ArrayList<Arena>();
-	ArrayList<Arena> arena2sFree = new ArrayList<Arena>();
-	ArrayList<Arena> arena3sFree = new ArrayList<Arena>();
-	ArrayList<Arena> arena5sFree = new ArrayList<Arena>();
 	public enum MatchStatus {
 		IN_PROGRESS, RED_WON, BLUE_WON;
 	}
+	private final QueueManager queueManager;
+	private final Set<Arena> availableArenas = new HashSet<Arena>();
+	private final Set<ArenaMatch> matches = new HashMap<ArenaMatch>();
 
-	public MatchManager(Main plugin, DataManager dataManager) {
-		this.dataManager = dataManager;
+	public MatchManager(QueueManager queueManager) {
+		this.queueManager = queueManager;
 	}
 
-	public void add(ArenaTeam t1, ArenaTeam t2) {
-		switch (t1.getSize()) {
-		case 2:
-			add(t1, t2, arena2sFree, arena2sUsed);
-			break;
-		case 3:
-			add(t1, t2, arena3sFree, arena3sUsed);
-			break;
-		default:
-			add(t1, t2, arena5sFree, arena5sUsed);
-			break;
+	public boolean createMatch(ArenaTeam redTeam, ArenaTeam blueTeam) {
+		for (Arena arena : availableArenas) {
+			if (redTeam.getSize() == arena.size()) {
+				for (UUID id : redTeam.getPlayers()) {
+					matches.put(id, arena);
+				}
+				for (UUID id : blueTeam.getPlayers()) {
+					matches.put(id, arena);
+				}
+				return true;
+			}
 		}
+		return false;
+	}
+	
+	public void recordDeath(UUID id) {
+		MatchStatus status = matches.get(id).recordDeath(id);
+		if (status.equals(MatchStatus.BLUE_WON) || status.equals(MatchStatus.RED_WON)) {
+			endMatch(status);
+		}
+	}
+	
+	private void endMatch(MatchStatus status) {
+		
 	}
 
 	private void add(ArenaTeam t1, ArenaTeam t2, ArrayList<Arena> possibleArenas, ArrayList<Arena> usedArenas) {
