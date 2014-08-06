@@ -16,7 +16,6 @@ import org.bukkit.World;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
@@ -43,7 +42,7 @@ public class ArenaPlayer {
 		teams = new ArrayList<String>();
 		name = player.getName();
 		uuid = player.getUniqueId();
-		playerFile = new File(fileManager.getPlayersFolder().getPath() + "/" + name + ".yml");
+		playerFile = new File(FileManager.getPlayersFolder().getPath() + "/" + name + ".yml");
 		playerData = YamlConfiguration.loadConfiguration(playerFile);
 		if (playerFile.exists()) {
 			saved = true;

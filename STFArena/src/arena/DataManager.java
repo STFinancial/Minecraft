@@ -20,7 +20,7 @@ public class DataManager {
 		this.plugin = plugin;
 		arenaPlayers = new HashMap<UUID, ArenaPlayer>();
 		beingCreated = new HashMap<String, ArenaTeam>();
-		arenaTeams = plugin.getFileManager().loadArenaTeams();
+		arenaTeams = FileManager.loadArenaTeams();
 		arenaLadder = new Ladder(arenaTeams);
 		load();
 	}
@@ -32,9 +32,8 @@ public class DataManager {
 	}
 
 	public void quit() {
-		FileManager fm = plugin.getFileManager();
 		for (ArenaTeam team : arenaTeams.values()) {
-			fm.save(team);
+			FileManager.save(team);
 		}
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			remove(player);

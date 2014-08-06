@@ -1,7 +1,6 @@
 package arena;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +9,6 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.Team;
 
 public class ArenaTeam {
 	private final String name;
@@ -28,7 +24,8 @@ public class ArenaTeam {
 		this.size = size;
 		win = loss = 0;
 		rating = 1200;
-		arenaFile = new File(plugin.getFileManager().getTeamsFolder().getPath() + "/" + name + ".yml");
+		plugin.getFileManager();
+		arenaFile = new File(FileManager.getTeamsFolder().getPath() + "/" + name + ".yml");
 	}
 	
 	public ArenaTeam(File arenaFile) {
