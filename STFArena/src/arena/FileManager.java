@@ -16,55 +16,58 @@ public class FileManager {
 	private static File teamsFolder;
 	private static File playersFolder;
 	private static File mapsFolder;
-	
-	public FileManager() {
-		arenaFolder = new File(new File("").getAbsolutePath() + "/plugins/STFArena");
-		if (arenaFolder.exists() == false) {
-			if (arenaFolder.mkdir() == false) {
-				Bukkit.getLogger().info("Unable to create Arena folder");
+		
+	public static File getArenaFolder() {
+		if (arenaFolder == null) {
+			arenaFolder = new File(new File("").getAbsolutePath() + "/plugins/STFArena");
+			if (arenaFolder.exists() == false) {
+				if (arenaFolder.mkdir() == false) {
+					Bukkit.getLogger().info("Unable to create Arena folder");
+				}
 			}
 		}
-		teamsFolder = new File(arenaFolder.getPath() + "/Teams");
-		if (teamsFolder.exists() == false) {
-			if (teamsFolder.mkdir() == false) {
-				Bukkit.getLogger().info("Unable to create Teams folder");
-			}
-		}
-		playersFolder = new File(arenaFolder.getPath() + "/Players");
-		if (playersFolder.exists() == false) {
-			if (playersFolder.mkdir() == false) {
-				Bukkit.getLogger().info("Unable to create Players folder");
-			}
-		}
-		mapsFolder = new File(arenaFolder.getPath() + "/Maps");
-		if (mapsFolder.exists() == false) {
-			if (mapsFolder.mkdir() == false) {
-				Bukkit.getLogger().info("Unable to create Maps folder");
-			}
-		}
-		//loadArenaTeams();
-		//loadArenas();
-	}
-	
-	public File getArenaFolder() {
 		return arenaFolder;
 	}
-	
-	public File getTeamsFolder() {
+
+	public static File getTeamsFolder() {
+		if (teamsFolder == null) {
+			teamsFolder = new File(arenaFolder.getPath() + "/Teams");
+			if (teamsFolder.exists() == false) {
+				if (teamsFolder.mkdir() == false) {
+					Bukkit.getLogger().info("Unable to create Teams folder");
+				}
+			}
+		}
 		return teamsFolder;
 	}
-	
-	public File getPlayersFolder() {
+
+	public static File getPlayersFolder() {
+		if (playersFolder == null) {
+			playersFolder = new File(arenaFolder.getPath() + "/Players");
+			if (playersFolder.exists() == false) {
+				if (playersFolder.mkdir() == false) {
+					Bukkit.getLogger().info("Unable to create Players folder");
+				}
+			}
+		}
 		return playersFolder;
 	}
-	
-	public File getMapsFolder() {
+
+	public static File getMapsFolder() {
+		if (mapsFolder == null) {
+			mapsFolder = new File(arenaFolder.getPath() + "/Maps");
+			if (mapsFolder.exists() == false) {
+				if (mapsFolder.mkdir() == false) {
+					Bukkit.getLogger().info("Unable to create Maps folder");
+				}
+			}
+		}
 		return mapsFolder;
 	}
-	
-	public Map<String, ArenaTeam> loadArenaTeams() {
+
+	public static Map<String, ArenaTeam> loadArenaTeams() {
 		Map<String, ArenaTeam> arenaTeams = new HashMap<String, ArenaTeam>();
-		for (File arenaFile : teamsFolder.listFiles()) {
+		for (File arenaFile : getTeamsFolder().listFiles()) {
 			if (arenaFile.isFile() && arenaFile.getAbsolutePath().contains(".yml")) {
 				ArenaTeam team = new ArenaTeam(arenaFile);
 				arenaTeams.put(team.getName(), team);				
@@ -73,7 +76,7 @@ public class FileManager {
 		return arenaTeams;
 	}
 	
-	public void save(ArenaTeam team) {
+	public static void save(ArenaTeam team) {
 		YamlConfiguration arenaConfiguration = YamlConfiguration.loadConfiguration(team.getFile());
 		arenaConfiguration.set("name", team.getName());
 		arenaConfiguration.set("win", team.getNumberOfWins());
@@ -92,9 +95,9 @@ public class FileManager {
 		}
 	}
 	
-	public ArrayList<Arena> loadArenas(Main plugin) {
+	public static ArrayList<Arena> loadArenas(Main plugin) {
 		ArrayList<Arena> arenas = new ArrayList<Arena>();
-		for (File arenaFile: mapsFolder.listFiles()) {
+		for (File arenaFile: getMapsFolder().listFiles()) {
 			if (arenaFile.isFile() && arenaFile.getAbsolutePath().contains(".yml")) {
 				Arena arena  = new Arena(arenaFile, plugin);
 				arenas.add(arena);
