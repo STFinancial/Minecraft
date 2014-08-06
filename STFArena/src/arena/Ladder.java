@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 
-import org.bukkit.Bukkit;
-
 public class Ladder {
 	
 	private ArrayList<ArenaTeam> ladder;

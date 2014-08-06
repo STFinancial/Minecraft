@@ -1,4 +1,4 @@
-package arena;
+package qsik;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -8,6 +8,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import arena.ArenaPlayer.Status;
+import arena.ArenaTeam;
+import arena.DataManager;
 
 public class MatchManager {
 	private DataManager dataManager;
@@ -17,6 +19,9 @@ public class MatchManager {
 	ArrayList<Arena> arena2sFree = new ArrayList<Arena>();
 	ArrayList<Arena> arena3sFree = new ArrayList<Arena>();
 	ArrayList<Arena> arena5sFree = new ArrayList<Arena>();
+	public enum MatchStatus {
+		IN_PROGRESS, RED_WON, BLUE_WON;
+	}
 
 	public MatchManager(Main plugin, DataManager dataManager) {
 		this.dataManager = dataManager;
