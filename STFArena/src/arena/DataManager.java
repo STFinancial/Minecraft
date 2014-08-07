@@ -1,7 +1,5 @@
-package main;
+package arena;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -9,20 +7,21 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import arena.ArenaPlayer;
-import arena.ArenaTeam;
+import arena.ArenaPlayer.Status;
 
 public class DataManager {
-	private final STFArena plugin;
+	private final Main plugin;
 	Map<String, ArenaTeam> arenaTeams;
 	Map<UUID, ArenaPlayer> arenaPlayers;
 	Map<String, ArenaTeam> beingCreated;
-	ArrayList<ArenaTeam> arenaLadder;
+	Ladder arenaLadder;
 
-	public DataManager(STFArena plugin) {
+	public DataManager(Main plugin) {
 		this.plugin = plugin;
 		arenaPlayers = new HashMap<UUID, ArenaPlayer>();
 		beingCreated = new HashMap<String, ArenaTeam>();
+		arenaTeams = FileManager.loadArenaTeams();
+		arenaLadder = new Ladder(arenaTeams);
 		load();
 	}
 
@@ -34,7 +33,7 @@ public class DataManager {
 
 	public void quit() {
 		for (ArenaTeam team : arenaTeams.values()) {
-			team.save();
+			FileManager.save(team);
 		}
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			remove(player);
@@ -42,10 +41,10 @@ public class DataManager {
 	}
 
 	public void add(Player player) {
-		arenaPlayers.put(player.getUniqueId(), new ArenaPlayer(player));
+		arenaPlayers.put(player.getUniqueId(), new ArenaPlayer(player, plugin.getFileManager()));
 		for (ArenaTeam t : arenaTeams.values()) {
 			if (t.getPlayers().contains(player.getUniqueId()))
-				getPlayer(player).addTeam(t.name());
+				getPlayer(player).addTeam(t.getName());
 		}
 	}
 
@@ -131,7 +130,6 @@ public class DataManager {
 	}
 
 	public void queue(Player player, String teamName) {
-
 		getPlayer(player).setStatus(Status.TRYING_TO_QUEUE);
 		getPlayer(player).setFocus(teamName);
 		ArenaTeam t = getTeam(teamName);
@@ -139,10 +137,6 @@ public class DataManager {
 			Bukkit.getPlayer(p).sendMessage(player.getName() + " has queued for " + t.getSize() + "s on: " + teamName);
 		}
 		if (teamReadyToQueue(teamName)) {
-			for (UUID p : t.getPlayers()) {
-				Bukkit.getPlayer(p).sendMessage("Your team " + t.getName() + " has entered queue for " + t.getSize() + "s");
-				getPlayer(p).setStatus(Status.QUEUED);
-			}
 			plugin.getQueueManager().addTeamToQueue(t);
 		}
 
@@ -305,36 +299,6 @@ public class DataManager {
 		return getPlayer(p1).getFocus().equals(getPlayer(p2).getFocus());
 	}
 	
-	public ArrayList<ArenaTeam> getLadder() {
-		ArrayList<ArenaTeam> ladder = new ArrayList<ArenaTeam>();
-		
-		for (Map.Entry<String, ArenaTeam> entry: arenaTeams.entrySet()) {
-			ladder.add(entry.getValue());
-		}
-		
-		boolean swapped = true;
-		int length = arenaTeams.size();
-		while (!swapped) {
-			swapped = false;
-			for (int i = 1; i < length; ++i) {
-				if (ladder.get(i - 1).getRating() < ladder.get(i).getRating()) {
-					Collections.swap(ladder, i, i-1);
-					swapped = true;
-				}
-			}
-			length = length - 1;
-		}
-		
-		return ladder;
-	}
 	
-	public void updateLadder() {
-		if (arenaLadder == null) {
-			arenaLadder = getLadder();
-		} else {
-			//TODO: Update the arena ladder by sorting it or adding teams or something
-		}
-	}
-	 
 
 }

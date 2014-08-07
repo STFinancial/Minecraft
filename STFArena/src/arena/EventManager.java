@@ -1,14 +1,12 @@
-package main;
+package arena;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Tameable;
 import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
@@ -26,6 +24,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.potion.PotionEffect;
+
+import arena.ArenaPlayer.Status;
 
 public class EventManager implements Listener {
 	private static enum ArenaPotion {
@@ -61,11 +61,10 @@ public class EventManager implements Listener {
 //			}
 //		}	
 	};
-	
-	private final STFArena plugin;
+	private final Main plugin;
 	private final DataManager dataManager;
 
-	public EventManager(STFArena plugin, DataManager dataManager) {
+	public EventManager(Main plugin, DataManager dataManager) {
 		this.plugin = plugin;
 		this.dataManager = dataManager;
 	}
@@ -100,27 +99,27 @@ public class EventManager implements Listener {
 
 	}
 
-	@EventHandler
-	private void preventFriendlyFire(EntityDamageByEntityEvent event) {
-		if (inArenaWorld(event.getEntity())) {
-			if (event.getEntity() instanceof Player) {
-				Player target = (Player) event.getEntity();
-				if (event.getDamager() instanceof Projectile) {
-					Projectile missile = (Projectile) event.getDamager();
-					if (missile.getShooter() instanceof Player) {
-						if (dataManager.areAllies((Player) missile.getShooter(), target)) {
-							event.setCancelled(true);
-						}
-					}
-				}
-				else if (event.getDamager() instanceof Player) {
-					if (dataManager.areAllies((Player) event.getDamager(), target)) {
-						event.setCancelled(true);
-					}
-				}
-			}
-		}
-	}
+//	@EventHandler
+//	private void preventFriendlyFire(EntityDamageByEntityEvent event) {
+//		if (inArenaWorld(event.getEntity())) {
+//			if (event.getEntity() instanceof Player) {
+//				Player target = (Player) event.getEntity();
+//				if (event.getDamager() instanceof Projectile) {
+//					Projectile missile = (Projectile) event.getDamager();
+//					if (missile.getShooter() instanceof Player) {
+//						if (dataManager.areAllies((Player) missile.getShooter(), target)) {
+//							event.setCancelled(true);
+//						}
+//					}
+//				}
+//				else if (event.getDamager() instanceof Player) {
+//					if (dataManager.areAllies((Player) event.getDamager(), target)) {
+//						event.setCancelled(true);
+//					}
+//				}
+//			}
+//		}
+//	}
 
 	@EventHandler
 	private void friendlyPotionEffect(PotionSplashEvent event) {

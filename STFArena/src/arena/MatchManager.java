@@ -1,52 +1,39 @@
-package main;
+package arena;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import arena.Arena;
-import arena.ArenaMatch;
-import arena.ArenaTeam;
+import arena.ArenaPlayer.Status;
 
-public class MatchManager implements Runnable {
-	private final Set<Arena> available = new HashSet<Arena>();
-	private final Set<Arena> unavailable = new HashSet<Arena>();
-	private final Set<ArenaMatch> matches = new HashSet<ArenaMatch>();
-	private final STFArena plugin;
-	private final QueueManager queueManager;
+public class MatchManager {
+	private DataManager dataManager;
+	ArrayList<Arena> arena2sUsed = new ArrayList<Arena>();
+	ArrayList<Arena> arena3sUsed = new ArrayList<Arena>();
+	ArrayList<Arena> arena5sUsed = new ArrayList<Arena>();
+	ArrayList<Arena> arena2sFree = new ArrayList<Arena>();
+	ArrayList<Arena> arena3sFree = new ArrayList<Arena>();
+	ArrayList<Arena> arena5sFree = new ArrayList<Arena>();
 
-	public MatchManager(STFArena plugin, QueueManager queueManager) {
-		this.plugin = plugin;
-		this.queueManager = queueManager;
+	public MatchManager(Main plugin, DataManager dataManager) {
+		this.dataManager = dataManager;
 	}
 
-	public boolean addMatch(ArenaTeam teamOne, ArenaTeam teamTwo) {
-		if (available.size() > 0) {
-			List<Arena> possibleArenas = new ArrayList<Arena>();
-			for (Arena arena : available) {
-				if (arena.size() == teamOne.size()) {
-					possibleArenas.add(arena);
-				}
-			}
-			if (possibleArenas.size() > 0) {
-				startMatch(possibleArenas);
-				return true;
-			}
-			return false;
+	public void add(ArenaTeam t1, ArenaTeam t2) {
+		switch (t1.getSize()) {
+		case 2:
+			add(t1, t2, arena2sFree, arena2sUsed);
+			break;
+		case 3:
+			add(t1, t2, arena3sFree, arena3sUsed);
+			break;
+		default:
+			add(t1, t2, arena5sFree, arena5sUsed);
+			break;
 		}
-		return false;
-	}
-	
-	private void startMatch(List<Arena> possibleArenas) {
-		int arenaNumber = ThreadLocalRandom.current().nextInt(possibleArenas.size());
-		assignMatch()
-		run();		
 	}
 
 	private void add(ArenaTeam t1, ArenaTeam t2, ArrayList<Arena> possibleArenas, ArrayList<Arena> usedArenas) {
@@ -108,8 +95,8 @@ public class MatchManager implements Runnable {
 
 
 		updateELO(winners, losers);
+		dataManager.arenaLadder.sortLadder();
 		
-		//TODO do this after a 5 second delay
 		for(UUID p:winners.getPlayers()){
 			if(Bukkit.getPlayer(p).isOnline()){
 				if(Bukkit.getPlayer(p).getHealth() != 0){
@@ -178,12 +165,6 @@ public class MatchManager implements Runnable {
 	
 	public void addArenas(ArrayList<Arena> arenas) {
 		arena2sFree.addAll(arenas);
-	}
-
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

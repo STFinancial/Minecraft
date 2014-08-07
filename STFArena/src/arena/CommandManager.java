@@ -1,4 +1,6 @@
-package main;
+package arena;
+
+import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -6,16 +8,13 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import arena.Arena;
-import arena.ArenaPlayer;
-import arena.ArenaTeam;
 import arena.ArenaPlayer.Status;
 
 public class CommandManager implements CommandExecutor {
-	private final STFArena plugin;
+	private final Main plugin;
 	private final DataManager dataManager;
 
-	public CommandManager(STFArena plugin, DataManager dataManager) {
+	public CommandManager(Main plugin, DataManager dataManager) {
 		this.plugin = plugin;
 		this.dataManager = dataManager;
 	}
@@ -71,6 +70,9 @@ public class CommandManager implements CommandExecutor {
 				case "home":
 					player.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
 					break;
+				case "top":
+					displayTeams(player, dataManager.arenaLadder.getTop());
+					break;
 				default:
 					help(player, args);
 					break;
@@ -82,6 +84,12 @@ public class CommandManager implements CommandExecutor {
 		return true;
 	}
 	
+	private void displayTeams(Player player, ArrayList<ArenaTeam> top) {
+		for (ArenaTeam team: top) {
+			player.sendMessage(team.getName() +": " + (int)team.getRating());
+		}
+	}
+
 	private void build(Player player) {
 		player.teleport(Arena.buildWorld().getSpawnLocation());
 	}
@@ -245,9 +253,9 @@ public class CommandManager implements CommandExecutor {
 
 			ArenaTeam t = dataManager.getTeam(args[1]);
 			if (t != null) {
-				player.sendMessage("Team Profile for : " + t.name());
+				player.sendMessage("Team Profile for : " + t.getName());
 				player.sendMessage(t.toString());
-				player.sendMessage(t.record());
+				player.sendMessage(t.getRecord());
 			} else {
 				player.sendMessage("No team found named " + args[1]);
 			}
