@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import wizard.BlazeMage;
+import wizard.Pyromancer;
 import wizard.FrostMage;
 import wizard.Necromancer;
 import wizard.Wizard;
@@ -42,7 +42,7 @@ public class Main extends JavaPlugin {
 			RPGClass rpgClass;
 			switch (args[0].toLowerCase()) {
 			case "blazemage":
-				rpgClass = new BlazeMage((Player) sender, 100, 0);
+				rpgClass = new Pyromancer((Player) sender, 100, 0);
 				break;
 			case "frostmage":
 				rpgClass = new FrostMage((Player) sender, 100, 0);

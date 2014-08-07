@@ -10,7 +10,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class Blizzard extends BukkitRunnable {
 	private static final int RADIUS = 5;
-	private final int duration;
+	private int duration;
 	private final Player player;
 	private int snowfall = 0;
 	
@@ -30,6 +30,7 @@ public class Blizzard extends BukkitRunnable {
 			snowfall++;
 		}
 		else {
+			snowfall = 0;
 			this.cancel();
 		}		
 	}

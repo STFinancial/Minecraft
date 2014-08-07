@@ -70,7 +70,7 @@ public class WizardListener implements Listener {
 			case LAVA:
 			case FIRE:
 			case FIRE_TICK:
-				if (rpgClass instanceof BlazeMage) {
+				if (rpgClass instanceof Pyromancer) {
 					event.setCancelled(true);
 				}
 				break;
