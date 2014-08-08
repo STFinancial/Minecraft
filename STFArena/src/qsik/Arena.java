@@ -2,7 +2,9 @@ package qsik;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -16,6 +18,7 @@ import org.bukkit.World.Environment;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+
 import arena.ArenaTeam;
 
 //@TODO massive work in progress
@@ -65,32 +68,21 @@ public class Arena {
 	}
 
 	public boolean teleportTeams(ArenaTeam redTeam, ArenaTeam blueTeam) {
-		boolean 
-		for (UUID id : blueTeam.getPlayers()) {
-			if (Bukkit.getPlayer(id).isValid()) {
-				Bukkit.getPlayer(id).teleport(blueSpawn);
-			}
-			else {
+		Set<UUID> players = new HashSet<UUID>();
+		players.addAll(redTeam.getPlayers());
+		players.addAll(blueTeam.getPlayers());
+		for (UUID id : players) {
+			if (Bukkit.getPlayer(id).isValid() == false) {
 				return false;
 			}
 		}
-		for (UUID id : blueTeam.getPlayers()) {
-			if (Bukkit.getPlayer(id).isValid()) {
-				Bukkit.getPlayer(id).teleport(blueSpawn);
-			}
-			else {
-				return false;
-			}
+		for (UUID id : redTeam.getPlayers()) {
+			Bukkit.getPlayer(id).teleport(redSpawn);
 		}
 		for (UUID id : blueTeam.getPlayers()) {
-			if (Bukkit.getPlayer(id).isValid()) {
-				Bukkit.getPlayer(id).teleport(blueSpawn);
-			}
-			else {
-				return false;
-			}
+			Bukkit.getPlayer(id).teleport(blueSpawn);
 		}
-		Bukkit.getPlayer(id).teleport(redSpawn);
+		return true;
 	}
 
 	public String name() {

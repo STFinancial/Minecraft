@@ -22,8 +22,10 @@ public class ArenaMatch implements Runnable {
 	private final Set<UUID> redPlayersAlive = new HashSet<UUID>();
 	private final Set<UUID> bluePlayersAlive = new HashSet<UUID>();
 	private int taskId = -1, timeToTeleport = 15, timeToStart = 10;
+	private final MatchManager matchManager;
 	
 	public ArenaMatch(MatchManager matchManager, Arena arena, ArenaTeam redTeam, ArenaTeam blueTeam) {
+		this.matchManager = matchManager;
 		this.redTeam = redTeam;
 		this.blueTeam = blueTeam;
 		this.arena = arena;
@@ -124,7 +126,9 @@ public class ArenaMatch implements Runnable {
 			timeToTeleport--;
 		}
 		else if (timeToTeleport == 0 && timeToStart > 0) {
-			
+			if (arena.teleportTeams(redTeam, blueTeam)) {
+				matchManager;
+			}
 		}
 		else {
 			

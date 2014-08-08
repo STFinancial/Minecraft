@@ -16,7 +16,7 @@ public class ArenaQueue {
 		for (ArenaTeam inQueue : queue) {
 			if (inQueue.getSize() == team.getSize()) {
 				removeTeam = inQueue;
-				inProgress.add(new ArenaMatch(team, inQueue));
+				inProgress.add(new ArenaMatch(null, null, team, inQueue));
 				break;
 			}
 		}
