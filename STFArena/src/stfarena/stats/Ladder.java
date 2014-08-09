@@ -1,8 +1,10 @@
-package arena;
+package stfarena.stats;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
+
+import stfarena.arena.ArenaTeam;
 
 public class Ladder {
 	
@@ -47,7 +49,7 @@ public class Ladder {
 		while (!swapped) {
 			swapped = false;
 			for (int i = 1; i < length; ++i) {
-				if (ladder.get(i - 1).getRating() < ladder.get(i).getRating()) {
+				if (ladder.get(i - 1).rating() < ladder.get(i).rating()) {
 					Collections.swap(ladder, i, i-1);
 					swapped = true;
 				}

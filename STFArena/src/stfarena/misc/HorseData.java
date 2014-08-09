@@ -1,4 +1,4 @@
-package qsik;
+package stfarena.misc;
 
 import net.minecraft.server.v1_7_R3.AttributeInstance;
 import net.minecraft.server.v1_7_R3.EntityInsentient;

@@ -1,4 +1,4 @@
-package arena;
+package stfarena.match;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -25,7 +25,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.potion.PotionEffect;
 
-import arena.ArenaPlayer.Status;
+import stfarena.main.DataManager;
+import stfarena.main.Main;
 
 public class EventManager implements Listener {
 	private static enum ArenaPotion {

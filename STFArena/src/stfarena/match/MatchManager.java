@@ -1,5 +1,7 @@
-package qsik;
+package stfarena.match;
 
+import java.io.File;
+import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,13 +10,15 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
+import javax.swing.text.StyledEditorKit.ForegroundAction;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import arena.ArenaPlayer.Status;
-import arena.ArenaTeam;
-import arena.DataManager;
-import arena.QueueManager;
+import stfarena.arena.Arena;
+import stfarena.arena.ArenaTeam;
+import stfarena.arena.ArenaPlayer.Status;
+import stfarena.main.FileManager;
 
 public class MatchManager {
 	public enum MatchStatus {
@@ -22,22 +26,21 @@ public class MatchManager {
 	}
 	private final QueueManager queueManager;
 	private final Set<Arena> availableArenas = new HashSet<Arena>();
-	private final Set<ArenaMatch> matches = new HashMap<ArenaMatch>();
+	private final Set<ArenaMatch> matches = new HashSet<ArenaMatch>();
 
 	public MatchManager(QueueManager queueManager) {
 		this.queueManager = queueManager;
+		for (File file : FileManager.getMapsFolder().listFiles()) {
+			if (file.isFile() && file.getPath().contains(".yml")) {
+				availableArenas.add(new Arena(file));
+			}
+		}
 	}
 
 	public boolean createMatch(ArenaTeam redTeam, ArenaTeam blueTeam) {
 		for (Arena arena : availableArenas) {
-			if (redTeam.getSize() == arena.size()) {
-				for (UUID id : redTeam.getPlayers()) {
-					matches.put(id, arena);
-				}
-				for (UUID id : blueTeam.getPlayers()) {
-					matches.put(id, arena);
-				}
-				return true;
+			if (redTeam.size() == arena.size()) {
+				matches.add(new ArenaMatch(this, arena, redTeam, blueTeam));
 			}
 		}
 		return false;
@@ -87,7 +90,7 @@ public class MatchManager {
 	}
 
 	public void gameFinished(Arena arena, boolean redWon) {
-		switch (arena.getSize()) {
+		switch (arena.size()) {
 		case 2:
 			arena2sUsed.remove(arena);
 			arena2sFree.add(arena);

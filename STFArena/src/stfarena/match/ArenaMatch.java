@@ -1,4 +1,4 @@
-package qsik;
+package stfarena.match;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -6,13 +6,17 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-import qsik.MatchManager.MatchStatus;
-import arena.ArenaTeam;
+import stfarena.arena.Arena;
+import stfarena.arena.ArenaTeam;
 
 public class ArenaMatch implements Runnable {
 	private final Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -115,6 +119,55 @@ public class ArenaMatch implements Runnable {
 			Bukkit.getPlayer(id).setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
 		}
 		scoreboard.getObjective(DisplaySlot.SIDEBAR).unregister();
+	}
+	
+	public void matchStart(){
+		Player player = Bukkit.getPlayer(uuid);
+		ItemStack[] allowed = player.getInventory().getContents();
+		Set<ItemStack> banned = new HashSet<ItemStack>();
+		banned.add(new ItemStack(Material.POTION, 1, (short) 8238));
+		banned.add(new ItemStack(Material.POTION, 1, (short) 8270));
+		banned.add(new ItemStack(Material.POTION, 1, (short) 16430));
+		banned.add(new ItemStack(Material.POTION, 1, (short) 16462));
+		banned.add(new ItemStack(Material.FLINT_AND_STEEL));
+		banned.add(new ItemStack(Material.BUCKET));
+		banned.add(new ItemStack(Material.LAVA_BUCKET));
+		banned.add(new ItemStack(Material.WATER_BUCKET));
+		int potionsAllowed = POTIONLIMIT;
+		for (int i = 0; i < allowed.length; i++) {
+			if (allowed[i] != null) {
+				if (banned.contains(allowed[i])) {
+					player.sendMessage("removed banned item " + allowed[i].getType().name());
+					player.getInventory().setItem(i, null);	
+				}
+				else {
+					if (allowed[i].getType().equals(Material.POTION)) {
+						if (potionsAllowed > 0) {
+							potionsAllowed--;
+						}
+						else {
+							player.sendMessage("You have exceeded potion limit!");
+							player.getInventory().setItem(i, null);	
+						}
+					}
+					else if (allowed[i].getType().equals(Material.ENDER_PEARL)) {
+						player.sendMessage("removed banned item " + allowed[i].getType().name());
+						player.getInventory().setItem(i, null);
+					}
+					else if (allowed[i].getType().equals(Material.GOLDEN_APPLE)) {
+						player.sendMessage("removed banned item " + allowed[i].getType().name());
+						player.getInventory().setItem(i, null);
+					}
+				}
+			}
+		}
+		
+		player.setHealth(20);
+		player.setFoodLevel(20);
+		player.setSaturation(1);
+		player.setFireTicks(0);
+		for (PotionEffect effect : player.getActivePotionEffects())
+			player.removePotionEffect(effect.getType());
 	}
 
 	@Override

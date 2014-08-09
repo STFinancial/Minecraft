@@ -1,8 +1,8 @@
 name: STFArena
-main: main.STFArena
+main: stfarena.main.Main
 description: STF presents an arena mini-game for Minecraft
 version: 1.0
-author: Boxxy
+author: Boxxy, Qsik, Trophycase
 
 commands:
    arena:

@@ -1,6 +1,7 @@
-package arena;
+package stfarena.arena;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,21 +11,21 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import stfarena.main.FileManager;
+
 public class ArenaTeam {
 	private final String name;
 	private final List<UUID> players = new ArrayList<UUID>();
-	private int win, loss, size;
-	private double rating;
+	private final int size;
+	private int win = 0, loss = 0;
+	private double rating = 1200;
 	public final static DecimalFormat df = new DecimalFormat("00.0");
-	private int timeInQueue = 0;
+	private long timeInQueue = System.currentTimeMillis();
 	private final File arenaFile;
 
-	public ArenaTeam(String name, int size, Main plugin) {
+	public ArenaTeam(String name, int size) {
 		this.name = name;
 		this.size = size;
-		win = loss = 0;
-		rating = 1200;
-		plugin.getFileManager();
 		arenaFile = new File(FileManager.getTeamsFolder().getPath() + "/" + name + ".yml");
 	}
 	
@@ -41,14 +42,27 @@ public class ArenaTeam {
 		}
 	}
 	
-	
+	public void saveTeam() {
+		YamlConfiguration arenaConfiguration = YamlConfiguration.loadConfiguration(arenaFile);
+		arenaConfiguration.set("name", name);
+		arenaConfiguration.set("size", size);
+		arenaConfiguration.set("win", win);
+		arenaConfiguration.set("loss", loss);
+		arenaConfiguration.set("rating", rating);
+		arenaConfiguration.set("players", players);
+		try {
+			arenaConfiguration.save(arenaFile);
+		} catch (IOException e) {
+			Bukkit.getLogger().info("Unable to save Arena Teams File for " + name);
+		}
+	}
 
 	public ArenaTeam addPlayer(Player player) {
 		players.add(player.getUniqueId());
 		return this;
 	}
 
-	public int getSize() {
+	public int size() {
 		return size;
 	}
 
@@ -56,19 +70,15 @@ public class ArenaTeam {
 		return players.size() == size;
 	}
 
-	public double getRating() {
+	public double rating() {
 		return rating;
 	}
-	
-	File getFile() {
-		return arenaFile;
-	}
 
-	public String getName() {
+	public String name() {
 		return name;
 	}
 
-	public String getRecord() {
+	public String record() {
 		if (win + loss == 0)
 			return "Wins: " + win + " Losses: " + loss;
 
@@ -95,19 +105,12 @@ public class ArenaTeam {
 		return players;
 	}
 
-	public void addTime() {
-		timeInQueue++;
-	}
-
-	public void resetTime() {
+	public void resetTimeInQueue() {
 		timeInQueue = 0;
 	}
-
-	public int getTimeInQueue() {
-		if (timeInQueue == 0) {
-			return 0;
-		}
-		return timeInQueue * 10 - 5;
+	
+	public long getTimeInQueue() {
+		return (System.currentTimeMillis() - timeInQueue) / 1000;
 	}
 	
 	public void sendMessage(String message) {
@@ -125,11 +128,16 @@ public class ArenaTeam {
 		rating+=eloChange;
 		for(UUID p :getPlayers()){
 			Bukkit.getPlayer(p).sendMessage("Your arena team " + name + " now has a " + (int) rating + " rating");
-			Bukkit.getPlayer(p).sendMessage(getRecord());
+			Bukkit.getPlayer(p).sendMessage(record());
 		}
 	}
 	
 	public boolean equals(ArenaTeam team) {
-		return team.getName().equals(name);
+		return team.name().equals(name);
+	}
+	
+	public static boolean inEloRange(ArenaTeam redTeam, ArenaTeam blueTeam) {
+		double ratingFactor = Math.abs(redTeam.rating() - blueTeam.rating());		
+		return ratingFactor < (10 + redTeam.getTimeInQueue() + blueTeam.getTimeInQueue());
 	}
 }

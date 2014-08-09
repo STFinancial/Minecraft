@@ -1,4 +1,4 @@
-package qsik;
+package stfarena.arena;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import arena.ArenaTeam;
+import stfarena.main.Main;
 
 //@TODO massive work in progress
 public class Arena {

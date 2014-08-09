@@ -1,4 +1,4 @@
-package arena;
+package stfarena.main;
 
 import java.util.ArrayList;
 
@@ -8,7 +8,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import arena.ArenaPlayer.Status;
+import stfarena.arena.Arena;
+import stfarena.arena.ArenaPlayer;
+import stfarena.arena.ArenaTeam;
 
 public class CommandManager implements CommandExecutor {
 	private final Main plugin;
