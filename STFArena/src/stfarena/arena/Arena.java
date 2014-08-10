@@ -2,11 +2,7 @@ package stfarena.arena;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.Location;
@@ -19,9 +15,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import stfarena.main.Main;
-
-//@TODO massive work in progress
 public class Arena {
 	private final static World arenaWorld = buildWorld();
 	private final String name;
@@ -67,29 +60,20 @@ public class Arena {
 		return Bukkit.getWorld("Arena");
 	}
 
-	public boolean teleportTeams(ArenaTeam redTeam, ArenaTeam blueTeam) {
-		Set<UUID> players = new HashSet<UUID>();
-		players.addAll(redTeam.getPlayers());
-		players.addAll(blueTeam.getPlayers());
-		for (UUID id : players) {
-			if (Bukkit.getPlayer(id).isValid() == false) {
-				return false;
-			}
+	public void teleportTeams(ArenaTeam redTeam, ArenaTeam blueTeam) {
+		for (ArenaPlayer player : redTeam.getPlayers()) {
+			player.getPlayer().teleport(redSpawn);
 		}
-		for (UUID id : redTeam.getPlayers()) {
-			Bukkit.getPlayer(id).teleport(redSpawn);
+		for (ArenaPlayer player : blueTeam.getPlayers()) {
+			player.getPlayer().teleport(redSpawn);
 		}
-		for (UUID id : blueTeam.getPlayers()) {
-			Bukkit.getPlayer(id).teleport(blueSpawn);
-		}
-		return true;
 	}
 
-	public String name() {
+	public String getName() {
 		return name;
 	}
 
-	public int size() {
+	public int getSize() {
 		return size;
 	}
 

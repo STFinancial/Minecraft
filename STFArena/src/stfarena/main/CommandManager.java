@@ -14,11 +14,11 @@ import stfarena.arena.ArenaTeam;
 
 public class CommandManager implements CommandExecutor {
 	private final Main plugin;
-	private final DataManager dataManager;
+	private final QueueManager queueManager;
 
-	public CommandManager(Main plugin, DataManager dataManager) {
+	public CommandManager(Main plugin, QueueManager queueManager) {
 		this.plugin = plugin;
-		this.dataManager = dataManager;
+		this.queueManager = queueManager;
 	}
 
 	public void quit() {
@@ -30,7 +30,6 @@ public class CommandManager implements CommandExecutor {
 		Player player;
 		if (sender instanceof Player) {
 			player = (Player) sender;
-
 			if (args.length == 0) {
 				help(player, args);
 			} else {
@@ -57,12 +56,12 @@ public class CommandManager implements CommandExecutor {
 				case "me":
 					me(player);
 					break;
-				case "save":
-					dataManager.saveTest(player);
-					break;
-				case "load":
-					dataManager.loadTest(player);
-					break;
+//				case "save":
+//					dataManager.saveTest(player);
+//					break;
+//				case "load":
+//					dataManager.loadTest(player);
+//					break;
 				case "who":
 					who(player, args);
 					break;
@@ -72,9 +71,9 @@ public class CommandManager implements CommandExecutor {
 				case "home":
 					player.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
 					break;
-				case "top":
-					displayTeams(player, dataManager.arenaLadder.getTop());
-					break;
+//				case "top":
+//					displayTeams(player, queueManager.arenaLadder.getTop());
+//					break;
 				default:
 					help(player, args);
 					break;
@@ -86,14 +85,19 @@ public class CommandManager implements CommandExecutor {
 		return true;
 	}
 	
-	private void displayTeams(Player player, ArrayList<ArenaTeam> top) {
-		for (ArenaTeam team: top) {
-			player.sendMessage(team.getName() +": " + (int)team.getRating());
-		}
-	}
+//	private void displayTeams(Player player, ArrayList<ArenaTeam> top) {
+//		for (ArenaTeam team: top) {
+//			player.sendMessage(team.name() + ": " + (int)team.rating());
+//		}
+//	}
 
 	private void build(Player player) {
-		player.teleport(Arena.buildWorld().getSpawnLocation());
+		if (Bukkit.getWorld("Arena") != null) {
+			player.teleport(Bukkit.getWorld("Arena").getSpawnLocation());
+		}
+		else {
+			player.sendMessage("No valid Arena world");
+		}
 	}
 	
 	private void leave(Player player, String[] args) {
@@ -115,7 +119,7 @@ public class CommandManager implements CommandExecutor {
 	}
 
 	void cancel(Player player) {
-		switch (dataManager.getPlayer(player).getStatus()) {
+		switch (queueManager.getPlayer(player.getUniqueId()).status()) {
 		case CREATING:
 			dataManager.cancelCreateTeam(player);
 			break;
@@ -240,11 +244,11 @@ public class CommandManager implements CommandExecutor {
 		if (args.length > 1) {
 			ArenaPlayer requested = dataManager.getPlayer(args[1]);
 			if (requested != null) {
-				player.sendMessage("Arena Profile for Player: " + requested.getName());
-				if (requested.getStatus() == Status.FREE) {
+				player.sendMessage("Arena Profile for Player: " + requested.name());
+				if (requested.status() == Status.FREE) {
 					player.sendMessage("Is currently Free");
 				} else {
-					player.sendMessage("Is currently " + requested.getStatus() + " for " + requested.getFocus());
+					player.sendMessage("Is currently " + requested.status() + " for " + requested.getFocus());
 				}
 				for (String t : requested.getTeams()) {
 					player.sendMessage("Is on " + dataManager.getTeam(t));
@@ -255,7 +259,7 @@ public class CommandManager implements CommandExecutor {
 
 			ArenaTeam t = dataManager.getTeam(args[1]);
 			if (t != null) {
-				player.sendMessage("Team Profile for : " + t.getName());
+				player.sendMessage("Team Profile for : " + t.name());
 				player.sendMessage(t.toString());
 				player.sendMessage(t.getRecord());
 			} else {

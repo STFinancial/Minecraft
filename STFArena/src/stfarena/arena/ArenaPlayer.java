@@ -4,12 +4,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -22,18 +26,17 @@ public class ArenaPlayer {
 	public enum Status {
 		QUEUED, TRYING_TO_QUEUE, IN_GAME, INVITED, CREATING, FREE;
 	}
+	private final static int POTIONLIMIT = 3;
 	private Status status = Status.FREE;
-	private final List<String> teams = new ArrayList<String>();
-	private String currentTeam;
-	private final String name;
+	private final Set<ArenaTeam> teams = new HashSet<ArenaTeam>();
+	private ArenaTeam currentTeam;
 	private final UUID id;
 	private final File playerFile;
 
-	public ArenaPlayer(Player player) {
-		name = player.getName();
+	public ArenaPlayer(OfflinePlayer player) {
 		id = player.getUniqueId();
-		playerFile = new File(FileManager.getPlayersFolder().getPath() + "/" + name + ".yml");
-		if (playerFile.exists()) {
+		playerFile = new File(FileManager.getPlayersFolder().getPath() + "/" + id.toString() + ".yml");
+		if (playerFile.exists() && Bukkit.getPlayer(id) != null) {
 			loadState();
 		}
 	}
@@ -84,15 +87,67 @@ public class ArenaPlayer {
 		try {
 			playerData.save(playerFile);
 		} catch (IOException e) {
-			Bukkit.getLogger().info("Unable to save player data for " + name);
+			Bukkit.getLogger().info("Unable to save player data for " + player.getName());
 		}
+		
+		preparePlayer();
+	}
+	
+	
+	private void preparePlayer(){
+		Player player = Bukkit.getPlayer(id);
+		ItemStack[] allowed = player.getInventory().getContents();
+		Set<ItemStack> banned = new HashSet<ItemStack>();
+		banned.add(new ItemStack(Material.POTION, 1, (short) 8238));
+		banned.add(new ItemStack(Material.POTION, 1, (short) 8270));
+		banned.add(new ItemStack(Material.POTION, 1, (short) 16430));
+		banned.add(new ItemStack(Material.POTION, 1, (short) 16462));
+		banned.add(new ItemStack(Material.FLINT_AND_STEEL));
+		banned.add(new ItemStack(Material.BUCKET));
+		banned.add(new ItemStack(Material.LAVA_BUCKET));
+		banned.add(new ItemStack(Material.WATER_BUCKET));
+		int potionsAllowed = POTIONLIMIT;
+		for (int i = 0; i < allowed.length; i++) {
+			if (allowed[i] != null) {
+				if (banned.contains(allowed[i])) {
+					player.sendMessage("removed banned item " + allowed[i].getType().name());
+					player.getInventory().setItem(i, null);	
+				}
+				else {
+					if (allowed[i].getType().equals(Material.POTION)) {
+						if (potionsAllowed > 0) {
+							potionsAllowed--;
+						}
+						else {
+							player.sendMessage("You have exceeded potion limit!");
+							player.getInventory().setItem(i, null);	
+						}
+					}
+					else if (allowed[i].getType().equals(Material.ENDER_PEARL)) {
+						player.sendMessage("removed banned item " + allowed[i].getType().name());
+						player.getInventory().setItem(i, null);
+					}
+					else if (allowed[i].getType().equals(Material.GOLDEN_APPLE)) {
+						player.sendMessage("removed banned item " + allowed[i].getType().name());
+						player.getInventory().setItem(i, null);
+					}
+				}
+			}
+		}
+		
+		player.setHealth(20);
+		player.setFoodLevel(20);
+		player.setSaturation(1);
+		player.setFireTicks(0);
+		for (PotionEffect effect : player.getActivePotionEffects())
+			player.removePotionEffect(effect.getType());
 	}
 
 	@SuppressWarnings("unchecked")
 	public void loadState() {
 		Player player = Bukkit.getPlayer(id);
 		YamlConfiguration playerData = YamlConfiguration.loadConfiguration(playerFile);
-		if (player.isValid()) {
+		if (player.getLocation().equals(loadLocation(playerData)) != true) {
 			player.teleport(loadLocation(playerData));
 		}
 
@@ -162,7 +217,7 @@ public class ArenaPlayer {
 		return locationData;
 	}
 
-	private Location loadLocation(YamlConfiguration playerData) {
+	public Location loadLocation(YamlConfiguration playerData) {
 		double x, y, z;
 		float yaw, pitch;
 		World world = Bukkit.getWorld(playerData.getString("location.world"));
@@ -177,7 +232,7 @@ public class ArenaPlayer {
 		}
 		catch (Exception e) {
 			try {
-				Bukkit.getLogger().info("Error loading location of " + name);
+				Bukkit.getLogger().info("Error loading location of " + Bukkit.getOfflinePlayer(id).getName());
 				return Bukkit.getPlayer(id).getBedSpawnLocation();
 			}
 			catch (NullPointerException n) {
@@ -185,6 +240,29 @@ public class ArenaPlayer {
 				return Bukkit.getWorlds().get(0).getSpawnLocation();
 			}
 		}
+	}
+	
+	public void sendMessage(String message) {
+		if (isValid()) {
+			getPlayer().sendMessage(message);
+		}
+	}
+	
+	public boolean isValid() {
+		if (Bukkit.getPlayer(id) == null) {
+			return false;
+		}
+		else {
+			return Bukkit.getPlayer(id).isValid();
+		}
+	}
+	
+	public Player getPlayer() {
+		return Bukkit.getPlayer(id);
+	}
+	
+	public UUID getUUID() {
+		return id;
 	}
 
 	public Status getStatus() {
@@ -195,23 +273,23 @@ public class ArenaPlayer {
 		this.status = status;
 	}
 
-	public String getFocus() {
+	public ArenaTeam getFocus() {
 		return currentTeam;
 	}
 
-	public void setFocus(String teamName) {
-		currentTeam = teamName;
+	public void setFocus(ArenaTeam team) {
+		currentTeam = team;
 	}
 
-	public void addTeam(String teamName) {
-		teams.add(teamName);
+	public void addTeam(ArenaTeam team) {
+		teams.add(team);
 	}
 
-	public void removeTeam(String teamName) {
-		teams.remove(teamName);
+	public void removeTeam(ArenaTeam team) {
+		teams.remove(team);
 	}
 
-	public List<String> getTeams() {
+	public Set<ArenaTeam> getTeams() {
 		return teams;
 	}
 }

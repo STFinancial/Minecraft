@@ -10,26 +10,28 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
-import javax.swing.text.StyledEditorKit.ForegroundAction;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import stfarena.arena.Arena;
+import stfarena.arena.ArenaPlayer;
 import stfarena.arena.ArenaTeam;
 import stfarena.arena.ArenaPlayer.Status;
 import stfarena.main.FileManager;
+import stfarena.main.Main;
+import stfarena.main.QueueManager;
 
 public class MatchManager {
-	public enum MatchStatus {
-		IN_PROGRESS, RED_WON, BLUE_WON;
-	}
 	private final QueueManager queueManager;
+	private final EventManager eventManager;
 	private final Set<Arena> availableArenas = new HashSet<Arena>();
-	private final Set<ArenaMatch> matches = new HashSet<ArenaMatch>();
+	private final Map<UUID, Match> matches = new HashMap<UUID, Match>();
+	private final Main plugin;
 
-	public MatchManager(QueueManager queueManager) {
+	public MatchManager(Main plugin, QueueManager queueManager) {
+		this.plugin = plugin;
 		this.queueManager = queueManager;
+		eventManager = new EventManager(this);
 		for (File file : FileManager.getMapsFolder().listFiles()) {
 			if (file.isFile() && file.getPath().contains(".yml")) {
 				availableArenas.add(new Arena(file));
@@ -39,12 +41,14 @@ public class MatchManager {
 
 	public boolean createMatch(ArenaTeam redTeam, ArenaTeam blueTeam) {
 		for (Arena arena : availableArenas) {
-			if (redTeam.size() == arena.size()) {
-				matches.add(new ArenaMatch(this, arena, redTeam, blueTeam));
+			if (redTeam.getSize() == arena.getSize()) {
+				matches.add(new Match(plugin, this, arena, redTeam, blueTeam));
 			}
 		}
 		return false;
 	}
+	
+	public void cancelMatch(Match match, )
 	
 	public void recordDeath(UUID id) {
 		MatchStatus status = matches.get(id).recordDeath(id);
@@ -90,7 +94,7 @@ public class MatchManager {
 	}
 
 	public void gameFinished(Arena arena, boolean redWon) {
-		switch (arena.size()) {
+		switch (arena.getSize()) {
 		case 2:
 			arena2sUsed.remove(arena);
 			arena2sFree.add(arena);

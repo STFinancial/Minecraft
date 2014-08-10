@@ -4,18 +4,21 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import stfarena.arena.ArenaPlayer.Status;
 import stfarena.main.FileManager;
 
 public class ArenaTeam {
 	private final String name;
-	private final List<UUID> players = new ArrayList<UUID>();
+	private final Set<ArenaPlayer> players = new HashSet<ArenaPlayer>();
 	private final int size;
 	private int win = 0, loss = 0;
 	private double rating = 1200;
@@ -37,8 +40,8 @@ public class ArenaTeam {
 		this.win = arenaConfiguration.getInt("win");
 		this.loss = arenaConfiguration.getInt("loss");
 		this.rating = arenaConfiguration.getDouble("rating");
-		for (String uuid : arenaConfiguration.getStringList("players")) {
-			players.add(UUID.fromString(uuid));
+		for (String id : arenaConfiguration.getStringList("players")) {
+			players.add(new ArenaPlayer(Bukkit.getOfflinePlayer(UUID.fromString(id))));
 		}
 	}
 	
@@ -49,7 +52,11 @@ public class ArenaTeam {
 		arenaConfiguration.set("win", win);
 		arenaConfiguration.set("loss", loss);
 		arenaConfiguration.set("rating", rating);
-		arenaConfiguration.set("players", players);
+		List<UUID> playerIds = new ArrayList<UUID>();
+		for (ArenaPlayer player : players) {
+			playerIds.add(player.getUUID());
+		}
+		arenaConfiguration.set("players", playerIds);
 		try {
 			arenaConfiguration.save(arenaFile);
 		} catch (IOException e) {
@@ -58,11 +65,53 @@ public class ArenaTeam {
 	}
 
 	public ArenaTeam addPlayer(Player player) {
-		players.add(player.getUniqueId());
+		players.add(new ArenaPlayer(player));
 		return this;
 	}
+	
+	public boolean hasPlayer(Player player) {
+		for (ArenaPlayer arenaPlayer : players) {
+			if (arenaPlayer.getUUID().equals(player.getUniqueId())) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean hasPlayer(UUID id) {
+		for (ArenaPlayer arenaPlayer : players) {
+			if (arenaPlayer.getUUID().equals(id)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public ArenaPlayer getPlayer(Player player) {
+		for (ArenaPlayer arenaPlayer : players) {
+			if (arenaPlayer.getUUID().equals(player.getUniqueId())) {
+				return arenaPlayer;
+			}
+		}
+		return null;
+	}
+	
+	public ArenaPlayer getPlayer(UUID id) {
+		for (ArenaPlayer arenaPlayer : players) {
+			if (arenaPlayer.getUUID().equals(id)) {
+				return arenaPlayer;
+			}
+		}
+		return null;
+	}
+	
+	public void setStatus(Status status) {
+		for (ArenaPlayer player : players) {
+			player.setStatus(status);
+		}
+	}
 
-	public int size() {
+	public int getSize() {
 		return size;
 	}
 
@@ -70,11 +119,11 @@ public class ArenaTeam {
 		return players.size() == size;
 	}
 
-	public double rating() {
+	public double getRating() {
 		return rating;
 	}
 
-	public String name() {
+	public String getName() {
 		return name;
 	}
 
@@ -101,7 +150,7 @@ public class ArenaTeam {
 		return "Team: " + name + " (" + size + ") Rating: " + rating;
 	}
 
-	public List<UUID> getPlayers() {
+	public Set<ArenaPlayer> getPlayers() {
 		return players;
 	}
 
@@ -114,30 +163,39 @@ public class ArenaTeam {
 	}
 	
 	public void sendMessage(String message) {
-		for (UUID id : players) {
-			Bukkit.getPlayer(id).sendMessage(message);
+		for (ArenaPlayer player : players) {
+			player.sendMessage(message);
 		}
 	}
 
 	public void addMatch(double eloChange) {
-		if(eloChange > 0 ){
+		if (eloChange > 0) {
 			win++;
-		}else{
+		}
+		else {
 			loss++;
 		}
-		rating+=eloChange;
-		for(UUID p :getPlayers()){
-			Bukkit.getPlayer(p).sendMessage("Your arena team " + name + " now has a " + (int) rating + " rating");
-			Bukkit.getPlayer(p).sendMessage(record());
+		rating += eloChange;
+		for(ArenaPlayer player : players){
+			player.sendMessage("Your arena team " + name + " now has a " + (int) rating + " rating");
+			player.sendMessage(record());
 		}
 	}
 	
-	public boolean equals(ArenaTeam team) {
-		return team.name().equals(name);
+	@Override
+	public boolean equals(Object obj) {
+	    if (obj == null) {
+	        return false;
+	    }
+	    if (getClass() != obj.getClass()) {
+	        return false;
+	    }
+	    final ArenaTeam team = (ArenaTeam) obj;
+	    return name.toLowerCase().equals(team.getName().toLowerCase());
 	}
 	
-	public static boolean inEloRange(ArenaTeam redTeam, ArenaTeam blueTeam) {
-		double ratingFactor = Math.abs(redTeam.rating() - blueTeam.rating());		
-		return ratingFactor < (10 + redTeam.getTimeInQueue() + blueTeam.getTimeInQueue());
+	@Override
+	public int hashCode() {
+		return name.toLowerCase().hashCode();		
 	}
 }

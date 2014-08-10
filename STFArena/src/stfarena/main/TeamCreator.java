@@ -8,24 +8,24 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 
 import stfarena.arena.Arena;
 import stfarena.arena.ArenaPlayer;
 import stfarena.arena.ArenaTeam;
-import stfarena.match.QueueManager;
 import stfarena.stats.Ladder;
 
-public class DataManager {
+public class TeamCreator implements Listener {
 	private final Main plugin;
-	private final Map<String, ArenaTeam> arenaTeams = new HashMap<String, ArenaTeam>();
-	private final Map<UUID, ArenaPlayer> arenaPlayers = new HashMap<UUID, ArenaPlayer>();
+
 	private final Map<String, ArenaTeam> beingCreated = new HashMap<String, ArenaTeam>();
 	private final Ladder arenaLadder;
 	private final CommandManager commandManager;
 	private final QueueManager queueManager;
 
-	public DataManager(Main plugin) {
+	public TeamCreator(QueueManager queueManager) {
 		this.plugin = plugin;
+		Bukkit.getPluginManager().registerEvents(this, plugin);
 		commandManager = new CommandManager(plugin, this);
 		queueManager = new QueueManager(plugin);
 		arenaLadder = new Ladder(arenaTeams);

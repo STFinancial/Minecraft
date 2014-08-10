@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Tameable;
 import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -25,10 +26,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.potion.PotionEffect;
 
-import stfarena.main.DataManager;
 import stfarena.main.Main;
+import stfarena.main.TeamCreator;
 
-public class EventManager implements Listener {
+public class MatchListener implements Listener {
 	private static enum ArenaPotion {
 		FIRE_RESISTANCE, HARM, HEAL, INCREASE_DAMAGE, INVISIBILITY, JUMP, NIGHT_VISION,
 		POISON, REGENERATION, SLOW, SPEED, WATER_BREATHING, WEAKNESS;
@@ -62,65 +63,22 @@ public class EventManager implements Listener {
 //			}
 //		}	
 	};
-	private final Main plugin;
-	private final DataManager dataManager;
+	
+	private final Match match;
 
-	public EventManager(Main plugin, DataManager dataManager) {
-		this.plugin = plugin;
-		this.dataManager = dataManager;
+	public MatchListener(Match match) {
+		this.match = match;
 	}
 
 	@EventHandler
-	private void onLogin(PlayerJoinEvent event) {
-		dataManager.add(event.getPlayer());
+	private void playerDeath(PlayerDeathEvent event) {
+		match.recordDeath(event.getEntity());	
 	}
-
+	
 	@EventHandler
-	private void onQuit(PlayerQuitEvent event) {
-		dataManager.remove(event.getPlayer());
+	private void playerQuit(PlayerQuitEvent event) {
+		match.recordDeath(event.getPlayer());
 	}
-
-	@EventHandler
-	private void onInteractWithEntity(PlayerInteractEntityEvent event) {
-
-	}
-
-	@EventHandler
-	private void onInteract(PlayerInteractEvent event) {
-
-	}
-
-	@EventHandler
-	private void onDamage(EntityDamageByEntityEvent event) {
-
-	}
-
-	@EventHandler
-	private void onPlayerAnimation(PlayerAnimationEvent event) {
-
-	}
-
-//	@EventHandler
-//	private void preventFriendlyFire(EntityDamageByEntityEvent event) {
-//		if (inArenaWorld(event.getEntity())) {
-//			if (event.getEntity() instanceof Player) {
-//				Player target = (Player) event.getEntity();
-//				if (event.getDamager() instanceof Projectile) {
-//					Projectile missile = (Projectile) event.getDamager();
-//					if (missile.getShooter() instanceof Player) {
-//						if (dataManager.areAllies((Player) missile.getShooter(), target)) {
-//							event.setCancelled(true);
-//						}
-//					}
-//				}
-//				else if (event.getDamager() instanceof Player) {
-//					if (dataManager.areAllies((Player) event.getDamager(), target)) {
-//						event.setCancelled(true);
-//					}
-//				}
-//			}
-//		}
-//	}
 
 	@EventHandler
 	private void friendlyPotionEffect(PotionSplashEvent event) {
@@ -164,7 +122,7 @@ public class EventManager implements Listener {
 			plugin.getMatchManager().recordDeath((Player) event.getEntity());
 		}
 	}
-
+	
 	@EventHandler
 	private void preventBlockBreak(BlockBreakEvent event) {
 		if (inArenaWorld(event.getPlayer())) {
@@ -197,12 +155,5 @@ public class EventManager implements Listener {
 
 	private boolean inArenaWorld(Entity entity) {
 		return entity.getLocation().getWorld().equals(Bukkit.getWorld("Arena"));
-	}
-
-	public void quit() {
-		PlayerInteractEvent.getHandlerList().unregister(plugin);
-		PlayerAnimationEvent.getHandlerList().unregister(plugin);
-		PlayerInteractEntityEvent.getHandlerList().unregister(plugin);
-		EntityDamageByEntityEvent.getHandlerList().unregister(plugin);
 	}
 }
