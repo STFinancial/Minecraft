@@ -1,4 +1,4 @@
-package arena;
+package stfarena.main;
 
 import java.util.ArrayList;
 import java.util.Collections;

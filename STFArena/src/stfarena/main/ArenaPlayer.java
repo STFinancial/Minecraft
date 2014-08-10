@@ -1,4 +1,4 @@
-package arena;
+package stfarena.main;
 
 import java.io.File;
 import java.io.IOException;

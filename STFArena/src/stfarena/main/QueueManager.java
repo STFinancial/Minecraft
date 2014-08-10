@@ -1,11 +1,11 @@
-package arena;
+package stfarena.main;
 
 import java.util.ArrayList;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 
-import arena.ArenaPlayer.Status;
+import stfarena.main.ArenaPlayer.Status;
 
 public class QueueManager implements Runnable {
 

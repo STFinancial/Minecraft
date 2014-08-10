@@ -1,4 +1,4 @@
-package arena;
+package stfarena.main;
 
 import org.bukkit.plugin.java.JavaPlugin;
 

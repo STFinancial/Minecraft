@@ -1,4 +1,4 @@
-package arena;
+package stfarena.main;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,7 +7,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import arena.ArenaPlayer.Status;
+import stfarena.main.ArenaPlayer.Status;
 
 public class DataManager {
 	private final Main plugin;

@@ -1,4 +1,4 @@
-package arena;
+package stfarena.main;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -7,7 +7,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import arena.ArenaPlayer.Status;
+import stfarena.main.ArenaPlayer.Status;
 
 public class MatchManager {
 	private DataManager dataManager;
