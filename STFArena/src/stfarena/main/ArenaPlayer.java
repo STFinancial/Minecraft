@@ -62,6 +62,7 @@ public class ArenaPlayer {
 		banned.add(new ItemStack(Material.BUCKET));
 		banned.add(new ItemStack(Material.LAVA_BUCKET));
 		banned.add(new ItemStack(Material.WATER_BUCKET));
+		banned.add(new ItemStack(Material.TNT));
 		int potionsAllowed = POTIONLIMIT;
 		for (int i = 0; i < allowed.length; i++) {
 			if (allowed[i] != null) {
@@ -79,11 +80,7 @@ public class ArenaPlayer {
 							player.getInventory().setItem(i, null);	
 						}
 					}
-					else if (allowed[i].getType().equals(Material.ENDER_PEARL)) {
-						player.sendMessage("removed banned item " + allowed[i].getType().name());
-						player.getInventory().setItem(i, null);
-					}
-					else if (allowed[i].getType().equals(Material.GOLDEN_APPLE)) {
+					else if (banned.contains(allowed[i].getType())) {
 						player.sendMessage("removed banned item " + allowed[i].getType().name());
 						player.getInventory().setItem(i, null);
 					}
