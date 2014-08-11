@@ -27,7 +27,6 @@ public class QueueManager implements Runnable {
 	}
 
 	private void update(boolean fromScheduler) {
-
 		if (fromScheduler) {
 			for (ArenaTeam t : queue2s) {
 				t.addTime();
@@ -116,7 +115,6 @@ public class QueueManager implements Runnable {
 			Bukkit.getPlayer(p).sendMessage("Your team " + t.getName() + " has entered queue for " + t.getSize() + "s");
 			plugin.getDataManager().getPlayer(p).setStatus(Status.QUEUED);
 		}
-		t.resetTime();
 		switch (t.getSize()) {
 		case 2:
 			queue2s.add(t);

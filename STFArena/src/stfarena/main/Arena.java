@@ -22,28 +22,29 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import stfarena.main.ArenaPlayer.Status;
+
 //@TODO massive work in progress
 public class Arena implements Runnable {
 	private final static World arenaWorld = buildWorld();
 	private final Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 	private Team rTeam;
 	private Team bTeam;
-	String name;
-	int size;
-	Location redSpawn;
-	Location blueSpawn;
-	ArenaTeam redTeam;
-	ArenaTeam blueTeam;
-	int taskId = -1;
+	private final String name;
+	private final int size;
+	private final Location redSpawn;
+	private final Location blueSpawn;
+	private ArenaTeam redTeam;
+	private ArenaTeam blueTeam;
+	private int taskId = -1;
 	int timeTillTeleport;
 	int timeTillDoorOpen;
-	Main plugin;
-	Material door;
-	ArrayList<Location> doors;
-	HashSet<UUID> redPlayersAlive;
-	HashSet<UUID> bluePlayersAlive;
-	File arenaFile;
-	boolean matchOver = false;
+	private final Main plugin;
+	private final Material door;
+	private ArrayList<Location> doors;
+	private HashSet<UUID> redPlayersAlive;
+	private HashSet<UUID> bluePlayersAlive;
+	private boolean matchOver = false;
 	boolean redWon = false;
 	
 	public Arena(String name, int size, int redX, int redY, int redZ, int blueX, int blueY, int blueZ, String doorMaterial, Main main) {
@@ -58,7 +59,6 @@ public class Arena implements Runnable {
 	}
 	
 	public Arena(File arenaFile, Main main) {
-		this.arenaFile = arenaFile;
 		YamlConfiguration aC = YamlConfiguration.loadConfiguration(arenaFile);
 		this.name = aC.getString("name");
 		this.size = aC.getInt("size");
@@ -212,6 +212,8 @@ public class Arena implements Runnable {
 					}	
 				}
 				if (redTeamValid && blueTeamValid) {
+					redTeam.resetTime();
+					blueTeam.resetTime();
 					for (UUID p : redTeam.getPlayers()) {
 						plugin.getDataManager().getPlayer(p).saveState();
 						Bukkit.getPlayer(p).teleport(redSpawn);
@@ -229,9 +231,15 @@ public class Arena implements Runnable {
 					Bukkit.getScheduler().cancelTask(taskId);
 					if (redTeamValid) {
 						plugin.getQueueManager().addTeamToQueue(redTeam);
+						for (UUID id : blueTeam.getPlayers()) {
+							plugin.getDataManager().getPlayer(id).setStatus(Status.FREE);
+						}
 					}
 					if (blueTeamValid) {
 						plugin.getQueueManager().addTeamToQueue(blueTeam);
+						for (UUID id : redTeam.getPlayers()) {
+							plugin.getDataManager().getPlayer(id).setStatus(Status.FREE);
+						}
 					}
 					clean();
 					plugin.getMatchManager().addArena(this);

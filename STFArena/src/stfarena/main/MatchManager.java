@@ -37,9 +37,7 @@ public class MatchManager {
 	}
 
 	private void add(ArenaTeam t1, ArenaTeam t2, ArrayList<Arena> possibleArenas, ArrayList<Arena> usedArenas) {
-
 		//@TODO: here we need to add check that all players are alive
-
 		if (possibleArenas.size() > 0) {
 			int r = ThreadLocalRandom.current().nextInt(possibleArenas.size());
 
@@ -160,11 +158,32 @@ public class MatchManager {
 	}
 
 	public void addArena(Arena arena) {
-		arena2sFree.add(arena);
+		switch (arena.getSize()) {
+		case 2:
+			arena2sFree.add(arena);
+			break;
+		case 3:
+			arena3sFree.add(arena);
+			break;
+		case 5:
+			arena5sFree.add(arena);
+			break;			
+		}
 	}
 	
 	public void addArenas(ArrayList<Arena> arenas) {
-		arena2sFree.addAll(arenas);
+		for (Arena arena : arenas) {
+			switch (arena.getSize()) {
+			case 2:
+				arena2sFree.add(arena);
+				break;
+			case 3:
+				arena3sFree.add(arena);
+				break;
+			case 5:
+				arena5sFree.add(arena);
+				break;			
+			}
+		}
 	}
-
 }
