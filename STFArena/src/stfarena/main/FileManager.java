@@ -31,7 +31,7 @@ public class FileManager {
 
 	public static File getTeamsFolder() {
 		if (teamsFolder == null) {
-			teamsFolder = new File(arenaFolder.getPath() + "/Teams");
+			teamsFolder = new File(getArenaFolder().getPath() + "/Teams");
 			if (teamsFolder.exists() == false) {
 				if (teamsFolder.mkdir() == false) {
 					Bukkit.getLogger().info("Unable to create Teams folder");
@@ -43,7 +43,7 @@ public class FileManager {
 
 	public static File getPlayersFolder() {
 		if (playersFolder == null) {
-			playersFolder = new File(arenaFolder.getPath() + "/Players");
+			playersFolder = new File(getArenaFolder().getPath() + "/Players");
 			if (playersFolder.exists() == false) {
 				if (playersFolder.mkdir() == false) {
 					Bukkit.getLogger().info("Unable to create Players folder");
@@ -55,7 +55,7 @@ public class FileManager {
 
 	public static File getMapsFolder() {
 		if (mapsFolder == null) {
-			mapsFolder = new File(arenaFolder.getPath() + "/Maps");
+			mapsFolder = new File(getArenaFolder().getPath() + "/Maps");
 			if (mapsFolder.exists() == false) {
 				if (mapsFolder.mkdir() == false) {
 					Bukkit.getLogger().info("Unable to create Maps folder");
