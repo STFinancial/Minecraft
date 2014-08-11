@@ -80,7 +80,7 @@ public class ArenaPlayer {
 							player.getInventory().setItem(i, null);	
 						}
 					}
-					else if (banned.contains(allowed[i].getType())) {
+					else if (banned.contains(new ItemStack(allowed[i].getType()))) {
 						player.sendMessage("removed banned item " + allowed[i].getType().name());
 						player.getInventory().setItem(i, null);
 					}
