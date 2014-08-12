@@ -62,32 +62,26 @@ public class ArenaPlayer {
 		banned.add(new ItemStack(Material.BUCKET));
 		banned.add(new ItemStack(Material.LAVA_BUCKET));
 		banned.add(new ItemStack(Material.WATER_BUCKET));
-		banned.add(new ItemStack(Material.TNT));
+		banned.add(new ItemStack(Material.ENDER_PEARL));
 		int potionsAllowed = POTIONLIMIT;
 		for (int i = 0; i < allowed.length; i++) {
 			if (allowed[i] != null) {
-				if (banned.contains(allowed[i])) {
-					player.sendMessage("removed banned item " + allowed[i].getType().name());
-					player.getInventory().setItem(i, null);	
+				if (allowed[i].getType().equals(Material.POTION)) {
+					if (potionsAllowed > 0) {
+						potionsAllowed--;
+					}
+					else {
+						player.sendMessage("You have exceeded potion limit!");
+						player.getInventory().setItem(i, null);	
+					}
 				}
-				else {
-					if (allowed[i].getType().equals(Material.POTION)) {
-						if (potionsAllowed > 0) {
-							potionsAllowed--;
-						}
-						else {
-							player.sendMessage("You have exceeded potion limit!");
-							player.getInventory().setItem(i, null);	
-						}
-					}
-					else if (banned.contains(new ItemStack(allowed[i].getType()))) {
-						player.sendMessage("removed banned item " + allowed[i].getType().name());
-						player.getInventory().setItem(i, null);
-					}
+				else if (banned.contains(new ItemStack(allowed[i].getType()))) {
+					player.sendMessage("removed banned item " + allowed[i].getType().name());
+					player.getInventory().setItem(i, null);
 				}
 			}
 		}
-		
+
 		player.setHealth(20);
 		player.setFoodLevel(20);
 		player.setSaturation(1);
@@ -152,7 +146,7 @@ public class ArenaPlayer {
 		if (saved) {
 
 			location = loadLocation();
-			
+
 			List<ItemStack> inventory = new ArrayList<ItemStack>();
 			for (Object item : playerData.getList("inventory")) {
 				inventory.add(ItemStack.deserialize((Map<String, Object>) item));
