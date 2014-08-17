@@ -1,6 +1,7 @@
 package stfarena.main;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -39,29 +40,24 @@ public class MatchManager {
 	private void add(ArenaTeam t1, ArenaTeam t2, ArrayList<Arena> possibleArenas, ArrayList<Arena> usedArenas) {
 		//@TODO: here we need to add check that all players are alive
 		if (possibleArenas.size() > 0) {
-			int r = ThreadLocalRandom.current().nextInt(possibleArenas.size());
-
 			for (UUID p : t1.getPlayers()) {
 				Bukkit.getPlayer(p).sendMessage("A match has been found against " + t2.getName());
 				dataManager.getPlayer(p).setStatus(Status.IN_GAME);
-				dataManager.getPlayer(p).setArena(possibleArenas.get(r).getName());
+				dataManager.getPlayer(p).setArena(possibleArenas.get(0).getName());
 
 			}
 			for (UUID p : t2.getPlayers()) {
 				Bukkit.getPlayer(p).sendMessage("A match has been found against " + t1.getName());
 				dataManager.getPlayer(p).setStatus(Status.IN_GAME);
-				dataManager.getPlayer(p).setArena(possibleArenas.get(r).getName());
+				dataManager.getPlayer(p).setArena(possibleArenas.get(0).getName());
 			}
 
-			if (Math.random() > .5) {
-				possibleArenas.get(r).add(t1, t2);
-			} else {
-				possibleArenas.get(r).add(t2, t1);
-			}
+			possibleArenas.get(0).add(t1, t2);
 
-			usedArenas.add(possibleArenas.get(r));
-			possibleArenas.remove(r);
-		} else {
+			usedArenas.add(possibleArenas.get(0));
+			possibleArenas.remove(0);
+		} 
+		else {
 			Bukkit.getLogger().info("Massive Failure, no arenas available");
 		}
 	}
@@ -185,5 +181,9 @@ public class MatchManager {
 				break;			
 			}
 		}
+		
+		Collections.shuffle(arena2sFree);
+		Collections.shuffle(arena3sFree);
+		Collections.shuffle(arena5sFree);		
 	}
 }
