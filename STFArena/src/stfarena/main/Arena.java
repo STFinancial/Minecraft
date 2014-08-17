@@ -303,6 +303,8 @@ public class Arena implements Runnable {
 		bTeam.setAllowFriendlyFire(false);
 		rTeam.setPrefix(ChatColor.RED + "Red Team: ");
 		bTeam.setPrefix(ChatColor.BLUE + "Blue Team: ");
+		Objective objective = scoreboard.registerNewObjective("Health", "health");
+		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 	}
 	
 	public void assignScoreboard() {
@@ -314,8 +316,6 @@ public class Arena implements Runnable {
 			bTeam.addPlayer(Bukkit.getPlayer(id));
 			Bukkit.getPlayer(id).setScoreboard(scoreboard);
 		}
-		Objective objective = scoreboard.registerNewObjective("Health", "health");
-		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 	}
 	
 	public void removeScoreboard() {
@@ -327,6 +327,5 @@ public class Arena implements Runnable {
 			bTeam.removePlayer(Bukkit.getPlayer(id));
 			Bukkit.getPlayer(id).setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
 		}
-		scoreboard.getObjective(DisplaySlot.SIDEBAR).unregister();
 	}
 }
