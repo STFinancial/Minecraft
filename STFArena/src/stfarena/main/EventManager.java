@@ -138,7 +138,7 @@ public class EventManager implements Listener {
 
 	@EventHandler
 	private void onPlayerRespawn(PlayerRespawnEvent event) {
-		if (dataManager.getPlayer(event.getPlayer()).getStatus() == Status.IN_GAME) {
+		if (dataManager.getPlayer(event.getPlayer()).getStatus().equals(Status.IN_GAME)) {
 			dataManager.getPlayer(event.getPlayer()).setStatus(Status.FREE);
 			dataManager.getPlayer(event.getPlayer()).setFocus(null);
 			dataManager.getPlayer(event.getPlayer()).setArena(null);
@@ -159,7 +159,7 @@ public class EventManager implements Listener {
 
 	@EventHandler
 	private void onPlayerDeath(PlayerDeathEvent event) {
-		if (inArenaWorld(event.getEntity())) {
+		if (plugin.getDataManager().getPlayer(event.getEntity().getUniqueId()).getStatus().equals(Status.IN_GAME)) {
 			plugin.getMatchManager().recordDeath((Player) event.getEntity());
 		}
 	}
