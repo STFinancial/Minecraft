@@ -107,8 +107,9 @@ public class MatchManager {
 	}
 
 	public void recordDeath(Player player){
-		if(dataManager.getPlayer(player).getArena() != null)
+		if(dataManager.getPlayer(player).getArena() != null) {
 			getArena(dataManager.getPlayer(player).getFocus()).recordDeath(player.getUniqueId());
+		}
 	}
 
 	public Arena getArena(String teamName){
