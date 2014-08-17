@@ -95,6 +95,7 @@ public class EventManager implements Listener {
 				
 				if(arrow.getLocation().getY() > (event.getEntity().getLocation().getY() + 1.6)){
 					event.setDamage(event.getDamage() * 1.5);
+					((Player) arrow.getShooter()).sendMessage("You got a headshot!");
 				}else{
 					event.setDamage(event.getDamage() * 1.25);
 				}
