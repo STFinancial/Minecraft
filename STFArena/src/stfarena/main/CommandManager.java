@@ -1,6 +1,6 @@
 package stfarena.main;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -84,8 +84,8 @@ public class CommandManager implements CommandExecutor {
 		return true;
 	}
 	
-	private void displayTeams(Player player, ArrayList<ArenaTeam> top) {
-		for (ArenaTeam team: top) {
+	private void displayTeams(Player player, List<ArenaTeam> list) {
+		for (ArenaTeam team: list) {
 			player.sendMessage(team.getName() +": " + (int)team.getRating());
 		}
 	}

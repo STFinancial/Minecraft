@@ -2,6 +2,7 @@ package stfarena.main;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public class Ladder {
@@ -28,11 +29,8 @@ public class Ladder {
 		return ladder;
 	}
 	
-	public ArrayList<ArenaTeam> getTop() {
-		
-			return (ArrayList<ArenaTeam>) ladder.subList(0, 5);
-		
-		
+	public List<ArenaTeam> getTop() {	
+		return ladder.subList(0, 5);		
 	}
 	
 
