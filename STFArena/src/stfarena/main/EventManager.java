@@ -128,12 +128,14 @@ public class EventManager implements Listener {
 		if (inArenaWorld(event.getEntity())) {
 			PotionEffect potionEffect = event.getPotion().getEffects().iterator().next();
 			Player thrower = (Player) event.getPotion().getShooter();
-			if (ArenaPotion.isFriendly(potionEffect.getType().getName())) {
-				for (LivingEntity reciever : event.getAffectedEntities()) {
-					if (reciever instanceof Player) { 
-						Player recievingPlayer = (Player) reciever;
-						if (thrower.getScoreboard().getPlayerTeam(thrower).hasPlayer(recievingPlayer) == false) {
-							event.setIntensity(recievingPlayer, 0);
+			if (dataManager.getPlayer(thrower).getStatus().equals(Status.IN_GAME)) {
+				if (ArenaPotion.isFriendly(potionEffect.getType().getName())) {
+					for (LivingEntity reciever : event.getAffectedEntities()) {
+						if (reciever instanceof Player) { 
+							Player recievingPlayer = (Player) reciever;
+							if (thrower.getScoreboard().getPlayerTeam(thrower).hasPlayer(recievingPlayer) == false) {
+								event.setIntensity(recievingPlayer, 0);
+							}
 						}
 					}
 				}
