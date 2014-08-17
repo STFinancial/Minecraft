@@ -42,7 +42,7 @@ public class Ladder {
 	public void sortLadder() {
 		boolean swapped = true;
 		int length = ladder.size();
-		while (!swapped) {
+		while (swapped) {
 			swapped = false;
 			for (int i = 1; i < length; ++i) {
 				if (ladder.get(i - 1).getRating() < ladder.get(i).getRating()) {

@@ -1,5 +1,7 @@
 package stfarena.main;
 
+import javax.sound.midi.Receiver;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -126,13 +128,16 @@ public class EventManager implements Listener {
 		if (inArenaWorld(event.getEntity())) {
 			PotionEffect potionEffect = event.getPotion().getEffects().iterator().next();
 			Player thrower = (Player) event.getPotion().getShooter();
-			for (LivingEntity entity : event.getAffectedEntities()) {
-				if (ArenaPotion.isFriendly(potionEffect.getType().toString())) {
-					if (dataManager.areAllies(thrower, (Player) entity) == false) {
-						event.setIntensity(entity, 0);
+			if (ArenaPotion.isFriendly(potionEffect.getType().getName())) {
+				for (LivingEntity entity : event.getAffectedEntities()) {
+					if (entity instanceof Player) { 
+						Player reciever = (Player) event.getEntity();
+						if (thrower.getScoreboard().getPlayerTeam(thrower).hasPlayer(reciever) == false) {
+							event.setIntensity(entity, 0);
+						}
 					}
 				}
-			}			
+			}
 		}
 	}
 
