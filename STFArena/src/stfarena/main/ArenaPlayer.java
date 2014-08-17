@@ -27,7 +27,6 @@ public class ArenaPlayer {
 	private Status status;
 	private String teamFocused;
 	private String matchLocation;
-	boolean saved;
 	private final ArrayList<String> teams;
 	private final String name;
 	private final UUID uuid;
@@ -38,14 +37,12 @@ public class ArenaPlayer {
 	public ArenaPlayer(Player player, FileManager fileManager) {
 		status = Status.FREE;
 		teamFocused = null;
-		saved = false;
 		teams = new ArrayList<String>();
 		name = player.getName();
 		uuid = player.getUniqueId();
 		playerFile = new File(FileManager.getPlayersFolder().getPath() + "/" + name + ".yml");
 		playerData = YamlConfiguration.loadConfiguration(playerFile);
 		if (playerFile.exists()) {
-			saved = true;
 			loadState(player);
 		}
 	}
@@ -137,14 +134,10 @@ public class ArenaPlayer {
 		} catch (IOException e) {
 			Bukkit.getLogger().info("Unable to save player data for " + name);
 		}
-
-		saved = true;
 	}
 
 	@SuppressWarnings("unchecked")
 	public void loadState(Player player) {
-		if (saved) {
-
 			location = loadLocation();
 
 			List<ItemStack> inventory = new ArrayList<ItemStack>();
@@ -200,8 +193,6 @@ public class ArenaPlayer {
 			}
 
 			playerFile.delete();
-			saved = false;
-		}
 	}
 	private Map<String, Object> saveLocation(Location playerLocation) {
 		Map<String, Object> locationData = new HashMap<String, Object>();

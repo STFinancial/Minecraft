@@ -93,13 +93,15 @@ public class MatchManager {
 		
 		for(UUID p:winners.getPlayers()){
 			if(Bukkit.getPlayer(p).isOnline()){
-				if(Bukkit.getPlayer(p).getHealth() != 0){
-					dataManager.getPlayer(p).setStatus(Status.FREE);
-					dataManager.getPlayer(p).setFocus(null);
-					dataManager.getPlayer(p).setArena(null);
-					dataManager.getPlayer(p).loadState(Bukkit.getPlayer(p));
-					Bukkit.getPlayer(p).teleport(dataManager.getPlayer(p).getLocation());
-					Bukkit.getPlayer(p).sendMessage("You have been teleported out of the arena");
+				if (dataManager.getPlayer(p).getStatus().equals(Status.IN_GAME)) {
+					if(Bukkit.getPlayer(p).getHealth() != 0){
+						dataManager.getPlayer(p).setStatus(Status.FREE);
+						dataManager.getPlayer(p).setFocus(null);
+						dataManager.getPlayer(p).setArena(null);
+						dataManager.getPlayer(p).loadState(Bukkit.getPlayer(p));
+						Bukkit.getPlayer(p).teleport(dataManager.getPlayer(p).getLocation());
+						Bukkit.getPlayer(p).sendMessage("You have been teleported out of the arena");
+					}
 				}
 			}
 		}

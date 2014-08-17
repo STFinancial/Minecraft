@@ -100,7 +100,8 @@ public class DataManager {
 	}
 
 	public void forfeit(Player player) {
-		player.setHealth(0);
+		plugin.getMatchManager().recordDeath(player);
+		getPlayer(player).loadState(player);
 	}
 
 	public void exitQueue(Player player) {
