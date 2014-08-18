@@ -1,4 +1,4 @@
-package stfadventure.wizard;
+package stfadventure.monk;
 
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.LivingEntity;
@@ -8,13 +8,12 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import stfadventure.wizard.Wizard;
 import util.Weapon;
 
 public class Necromancer extends Wizard {
 
 	public Necromancer(Player player, int level, int exp) {
-		super(player, level, exp);
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override

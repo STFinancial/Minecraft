@@ -15,6 +15,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import stfadventure.events.EventManager;
 import stfadventure.main.RPGClass;
+import stfadventure.monk.Necromancer;
 import util.Weapon;
 
 public class WizardListener implements Listener {
@@ -70,13 +71,13 @@ public class WizardListener implements Listener {
 			case LAVA:
 			case FIRE:
 			case FIRE_TICK:
-				if (rpgClass instanceof BlazeMage) {
+				if (rpgClass instanceof Pyromancer) {
 					event.setCancelled(true);
 				}
 				break;
 			case THORNS:
 			case DROWNING:
-				if (rpgClass instanceof FrostMage) {
+				if (rpgClass instanceof Cryomancer) {
 					event.setCancelled(true);
 				}
 				break;
@@ -92,12 +93,7 @@ public class WizardListener implements Listener {
 		}
 	}
 
-	@EventHandler
-	private void magePrimaryAttack(PlayerInteractEvent event) {
-		if (event.getAction().equals(Action.LEFT_CLICK_AIR)) {
-			EventManager.getPlayer(event.getPlayer()).primaryAttack(Weapon.getWeapon(event.getPlayer()));
-		}
-	}
+	
 
 	@EventHandler
 	private static void mageSecondaryAndSpecialAttack(PlayerInteractEvent event) {

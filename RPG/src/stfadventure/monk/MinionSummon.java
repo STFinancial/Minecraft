@@ -1,4 +1,4 @@
-package stfadventure.wizard;
+package stfadventure.monk;
 
 public class MinionSummon {
 

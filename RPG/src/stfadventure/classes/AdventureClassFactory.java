@@ -1,10 +1,14 @@
 package stfadventure.classes;
 
-import stfadventure.wizard.Necromancer;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import stfadventure.wizard.Cryomancer;
+import stfadventure.wizard.Wizard;
 
 public class AdventureClassFactory {
 		
-	public static AdventureClass getAdventureClass(AdventureClassType classType, int level, int exp) {
+	public static AdventureClass getAdventureClass(AdventureClassType classType, JavaPlugin plugin, Player player) {
 		switch (classType) {
 		case ARCHER:
 		case RANGER:
@@ -13,17 +17,16 @@ public class AdventureClassFactory {
 		case CRUSADER:
 		case VIKING:
 		case WIZARD:
+			return new Wizard(plugin, player, 0, 0);
 		case PYROMANCER:
 		case CRYOMANCER:
+			return new Cryomancer(plugin, player, 0, 0);
 		case MONK:
 		case NECROMANCER:
-			return new Necromancer(level, exp);
 		case PRIEST:
-			return new Priest(level, exp);
 		case BEGINNER:
 		default:
-			return new Beginner(level, exp);
-			
-		}		
+			return new Beginner(null, null, 0, 0);
+		}
 	}
 }

@@ -1,20 +1,18 @@
 package stfadventure.wizard;
 
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.LargeFireball;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Snowball;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import stfadventure.main.Main;
 import util.Weapon;
 
-public class FrostMage extends Wizard {
-	private Blizzard blizzard;
+public class Pyromancer extends Wizard {
+	private Apocalypse apocalypse;
 
-	public FrostMage(Player player, int level, int exp) {
+	public Pyromancer(Player player, int level, int exp) {
 		super(player, level, exp);
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -22,8 +20,8 @@ public class FrostMage extends Wizard {
 		if (weapon.equals(Weapon.HOE)) {
 			player.setNoDamageTicks(player.getMaximumNoDamageTicks());
 			player.setLastDamage(Integer.MAX_VALUE);
-			Snowball snowball = player.launchProjectile(Snowball.class);
-			snowball.setShooter(player);
+			LargeFireball fireball = player.launchProjectile(LargeFireball.class);
+			fireball.setYield(0);
 			player.setNoDamageTicks(0);
 		}
 	}
@@ -31,16 +29,16 @@ public class FrostMage extends Wizard {
 	@Override
 	public void specialAttack(Weapon weapon) {
 		if (weapon.equals(Weapon.HOE)) {
-			if (blizzard != null) {
-				blizzard.cancel();
+			if (apocalypse != null) {
+				apocalypse.cancel();
 			}
-			blizzard = new Blizzard(player, level); 
-			blizzard.runTaskTimer(Main.plugin, 0, 1);
+			apocalypse = new Apocalypse(player); 
+			apocalypse.runTaskTimer(Main.plugin, 0, 60);
 		}
 	}
 
 	@Override
 	public void primaryAttackEffect(EntityDamageByEntityEvent event) {
-		((LivingEntity) event.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 40, 2));
+//		event.getEntity().setFireTicks(level);
 	}
 }
