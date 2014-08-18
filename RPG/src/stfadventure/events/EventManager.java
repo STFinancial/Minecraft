@@ -1,5 +1,8 @@
 package stfadventure.events;
 
+import java.io.File;
+
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,6 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import stfadventure.classes.AdventureClass;
 import stfadventure.classes.AdventureClassFactory;
 import stfadventure.classes.AdventureClassType;
+import stfadventure.main.FileManager;
 
 public class EventManager implements Listener {
 	private final JavaPlugin plugin;
@@ -22,7 +26,15 @@ public class EventManager implements Listener {
 	
 	@EventHandler
 	private void onPlayerJoin(PlayerJoinEvent event) {
-		setAdventureClass(AdventureClassType.CRYOMANCER, event.getPlayer());
+		YamlConfiguration playerConfig  = YamlConfiguration.loadConfiguration(FileManager.getPlayerFile(event.getPlayer()));
+		try {
+			String adventureClass = playerConfig.getString("class");
+			setAdventureClass(AdventureClassType.getAdventureClassType(adventureClass), event.getPlayer());
+		}
+		catch (NullPointerException e) {
+			playerConfig.set("class", "BEGINNER");
+			setAdventureClass(AdventureClassType.BEGINNER, event.getPlayer());
+		}
 	}
 	
 	@EventHandler

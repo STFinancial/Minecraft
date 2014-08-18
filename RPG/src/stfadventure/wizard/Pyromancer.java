@@ -4,6 +4,7 @@ import org.bukkit.entity.LargeFireball;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
+import stfadventure.classes.AdventureClassType;
 import stfadventure.main.Main;
 import util.Weapon;
 

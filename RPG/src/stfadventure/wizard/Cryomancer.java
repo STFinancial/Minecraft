@@ -3,6 +3,8 @@ package stfadventure.wizard;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import stfadventure.classes.AdventureClassType;
 import stfadventure.events.AdventureEvent;
 
 public class Cryomancer extends Wizard {
@@ -11,6 +13,11 @@ public class Cryomancer extends Wizard {
 	public Cryomancer(JavaPlugin plugin, Player player, int level, int exp) {
 		super(plugin, player, level, exp);
 		blizzard = new Blizzard(plugin, player);
+	}
+	
+	@Override
+	public AdventureClassType getType() {
+		return AdventureClassType.CRYOMANCER;
 	}
 
 	@Override
@@ -21,6 +28,7 @@ public class Cryomancer extends Wizard {
 			Snowball snowball = player.launchProjectile(Snowball.class);
 			snowball.setShooter(player);
 			player.setNoDamageTicks(0);
+			resource.start(0, 20);
 		}
 		else {
 			player.sendMessage("Not enough mana!");
@@ -31,6 +39,7 @@ public class Cryomancer extends Wizard {
 	public void specialAttack(AdventureEvent event) {
 		if (resource.subtractAmount(50)) {
 			blizzard.start();
+			resource.start(0, 20);
 		}
 		else {
 			player.sendMessage("Not enough mana!");

@@ -20,16 +20,8 @@ public class Wizard extends AdventureClass {
 	}
 
 	@Override
-	protected Score buildScoreboard() {
-		Objective objective = scoreboard.registerNewObjective("resource", "dummy");
-		objective.setDisplayName(ChatColor.GREEN + "Resource");
-		objective.setDisplaySlot(DisplaySlot.SIDEBAR);	
-		return objective.getScore(ChatColor.BLUE + "Mana: ");
-	}
-
-	@Override
-	public AdventureClassType getType() {
-		return AdventureClassType.WIZARD;
+	protected Score getResourceType() {
+		return scoreboard.getObjective("resource").getScore(ChatColor.BLUE + "Mana: ");
 	}
 
 	@Override
@@ -39,7 +31,8 @@ public class Wizard extends AdventureClass {
 			player.setLastDamage(Integer.MAX_VALUE);
 			SmallFireball fireball = player.launchProjectile(SmallFireball.class);
 			fireball.setShooter(player);
-			player.setNoDamageTicks(0);		
+			player.setNoDamageTicks(0);	
+			resource.start(0, 20);
 		}
 		else {
 			player.sendMessage("Not enough mana to shoot fireball!");
@@ -50,6 +43,7 @@ public class Wizard extends AdventureClass {
 	public void secondaryAttack(AdventureEvent event) {
 		if (resource.subtractAmount(30)) {
 			player.launchProjectile(EnderPearl.class).setVelocity(player.getLocation().getDirection().normalize());	
+			resource.start(0, 20);
 		}
 		else {
 			player.sendMessage("Not enough mana to teleport!");

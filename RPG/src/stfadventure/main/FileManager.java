@@ -1,7 +1,10 @@
 package stfadventure.main;
 
 import java.io.File;
+import java.io.IOException;
+
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 public class FileManager {
 	private static File mainFolder;
@@ -29,5 +32,17 @@ public class FileManager {
 			}
 		}
 		return playersFolder;
+	}
+	
+	public static File getPlayerFile(Player player) {
+		File playerFile = new File(getPlayersFolder() + "/" + player.getUniqueId() + ".yml");
+		if (playerFile.exists() == false) {
+			try {
+				playerFile.createNewFile();
+			} catch (IOException e) {
+				Bukkit.getLogger().info("Unable to create player file for " + player.getUniqueId());
+			}
+		}
+		return playerFile;
 	}
 }

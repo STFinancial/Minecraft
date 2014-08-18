@@ -5,6 +5,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Score;
 
 public class Resource implements Runnable {
+	private static final int MINIMUM_AMOUNT = 0;
 	private final JavaPlugin plugin;
 	private int taskId = -1;
 	private final Score resourceAmount;
@@ -15,7 +16,9 @@ public class Resource implements Runnable {
 	public Resource(JavaPlugin plugin, Score score) {
 		this.plugin = plugin;
 		resourceAmount = score;
-		resourceAmount.setScore(currentAmount);
+		if (resourceAmount != null) {
+			resourceAmount.setScore(currentAmount);
+		}
 	}
 
 	@Override
@@ -32,19 +35,27 @@ public class Resource implements Runnable {
 		else {
 			stop();
 		}		
-	}	
+	}
 	
-	private void start() {
+	public void start(long delay, long repeatLength) {
 		if (taskId == -1) {
-			taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this, 0, 20);
+			taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this, delay, repeatLength);
 		}
 	}
 	
+	public void addAmount(int amount) {
+		currentAmount = currentAmount + amount;
+		if (currentAmount > maximumAmount) {
+			currentAmount = maximumAmount;
+		}
+		if (currentAmount < MINIMUM_AMOUNT) {
+			currentAmount = MINIMUM_AMOUNT;
+		}
+	}
 	public boolean subtractAmount(int amount) {
 		if (currentAmount - amount >= 0) {
 			currentAmount = currentAmount - amount;
 			resourceAmount.setScore(currentAmount);
-			start();
 			return true;
 		}
 		return false;		
