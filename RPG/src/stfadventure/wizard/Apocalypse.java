@@ -1,4 +1,4 @@
-package wizard;
+package stfadventure.wizard;
 
 import org.bukkit.Location;
 import org.bukkit.WeatherType;

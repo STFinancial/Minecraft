@@ -1,12 +1,12 @@
-package wizard;
+package stfadventure.wizard;
 
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.SmallFireball;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
+import stfadventure.main.RPGClass;
 import util.Weapon;
-import main.RPGClass;
 
 public class Wizard extends RPGClass {
 

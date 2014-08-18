@@ -1,11 +1,11 @@
-package wizard;
+package stfadventure.wizard;
 
 import org.bukkit.entity.LargeFireball;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
+import stfadventure.main.Main;
 import util.Weapon;
-import main.Main;
 
 public class BlazeMage extends Wizard {
 	private Apocalypse apocalypse;

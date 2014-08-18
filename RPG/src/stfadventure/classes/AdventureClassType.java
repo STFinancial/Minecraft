@@ -1,0 +1,6 @@
+package stfadventure.classes;
+
+public enum AdventureClassType {
+	BEGINNER, ARCHER, RANGER, HUNTER, WARRIOR, CRUSADER, VIKING, WIZARD,
+	PYROMANCER, CRYOMANCER, MONK, NECROMANCER, PRIEST;
+}

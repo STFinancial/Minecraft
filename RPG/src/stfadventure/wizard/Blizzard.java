@@ -1,4 +1,4 @@
-package wizard;
+package stfadventure.wizard;
 
 import java.util.concurrent.ThreadLocalRandom;
 

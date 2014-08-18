@@ -1,9 +1,9 @@
-package archer;
+package stfadventure.archer;
 
 import org.bukkit.entity.Player;
 
+import stfadventure.main.RPGClass;
 import util.Weapon;
-import main.RPGClass;
 
 public class Archer extends RPGClass {
 
@@ -29,5 +29,4 @@ public class Archer extends RPGClass {
 		// TODO Auto-generated method stub
 		
 	}
-
 }

@@ -1,4 +1,4 @@
-package main;
+package stfadventure.main;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -7,12 +7,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import wizard.BlazeMage;
-import wizard.FrostMage;
-import wizard.Necromancer;
-import wizard.Wizard;
-import wizard.WizardListener;
-import combat.EventManager;
+import stfadventure.events.EventManager;
+import stfadventure.wizard.BlazeMage;
+import stfadventure.wizard.FrostMage;
+import stfadventure.wizard.Necromancer;
+import stfadventure.wizard.Wizard;
+import stfadventure.wizard.WizardListener;
 
 
 public class Main extends JavaPlugin {

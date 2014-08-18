@@ -1,6 +1,4 @@
-package wizard;
-
-import main.RPGClass;
+package stfadventure.wizard;
 
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -14,8 +12,10 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+
+import stfadventure.events.EventManager;
+import stfadventure.main.RPGClass;
 import util.Weapon;
-import combat.EventManager;
 
 public class WizardListener implements Listener {
 

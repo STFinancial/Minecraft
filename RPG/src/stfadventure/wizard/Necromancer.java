@@ -1,4 +1,4 @@
-package wizard;
+package stfadventure.wizard;
 
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.LivingEntity;

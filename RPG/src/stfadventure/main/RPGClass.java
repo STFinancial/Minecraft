@@ -1,4 +1,4 @@
-package main;
+package stfadventure.main;
 
 import java.awt.Event;
 
@@ -21,11 +21,7 @@ public abstract class RPGClass {
 		return level;
 	}
 	
-	public abstract void primaryAttack(Weapon weapon);
-	
-	public abstract void secondaryAttack(Weapon weapon);
-	
-	public abstract void specialAttack(Weapon weapon);
+
 	
 //	public abstract void primaryAttackEffect(Event event);
 //	
