@@ -1,6 +1,7 @@
 package stfadventure.monk;
 
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Score;
@@ -8,11 +9,12 @@ import org.bukkit.scoreboard.Score;
 import stfadventure.classes.AdventureClass;
 import stfadventure.classes.AdventureClassType;
 import stfadventure.events.AdventureEvent;
+import stfadventure.main.Main;
 
 public class Monk extends AdventureClass {
 
-	public Monk(JavaPlugin plugin, Player player, int level, int exp) {
-		super(plugin, player, level, exp);
+	public Monk(Main plugin, Player player, YamlConfiguration playerConfig) {
+		super(plugin, player, playerConfig);
 	}
 
 	@Override

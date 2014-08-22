@@ -1,5 +1,7 @@
 package stfadventure.monk;
 
-public class MonkListener {
+import org.bukkit.event.Listener;
+
+public class MonkListener implements Listener {
 
 }

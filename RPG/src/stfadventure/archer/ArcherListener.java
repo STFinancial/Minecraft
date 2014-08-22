@@ -1,5 +1,7 @@
 package stfadventure.archer;
 
-public class ArcherListener {
+import org.bukkit.event.Listener;
+
+public class ArcherListener implements Listener {
 
 }

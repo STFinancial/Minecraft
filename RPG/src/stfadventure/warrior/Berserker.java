@@ -1,13 +1,13 @@
-package stfadventure.monk;
+package stfadventure.warrior;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import stfadventure.main.Main;
 
-public class Priest extends Monk {
+public class Berserker extends Warrior {
 
-	public Priest(Main plugin, Player player, YamlConfiguration playerConfig) {
+	public Berserker(Main plugin, Player player, YamlConfiguration playerConfig) {
 		super(plugin, player, playerConfig);
 		// TODO Auto-generated constructor stub
 	}

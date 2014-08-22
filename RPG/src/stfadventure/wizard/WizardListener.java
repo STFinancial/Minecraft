@@ -13,7 +13,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import stfadventure.events.EventManager;
+import stfadventure.main.PlayerManager;
 import stfadventure.main.RPGClass;
 import stfadventure.monk.Necromancer;
 import util.Weapon;
@@ -30,7 +30,6 @@ public class WizardListener implements Listener {
 			Projectile missile = (Projectile) event.getDamager();
 			if (missile.getShooter() instanceof Player && missile.getShooter().equals(event.getEntity()) == false) {
 				Player player = (Player) missile.getShooter();
-				RPGClass shooter = EventManager.getPlayer(player);
 				if (shooter instanceof Wizard) {
 					event.setDamage(1);
 					((Wizard) shooter).primaryAttackEffect(event);
@@ -66,7 +65,7 @@ public class WizardListener implements Listener {
 	private void mageProtections(EntityDamageEvent event) {
 		if (event.getEntity() instanceof Player) {
 			Player player = (Player) event.getEntity();
-			RPGClass rpgClass = EventManager.getPlayer(player);
+			RPGClass rpgClass = PlayerManager.getPlayer(player);
 			switch (event.getCause()) {
 			case LAVA:
 			case FIRE:
@@ -100,11 +99,11 @@ public class WizardListener implements Listener {
 		if (event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
 			Player player = event.getPlayer();
 			if (player.isSneaking()) {
-				EventManager.getPlayer(player).specialAttack(Weapon.getWeapon(player));
+				PlayerManager.getPlayer(player).specialAttack(Weapon.getWeapon(player));
 			}	
 			else {
 
-				EventManager.getPlayer(player).secondaryAttack(Weapon.getWeapon(player));
+				PlayerManager.getPlayer(player).secondaryAttack(Weapon.getWeapon(player));
 			}
 		}
 	}

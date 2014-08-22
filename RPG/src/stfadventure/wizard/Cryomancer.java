@@ -1,23 +1,17 @@
 package stfadventure.wizard;
 
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import stfadventure.classes.AdventureClassType;
 import stfadventure.events.AdventureEvent;
+import stfadventure.main.Main;
 
 public class Cryomancer extends Wizard {
 	private final Blizzard blizzard;
 
-	public Cryomancer(JavaPlugin plugin, Player player, int level, int exp) {
-		super(plugin, player, level, exp);
+	public Cryomancer(Main plugin, Player player, YamlConfiguration playerConfig) {
+		super(plugin, player, playerConfig);
 		blizzard = new Blizzard(plugin, player);
-	}
-	
-	@Override
-	public AdventureClassType getType() {
-		return AdventureClassType.CRYOMANCER;
 	}
 
 	@Override

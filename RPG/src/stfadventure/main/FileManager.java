@@ -2,8 +2,11 @@ package stfadventure.main;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 public class FileManager {
@@ -34,15 +37,29 @@ public class FileManager {
 		return playersFolder;
 	}
 	
-	public static File getPlayerFile(Player player) {
+	public static YamlConfiguration loadPlayerConfig(Player player) {
 		File playerFile = new File(getPlayersFolder() + "/" + player.getUniqueId() + ".yml");
+		boolean newFile = false;
 		if (playerFile.exists() == false) {
 			try {
 				playerFile.createNewFile();
+				newFile = true;
 			} catch (IOException e) {
 				Bukkit.getLogger().info("Unable to create player file for " + player.getUniqueId());
 			}
 		}
-		return playerFile;
+		YamlConfiguration playerConfig = YamlConfiguration.loadConfiguration(playerFile);
+		if (newFile) {
+			playerConfig.set("class", "BEGINNER");
+			playerConfig.set("level", 1);
+			playerConfig.set("exp", 0);
+			playerConfig.set("resource", 0);
+			try {
+				playerConfig.save(playerFile);
+			} catch (IOException e) {
+				Bukkit.getLogger().info("Unable to save configuration file for " + player.getUniqueId());
+			}
+		}
+		return playerConfig;
 	}
 }

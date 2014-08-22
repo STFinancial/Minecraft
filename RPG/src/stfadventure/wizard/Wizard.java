@@ -1,22 +1,20 @@
 package stfadventure.wizard;
 
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.SmallFireball;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 
 import stfadventure.classes.AdventureClass;
-import stfadventure.classes.AdventureClassType;
 import stfadventure.events.AdventureEvent;
+import stfadventure.main.Main;
 
 public class Wizard extends AdventureClass {
 
-	public Wizard(JavaPlugin plugin, Player player, int level, int exp) {
-		super(plugin, player, level, exp);
+	public Wizard(Main plugin, Player player, YamlConfiguration playerConfig) {
+		super(plugin, player, playerConfig);
 	}
 
 	@Override
