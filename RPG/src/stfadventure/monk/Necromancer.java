@@ -17,4 +17,6 @@ public class Necromancer extends Monk {
 	protected Score getResourceType() {
 		return scoreboard.getObjective("resource").getScore(ChatColor.GRAY + "Essence: ");
 	}
+	
+	
 }

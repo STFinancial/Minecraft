@@ -11,7 +11,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import stfadventure.classes.AdventureClass;
-import stfadventure.classes.AdventureClassFactory;
 import stfadventure.util.TimeUtil;
 
 public class PlayerManager implements Listener, Runnable {
@@ -25,20 +24,20 @@ public class PlayerManager implements Listener, Runnable {
 	
 	@EventHandler
 	private void onPlayerJoin(PlayerJoinEvent event) {
-		setAdventureClass(plugin, event.getPlayer());
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this, TimeUtil.convertMinutesToTicks(5), TimeUtil.convertMinutesToTicks(5));
+//		setAdventureClass(plugin, event.getPlayer());
+//		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this, TimeUtil.convertMinutesToTicks(5), TimeUtil.convertMinutesToTicks(5));
 	}
 	
 	@EventHandler
 	private void onPlayerQuit(PlayerQuitEvent event) {
-		getAdventureClass(event.getPlayer()).save();
+//		getAdventureClass(event.getPlayer()).save();
 	}
 	
-	public static void setAdventureClass(Main plugin, Player player) {
-		AdventureClass adventureClass = AdventureClassFactory.getAdventureClass(plugin, player);
-		FixedMetadataValue data = new FixedMetadataValue(plugin, adventureClass);
-		player.setMetadata("STFAdventureClass", data);
-	}
+//	public static void setAdventureClass(Main plugin, Player player) {
+//		AdventureClass adventureClass = AdventureClassFactory.getAdventureClass(plugin, player);
+//		FixedMetadataValue data = new FixedMetadataValue(plugin, adventureClass);
+//		player.setMetadata("STFAdventureClass", data);
+//	}
 	
 	public static AdventureClass getAdventureClass(Player player) {
 		return (AdventureClass) player.getMetadata("STFAdventureClass").get(0).value();
