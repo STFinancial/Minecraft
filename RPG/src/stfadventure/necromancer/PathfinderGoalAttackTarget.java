@@ -1,4 +1,4 @@
-package stfadventure.custom;
+package stfadventure.necromancer;
 
 import net.minecraft.server.v1_7_R4.EntityCreature;
 import net.minecraft.server.v1_7_R4.EntityLiving;

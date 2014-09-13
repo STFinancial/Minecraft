@@ -1,4 +1,4 @@
-package stfadventure.item;
+package stfadventure.util;
 
 import java.util.List;
 

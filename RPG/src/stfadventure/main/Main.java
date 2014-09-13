@@ -19,7 +19,7 @@ public class Main extends JavaPlugin {
 	
 	@Override
 	public void onEnable() {
-//		playerManager = new PlayerManager(this);
+		playerManager = new PlayerManager(this);
 		new ListenerManager(this);
 		CustomEntityType.registerEntities();
 	}

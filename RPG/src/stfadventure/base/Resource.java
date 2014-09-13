@@ -1,25 +1,29 @@
 package stfadventure.base;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Scoreboard;
 
 import stfadventure.main.Main;
 
 public class Resource implements Runnable {
-	public enum ResourceType {RAGE, ENERGY, MANA, LIFE, NONE};
-	private static final int MINIMUM_AMOUNT = 0;
-	private final JavaPlugin plugin;
+	private final Main plugin;
 	private int taskId = -1;
-	private final Score score;
-	private int maximumAmount = 0, regainAmount = 0;
+	private final Scoreboard scoreboard;
+	private final ResourceType type;
+	private int currentAmount = 0, maximumAmount = 0, regainAmount = 0;
 	
-	public Resource(Main plugin, Score score, int maximumAmount, int regainAmount, int currentAmount) {
+	public Resource(Main plugin, Scoreboard scoreboard, ResourceType type) {
 		this.plugin = plugin;
-		this.score = score;
-		this.maximumAmount = maximumAmount;
-		this.regainAmount = regainAmount;
-		score.setScore(currentAmount);
+		this.scoreboard = scoreboard;
+		this.type = type;
+	}
+	
+	public Resource(Main plugin, AdventureClass adventureClass, ResourceType type, int currentAmount) {
+		this(plugin, adventureClass, type);
+		this.currentAmount = currentAmount;
 	}
 
 	@Override

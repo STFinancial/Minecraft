@@ -14,9 +14,10 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import stfadventure.base.Resource.ResourceType;
-import stfadventure.custom.NecroMinion;
-import stfadventure.custom.NecroSkeleton;
-import stfadventure.item.ItemUtil;
+import stfadventure.main.PlayerManager;
+import stfadventure.necromancer.NecroMinion;
+import stfadventure.necromancer.NecroSkeleton;
+import stfadventure.util.ItemUtil;
 
 public class ArcherListener implements Listener {
 
@@ -36,6 +37,11 @@ public class ArcherListener implements Listener {
 				ItemUtil.setDisplayName(event.getPlayer().getItemInHand(), "test");
 				event.getPlayer().setItemInHand(ItemUtil.testAttribute(event.getPlayer().getItemInHand()));
 				ItemUtil.setResource(event.getPlayer().getItemInHand(), ResourceType.ENERGY);
+			}			
+		}
+		if (event.getAction().equals(Action.LEFT_CLICK_AIR)) {
+			if (event.getPlayer().getItemInHand().getType().equals(Material.WOOD_SWORD)) {
+				PlayerManager.getAdventureClass(event.getPlayer()).primaryAttack(null);
 			}			
 		}
 	}

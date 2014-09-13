@@ -13,6 +13,9 @@ import net.minecraft.server.v1_7_R4.EntityZombie;
 
 import org.bukkit.entity.EntityType;
 
+import stfadventure.necromancer.NecroSkeleton;
+import stfadventure.necromancer.NecroZombie;
+
 public enum CustomEntityType {
 	SKELETON("Skeleton", 51, EntityType.SKELETON, EntitySkeleton.class, NecroSkeleton.class),
 	ZOMBIE("Zombie", 54, EntityType.ZOMBIE, EntityZombie.class, NecroZombie.class);
