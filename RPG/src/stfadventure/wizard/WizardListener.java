@@ -13,6 +13,8 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import stfadventure.classes.wizard.Cryomancer;
+import stfadventure.classes.wizard.Wizard;
 import stfadventure.main.PlayerManager;
 import stfadventure.main.RPGClass;
 import stfadventure.monk.Necromancer;

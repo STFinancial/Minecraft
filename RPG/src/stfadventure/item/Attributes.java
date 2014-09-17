@@ -1,4 +1,4 @@
-package stfadventure.custom;
+package stfadventure.item;
 
 import java.util.Iterator;
 import java.util.UUID;
@@ -9,8 +9,8 @@ import javax.annotation.Nullable;
 
 import org.bukkit.inventory.ItemStack;
 
-import stfadventure.custom.NbtFactory.NbtCompound;
-import stfadventure.custom.NbtFactory.NbtList;
+import stfadventure.item.NbtFactory.NbtCompound;
+import stfadventure.item.NbtFactory.NbtList;
 
 import com.google.common.base.Function;
 import com.google.common.base.Objects;

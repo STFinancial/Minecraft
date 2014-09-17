@@ -1,15 +1,15 @@
-package stfadventure.necromancer;
+package stfadventure.classes.necromancer;
 
 import net.minecraft.server.v1_7_R4.EntityCreature;
 import net.minecraft.server.v1_7_R4.EntityLiving;
 import net.minecraft.server.v1_7_R4.PathfinderGoalTarget;
 
-public class PathfinderGoalDefendNecromancer extends PathfinderGoalTarget {
+public class PathfinderGoalAttackTarget extends PathfinderGoalTarget {
 	NecroMinion a;
 	EntityLiving b;
 	private int e;
 
-	public PathfinderGoalDefendNecromancer(NecroMinion minion) {
+	public PathfinderGoalAttackTarget(NecroMinion minion) {
 		super((EntityCreature) minion, false);
 		this.a = minion;
 		this.a(1);
@@ -21,8 +21,8 @@ public class PathfinderGoalDefendNecromancer extends PathfinderGoalTarget {
 		if (entityliving == null) {
 			return false;
 		} else {
-			this.b = entityliving.getLastDamager();
-			int i = entityliving.aK();
+			this.b = entityliving.aL();
+			int i = entityliving.aM();
 			return i != this.e && this.a(this.b, false) && this.a.getOwner() != this.b;
 		}
 	}
@@ -32,8 +32,9 @@ public class PathfinderGoalDefendNecromancer extends PathfinderGoalTarget {
 		EntityLiving entityliving = (EntityLiving) this.a.getOwner();
 
 		if (entityliving != null) {
-			this.e = entityliving.aK();
+			this.e = entityliving.aM();
 		}
+
 		super.c();
 	}
 }

@@ -3,6 +3,7 @@ package stfadventure.wizard;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import stfadventure.classes.wizard.Wizard;
 import stfadventure.main.Main;
 
 public class Pyromancer extends Wizard {

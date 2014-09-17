@@ -1,34 +1,41 @@
-package stfadventure.base;
+package stfadventure.resource;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
 import stfadventure.main.Main;
 
 public class Resource implements Runnable {
+	private static final int MINIMUM_AMOUNT = 0;
 	private final Main plugin;
 	private int taskId = -1;
-	private final Scoreboard scoreboard;
+	private final Score global;
+	private final Score local;
 	private final ResourceType type;
 	private int currentAmount = 0, maximumAmount = 0, regainAmount = 0;
 	
 	public Resource(Main plugin, Scoreboard scoreboard, ResourceType type) {
 		this.plugin = plugin;
-		this.scoreboard = scoreboard;
 		this.type = type;
+		global = scoreboard.getObjective("global").getScore(type.getDisplay());
+		local = scoreboard.getObjective("local").getScore(type.getDisplay());
+		updateScore();
 	}
 	
-	public Resource(Main plugin, AdventureClass adventureClass, ResourceType type, int currentAmount) {
-		this(plugin, adventureClass, type);
+	public Resource(Main plugin, Scoreboard scoreboard, ResourceType type, int currentAmount) {
+		this(plugin, scoreboard, type);
 		this.currentAmount = currentAmount;
+		updateScore();		
+	}
+	
+	private void updateScore() {
+		global.setScore(currentAmount);
+		local.setScore(currentAmount);
 	}
 
 	@Override
 	public void run() {
-		int currentAmount = score.getScore();
 		currentAmount = currentAmount + regainAmount;
 		
 		if (currentAmount > maximumAmount) {
@@ -40,7 +47,7 @@ public class Resource implements Runnable {
 			stop();
 		}
 			
-		score.setScore(currentAmount);					
+		updateScore();			
 	}
 	
 	public void start(long delay, long repeatLength) {
@@ -49,27 +56,32 @@ public class Resource implements Runnable {
 		}
 	}
 	
-	public void gainResource(int amount) {
-		int currentAmount = score.getScore();
+	private void stop() {
+		if (taskId != -1) {
+			Bukkit.getScheduler().cancelTask(taskId);
+			taskId = -1;
+		}	
+	}
+	
+	public void addResource(int amount) {
 		currentAmount = currentAmount + amount;
 		if (currentAmount > maximumAmount) {
 			currentAmount = maximumAmount;
 		}
-		score.setScore(currentAmount);
+		updateScore();
 	}
 	
 	public boolean useResource(int amount) {
-		int currentAmount = score.getScore();
 		if (currentAmount - amount >= MINIMUM_AMOUNT) {
 			currentAmount = currentAmount - amount;
-			score.setScore(currentAmount);
+			updateScore();
 			return true;
 		}
 		return false;		
 	}
 	
 	public int getCurrentAmount() {
-		return score.getScore();
+		return currentAmount;
 	}
 	
 	public int getMaximumAmount() {
@@ -86,12 +98,5 @@ public class Resource implements Runnable {
 
 	public void setRegainAmount(int regainAmount) {
 		this.regainAmount = regainAmount;
-	}
-
-	public void stop() {
-		if (taskId != -1) {
-			Bukkit.getScheduler().cancelTask(taskId);
-			taskId = -1;
-		}	
-	}
+	}	
 }

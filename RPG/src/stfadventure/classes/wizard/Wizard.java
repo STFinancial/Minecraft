@@ -1,16 +1,20 @@
-package stfadventure.wizard;
+package stfadventure.classes.wizard;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.SmallFireball;
+import org.bukkit.event.Event;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scoreboard.Score;
+import org.bukkit.util.Vector;
 
-import stfadventure.base.AdventureClass;
+import stfadventure.classes.AdventureClass;
 import stfadventure.events.AdventureEvent;
 import stfadventure.main.Main;
+import stfadventure.skills.Skill;
 
 public class Wizard extends AdventureClass {
 
@@ -28,7 +32,7 @@ public class Wizard extends AdventureClass {
 	}
 
 	@Override
-	public void primaryAttack(AdventureEvent event) {
+	public void primaryAttack(Event event) {
 //		if (resource.subtractAmount(10)) {
 			player.setNoDamageTicks(player.getMaximumNoDamageTicks());
 			player.setLastDamage(Integer.MAX_VALUE);
@@ -43,18 +47,36 @@ public class Wizard extends AdventureClass {
 	}
 
 	@Override
-	public void secondaryAttack(AdventureEvent event) {
-		if (resource.subtractAmount(30)) {
-			player.launchProjectile(EnderPearl.class).setVelocity(player.getLocation().getDirection().normalize());	
-			resource.start(0, 20);
-		}
-		else {
-			player.sendMessage("Not enough mana to teleport!");
-		}
+	public void secondaryAttack(Event event) {
+		Location destination = player.getLocation().add(player.getLocation().getDirection().multiply(5));
+		Vector facing = player.getLocation().getDirection();
+		destination = destination.getWorld().getHighestBlockAt(destination).getLocation();
+		destination.setDirection(facing);
+		player.teleport(destination);
+//		EnderPearl pearl = player.launchProjectile(EnderPearl.class);
+//		pearl.setVelocity(pearl.getVelocity().setY(-0.1));
+//			resource.start(0, 20);
+//		}
+//		else {
+//			player.sendMessage("Not enough mana to teleport!");
+//		}
 	}
 
 	@Override
-	public void specialAttack(AdventureEvent event) {
+	public void specialAttack(Event event) {
 		player.sendMessage("You must specialize before you get a special attack!");		
+	}
+
+	@Override
+	protected void initializeScoreboard() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void initializeSkills() {
+		primarySkill = new Skill(2, 20);
+		secondarySkill = new Skill(10, 30);
+		specialSkill = null;		
 	}
 }

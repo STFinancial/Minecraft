@@ -10,9 +10,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
-import stfadventure.base.AdventureClass;
-import stfadventure.util.TimeUtil;
-import stfadventure.wizard.Wizard;
+import stfadventure.classes.AdventureClass;
+import stfadventure.classes.wizard.Wizard;
 
 public class PlayerManager implements Listener, Runnable {
 	private final Main plugin;
@@ -21,6 +20,9 @@ public class PlayerManager implements Listener, Runnable {
 	public PlayerManager(Main plugin) {
 		this.plugin = plugin;
 		Bukkit.getPluginManager().registerEvents(this, plugin);
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			setAdventureClass(plugin, player);
+		}
 	}
 	
 	@EventHandler

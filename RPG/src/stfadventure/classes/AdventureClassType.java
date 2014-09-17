@@ -1,12 +1,13 @@
-package stfadventure.base;
+package stfadventure.classes;
 
 import java.lang.reflect.Constructor;
 
 import org.bukkit.entity.Player;
 
-import stfadventure.archer.Archer;
 import stfadventure.archer.Hunter;
 import stfadventure.archer.Ranger;
+import stfadventure.classes.wizard.Cryomancer;
+import stfadventure.classes.wizard.Wizard;
 import stfadventure.main.Main;
 import stfadventure.monk.Monk;
 import stfadventure.monk.Necromancer;
@@ -14,9 +15,7 @@ import stfadventure.monk.Priest;
 import stfadventure.warrior.Berserker;
 import stfadventure.warrior.Paladin;
 import stfadventure.warrior.Warrior;
-import stfadventure.wizard.Cryomancer;
 import stfadventure.wizard.Pyromancer;
-import stfadventure.wizard.Wizard;
 
 public enum AdventureClassType {
 	ARCHER (Archer.class),

@@ -1,4 +1,4 @@
-package stfadventure.util;
+package stfadventure.main;
 
 public class TimeUtil {
 	

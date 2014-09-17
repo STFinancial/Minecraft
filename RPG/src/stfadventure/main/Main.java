@@ -10,17 +10,19 @@ import org.bukkit.entity.Skeleton;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import stfadventure.custom.CustomEntityType;
+import stfadventure.events.EventManager;
 import stfadventure.events.ListenerManager;
 
 
 public class Main extends JavaPlugin {
 	private PlayerManager playerManager;
+	private EventManager eventManager;
 	
 	@Override
 	public void onEnable() {
 		playerManager = new PlayerManager(this);
-		new ListenerManager(this);
+		eventManager = new EventManager();
+		Bukkit.getPluginManager().registerEvents(eventManager, this);
 		CustomEntityType.registerEntities();
 	}
 	
@@ -34,6 +36,9 @@ public class Main extends JavaPlugin {
 			}
 		}
 //		playerManager.run();
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			player.removeMetadata("STFAdventure", this);
+		}
 		Bukkit.getScheduler().cancelTasks(this);
 		HandlerList.unregisterAll(this);
 		CustomEntityType.unregisterEntities();

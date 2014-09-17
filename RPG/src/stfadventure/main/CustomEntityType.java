@@ -1,4 +1,4 @@
-package stfadventure.custom;
+package stfadventure.main;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -13,8 +13,8 @@ import net.minecraft.server.v1_7_R4.EntityZombie;
 
 import org.bukkit.entity.EntityType;
 
-import stfadventure.necromancer.NecroSkeleton;
-import stfadventure.necromancer.NecroZombie;
+import stfadventure.classes.necromancer.NecroSkeleton;
+import stfadventure.classes.necromancer.NecroZombie;
 
 public enum CustomEntityType {
 	SKELETON("Skeleton", 51, EntityType.SKELETON, EntitySkeleton.class, NecroSkeleton.class),

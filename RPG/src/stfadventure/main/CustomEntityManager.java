@@ -1,4 +1,4 @@
-package stfadventure.custom;
+package stfadventure.main;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

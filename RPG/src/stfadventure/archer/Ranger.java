@@ -3,6 +3,7 @@ package stfadventure.archer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import stfadventure.classes.Archer;
 import stfadventure.main.Main;
 
 public class Ranger extends Archer{

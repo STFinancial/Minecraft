@@ -6,8 +6,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Score;
 
-import stfadventure.base.AdventureClass;
-import stfadventure.base.AdventureClassType;
+import stfadventure.classes.AdventureClass;
+import stfadventure.classes.AdventureClassType;
 import stfadventure.events.AdventureEvent;
 import stfadventure.main.Main;
 

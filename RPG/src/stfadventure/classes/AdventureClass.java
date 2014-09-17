@@ -1,4 +1,4 @@
-package stfadventure.base;
+package stfadventure.classes;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,20 +6,21 @@ import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
-import stfadventure.events.AdventureEvent;
 import stfadventure.main.Main;
+import stfadventure.resource.Resource;
+import stfadventure.skills.Skill;
 
 public abstract class AdventureClass {
 	protected final Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-	public final Objective local = scoreboard.registerNewObjective("sidebar", "dummy");
-	public final Objective global = scoreboard.registerNewObjective("overhead", "dummy");
+	public final Objective local = scoreboard.registerNewObjective("local", "dummy");
+	public final Objective global = scoreboard.registerNewObjective("global", "dummy");
 	public final Player player;
-	protected final Main plugin;
 	protected int level = 1, exp = 0, expNext = 5;
 	protected Skill primarySkill, secondarySkill, specialSkill;
 	protected final Resource resource;
@@ -63,9 +64,5 @@ public abstract class AdventureClass {
 	
 	protected abstract Score getResourceType();
 	
-	public abstract void primaryAttack(AdventureEvent event);
-	
-	public abstract void secondaryAttack(AdventureEvent event);
-	
-	public abstract void specialAttack(AdventureEvent event);
+	public abstract void useSkill(Event event);
 }

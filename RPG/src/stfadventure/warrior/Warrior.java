@@ -5,7 +5,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Score;
 
-import stfadventure.base.AdventureClass;
+import stfadventure.classes.AdventureClass;
 import stfadventure.events.AdventureEvent;
 import stfadventure.main.Main;
 
