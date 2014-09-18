@@ -15,7 +15,8 @@ import stfadventure.main.Main;
 
 public abstract class AdventureClass {
 	protected final Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-	public final Player player;
+	protected final Player player;
+	protected final Main plugin;
 	protected int level = 1, exp = 0, expNext = 5;
 	protected final Stats stats = new Stats();
 	protected final Map<String, Skill> skills = new HashMap<String, Skill>();
@@ -23,6 +24,7 @@ public abstract class AdventureClass {
 	
 	public AdventureClass(Main plugin, Player player) {
 		this.player = player;
+		this.plugin = plugin;
 //		stats.calculateStats(player.getInventory().getArmorContents());		
 		Objective local = scoreboard.registerNewObjective("local", "dummy");
 		local.setDisplaySlot(DisplaySlot.SIDEBAR);
@@ -58,16 +60,9 @@ public abstract class AdventureClass {
 	
 	protected abstract void initializeSkills();
 	
+	public abstract void getSkill(Event event);
+	
 	public void info() {
 		player.sendMessage(this.getClass().getSimpleName());
-	}
-	
-	public boolean getSkill(Event event) {
-		boolean permission = player.hasPermission("STFAdventure");
-		if (skills.containsKey(event.getClass().getName())) {
-			Skill skill = skills.get(event.getClass().getName());
-			permission = skill.ready() && resource.useResource(skill.cost());
-		}
-		return permission;
 	}
 }
