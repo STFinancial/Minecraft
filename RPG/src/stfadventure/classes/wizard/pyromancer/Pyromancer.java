@@ -1,4 +1,4 @@
-package stfadventure.wizard;
+package stfadventure.classes.wizard.pyromancer;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;

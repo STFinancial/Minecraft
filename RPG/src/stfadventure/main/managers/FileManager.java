@@ -1,4 +1,4 @@
-package stfadventure.main;
+package stfadventure.main.managers;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package stfadventure.wizard;
+package stfadventure.classes.wizard.cryomancer;
 
 import java.util.concurrent.ThreadLocalRandom;
 

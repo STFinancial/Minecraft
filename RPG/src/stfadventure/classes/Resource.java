@@ -1,23 +1,40 @@
-package stfadventure.resource;
+package stfadventure.classes;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
 import stfadventure.main.Main;
 
 public class Resource implements Runnable {
+	public enum ResourceType {
+		MANA (ChatColor.BLUE + "Mana: "), 
+		LIFE (ChatColor.GREEN + "Life: "), 
+		ESSENCE (ChatColor.GRAY + "Essence: "), 
+		RAGE (ChatColor.RED + "Rage: "),
+		HOLY_ENERGY (ChatColor.YELLOW + "Holy Energy: ");
+		
+		private final String display;
+		
+		private ResourceType(String display) {
+			this.display = display;
+		}
+		
+		public String getDisplay() {
+			return display;
+		}		
+	}
+	
 	private static final int MINIMUM_AMOUNT = 0;
 	private final Main plugin;
 	private int taskId = -1;
 	private final Score global;
 	private final Score local;
-	private final ResourceType type;
 	private int currentAmount = 0, maximumAmount = 0, regainAmount = 0;
 	
 	public Resource(Main plugin, Scoreboard scoreboard, ResourceType type) {
 		this.plugin = plugin;
-		this.type = type;
 		global = scoreboard.getObjective("global").getScore(type.getDisplay());
 		local = scoreboard.getObjective("local").getScore(type.getDisplay());
 		updateScore();
@@ -82,6 +99,10 @@ public class Resource implements Runnable {
 	
 	public int getCurrentAmount() {
 		return currentAmount;
+	}
+	
+	public void setCurrentAmount(int amount) {
+		currentAmount = amount;
 	}
 	
 	public int getMaximumAmount() {

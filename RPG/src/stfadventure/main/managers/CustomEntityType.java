@@ -1,4 +1,4 @@
-package stfadventure.main;
+package stfadventure.main.managers;
 
 import java.lang.reflect.Field;
 import java.util.List;

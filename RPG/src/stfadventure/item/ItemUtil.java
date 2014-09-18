@@ -1,33 +1,20 @@
 package stfadventure.item;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
-import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
+import stfadventure.classes.Resource.ResourceType;
+import stfadventure.classes.Stats.StatType;
 import stfadventure.item.Attributes.Attribute;
 import stfadventure.item.Attributes.Attribute.Builder;
 import stfadventure.item.Attributes.AttributeType;
 import stfadventure.item.NbtFactory.NbtCompound;
-import stfadventure.resource.ResourceType;
 
-public class ItemUtil {
-	
-	public enum StatType {
-		STRENGTH ("Strength"), INTELLIGENCE ("Intelligence"), WILL ("Will"), AGILITY ("Agility");
-		
-		private String statName;
-		
-		private StatType(String statName) {
-			this.statName = statName;
-		}
-		
-		public String getStatName() {
-			return statName;
-		}
-	}
-	
+public class ItemUtil {	
 	private static NbtCompound getTag(ItemStack item) {
 		ItemStack stack = NbtFactory.getCraftItemStack(item);
 		return NbtFactory.fromItemTag(stack);
@@ -47,12 +34,20 @@ public class ItemUtil {
 		setLore(item, loreList);
 	}
 		
-	public static void addStats(ItemStack item, Map<StatType, Integer> stats) {
-		for (StatType stat : stats.keySet()) {
-			getTag(item).putPath(stat.getStatName(), stats.get(stat));
-			String lore = stat.getStatName() + ": " + stats.get(stat);
+	public static void addItemStats(ItemStack item, Map<StatType, Integer> stats) {
+		for (Entry<StatType, Integer> entry : stats.entrySet()) {
+			getTag(item).putPath(entry.getKey().getStatName(), entry.getValue());
+			String lore = entry.getKey().getStatName() + ": " + entry.getValue();
 			addLore(item, lore);
 		}
+	}
+	
+	public static Map<StatType, Integer> getItemStats(ItemStack item) {
+		Map<StatType, Integer> stats = new HashMap<StatType, Integer>();
+		for (StatType stat : StatType.values()) {
+			stats.put(stat, getTag(item).getInteger(stat.getStatName(), 0));
+		}
+		return stats;
 	}
 	
 	public static void setResource(ItemStack item, ResourceType resourceType, int amount) {

@@ -1,12 +1,11 @@
-package stfadventure.classes.wizard;
+package stfadventure.classes.wizard.cryomancer;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 
-import stfadventure.events.AdventureEvent;
+import stfadventure.classes.wizard.Wizard;
 import stfadventure.main.Main;
-import stfadventure.wizard.Blizzard;
 
 public class Cryomancer extends Wizard {
 	private final Blizzard blizzard;

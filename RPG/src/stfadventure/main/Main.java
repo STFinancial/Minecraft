@@ -11,7 +11,8 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import stfadventure.events.EventManager;
-import stfadventure.events.ListenerManager;
+import stfadventure.main.managers.CustomEntityType;
+import stfadventure.main.managers.PlayerManager;
 
 
 public class Main extends JavaPlugin {

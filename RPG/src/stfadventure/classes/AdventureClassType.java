@@ -4,30 +4,21 @@ import java.lang.reflect.Constructor;
 
 import org.bukkit.entity.Player;
 
-import stfadventure.archer.Hunter;
-import stfadventure.archer.Ranger;
-import stfadventure.classes.wizard.Cryomancer;
-import stfadventure.classes.wizard.Wizard;
+import stfadventure.classes.berserker.Berserker;
+import stfadventure.classes.holy.Paladin;
+import stfadventure.classes.holy.Priest;
+import stfadventure.classes.hunter.Hunter;
+import stfadventure.classes.necromancer.Necromancer;
+import stfadventure.classes.wizard.cryomancer.Cryomancer;
+import stfadventure.classes.wizard.pyromancer.Pyromancer;
 import stfadventure.main.Main;
-import stfadventure.monk.Monk;
-import stfadventure.monk.Necromancer;
-import stfadventure.monk.Priest;
-import stfadventure.warrior.Berserker;
-import stfadventure.warrior.Paladin;
-import stfadventure.warrior.Warrior;
-import stfadventure.wizard.Pyromancer;
 
 public enum AdventureClassType {
-	ARCHER (Archer.class),
-	RANGER (Ranger.class), 
 	HUNTER (Hunter.class), 
-	WARRIOR (Warrior.class), 
 	BERSERKER (Berserker.class), 
 	PALADIN (Paladin.class), 
-	WIZARD (Wizard.class),
 	PYROMANCER (Pyromancer.class), 
 	CRYOMANCER (Cryomancer.class), 
-	MONK (Monk.class), 
 	NECROMANCER (Necromancer.class), 
 	PRIEST (Priest.class);
 	

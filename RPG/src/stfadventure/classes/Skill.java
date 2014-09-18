@@ -1,6 +1,6 @@
-package stfadventure.skills;
+package stfadventure.classes;
 
-public abstract class Skill {
+public class Skill {
 	private long start = System.currentTimeMillis();
 	private long cooldown = 0;
 	private int cost = 0;

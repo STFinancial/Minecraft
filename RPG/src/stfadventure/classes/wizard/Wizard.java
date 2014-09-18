@@ -12,9 +12,8 @@ import org.bukkit.scoreboard.Score;
 import org.bukkit.util.Vector;
 
 import stfadventure.classes.AdventureClass;
-import stfadventure.events.AdventureEvent;
+import stfadventure.classes.Skill;
 import stfadventure.main.Main;
-import stfadventure.skills.Skill;
 
 public class Wizard extends AdventureClass {
 
