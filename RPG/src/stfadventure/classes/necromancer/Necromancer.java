@@ -1,6 +1,8 @@
 package stfadventure.classes.necromancer;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+
 import stfadventure.classes.AdventureClass;
 import stfadventure.classes.Resource;
 import stfadventure.classes.Resource.ResourceType;
@@ -21,6 +23,12 @@ public class Necromancer extends AdventureClass {
 
 	@Override
 	protected void initializeSkills() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void getSkill(Event event) {
 		// TODO Auto-generated method stub
 		
 	}	

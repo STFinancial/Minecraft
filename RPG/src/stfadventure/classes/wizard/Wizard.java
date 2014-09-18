@@ -78,4 +78,16 @@ public class Wizard extends AdventureClass {
 		secondarySkill = new Skill(10, 30);
 		specialSkill = null;		
 	}
+
+	@Override
+	protected void initializeResource(Main plugin) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void getSkill(Event event) {
+		// TODO Auto-generated method stub
+		
+	}
 }

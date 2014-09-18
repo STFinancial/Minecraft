@@ -1,16 +1,15 @@
-package stfadventure.classes.berserker;
+package stfadventure.classes.paladin;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-
 import stfadventure.classes.AdventureClass;
 import stfadventure.main.Main;
 
-public class Berserker extends AdventureClass {
+public class Paladin extends AdventureClass {
 
-	public Berserker(Main plugin, Player player, YamlConfiguration playerConfig) {
-		super(plugin, player, playerConfig);
+	public Paladin(Main plugin, Player player, YamlConfiguration playerConfig) {
+		super(plugin, player);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -31,5 +30,4 @@ public class Berserker extends AdventureClass {
 		// TODO Auto-generated method stub
 		
 	}
-
 }

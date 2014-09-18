@@ -5,10 +5,10 @@ import java.lang.reflect.Constructor;
 import org.bukkit.entity.Player;
 
 import stfadventure.classes.berserker.Berserker;
-import stfadventure.classes.holy.Paladin;
-import stfadventure.classes.holy.Priest;
 import stfadventure.classes.hunter.Hunter;
 import stfadventure.classes.necromancer.Necromancer;
+import stfadventure.classes.paladin.Paladin;
+import stfadventure.classes.priest.Priest;
 import stfadventure.classes.wizard.cryomancer.Cryomancer;
 import stfadventure.classes.wizard.pyromancer.Pyromancer;
 import stfadventure.main.Main;

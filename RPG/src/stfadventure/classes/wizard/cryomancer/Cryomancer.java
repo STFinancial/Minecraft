@@ -11,7 +11,7 @@ public class Cryomancer extends Wizard {
 	private final Blizzard blizzard;
 
 	public Cryomancer(Main plugin, Player player, YamlConfiguration playerConfig) {
-		super(plugin, player, playerConfig);
+		super(plugin, player);
 		blizzard = new Blizzard(plugin, player);
 	}
 
