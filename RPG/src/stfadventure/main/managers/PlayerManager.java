@@ -22,7 +22,6 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 import stfadventure.classes.AdventureClass;
 import stfadventure.classes.hunter.Hunter;
-import stfadventure.classes.hunter.HunterSkills;
 import stfadventure.classes.necromancer.NecroMinion;
 import stfadventure.classes.necromancer.NecroSkeleton;
 import stfadventure.classes.necromancer.Necromancer;
@@ -40,7 +39,6 @@ public class PlayerManager implements Listener, Runnable {
 			setAdventureClass(plugin, player);
 			player.addAttachment(plugin, "STFAdventure", true);
 		}
-		Bukkit.getPluginManager().registerEvents(new HunterSkills(), plugin);
 	}
 	
 	@EventHandler
@@ -81,7 +79,7 @@ public class PlayerManager implements Listener, Runnable {
 	}
 	
 	public static void setAdventureClass(Main plugin, Player player) {
-		FixedMetadataValue data = new FixedMetadataValue(plugin, new Necromancer(plugin, player));
+		FixedMetadataValue data = new FixedMetadataValue(plugin, new Hunter(plugin, player));
 		player.setMetadata("STFAdventureClass", data);
 	}
 	

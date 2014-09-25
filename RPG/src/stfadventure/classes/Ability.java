@@ -1,11 +1,17 @@
 package stfadventure.classes;
 
-public class Skill {
+public abstract class Ability {
 	private long start = System.currentTimeMillis();
 	private long cooldown = 0;
 	private int cost = 0;
+	private final String name;
 	
-	public Skill(long cooldown, int cost) {
+	public Ability(String name) {
+		this.name = name;
+	}
+	
+	public Ability(String name, long cooldown, int cost) {
+		this.name = name;
 		this.cooldown = cooldown;
 		this.cost = cost;
 	}

@@ -10,6 +10,9 @@ import org.bukkit.entity.Skeleton;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+
 import stfadventure.events.EventManager;
 import stfadventure.main.managers.CustomEntityType;
 import stfadventure.main.managers.PlayerManager;
@@ -22,7 +25,7 @@ public class Main extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		playerManager = new PlayerManager(this);
-		eventManager = new EventManager();
+		eventManager = new EventManager(this, ProtocolLibrary.getProtocolManager());
 		Bukkit.getPluginManager().registerEvents(eventManager, this);
 		CustomEntityType.registerEntities();
 	}

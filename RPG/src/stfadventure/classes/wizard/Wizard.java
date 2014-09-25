@@ -12,7 +12,7 @@ import org.bukkit.scoreboard.Score;
 import org.bukkit.util.Vector;
 
 import stfadventure.classes.AdventureClass;
-import stfadventure.classes.Skill;
+import stfadventure.classes.Ability;
 import stfadventure.main.Main;
 
 public class Wizard extends AdventureClass {
@@ -74,8 +74,8 @@ public class Wizard extends AdventureClass {
 
 	@Override
 	protected void initializeSkills() {
-		primarySkill = new Skill(2, 20);
-		secondarySkill = new Skill(10, 30);
+		primarySkill = new Ability(2, 20);
+		secondarySkill = new Ability(10, 30);
 		specialSkill = null;		
 	}
 
