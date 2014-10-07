@@ -1,4 +1,4 @@
-package stfadventure.wizard;
+package stfadventure.classes.wizard;
 
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;

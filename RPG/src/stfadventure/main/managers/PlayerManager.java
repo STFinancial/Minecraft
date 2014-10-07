@@ -1,7 +1,5 @@
 package stfadventure.main.managers;
 
-import java.io.IOException;
-
 import net.minecraft.server.v1_7_R4.EntityCreature;
 import net.minecraft.server.v1_7_R4.EntityHuman;
 import net.minecraft.server.v1_7_R4.World;
@@ -19,13 +17,12 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.Metadatable;
 
 import stfadventure.classes.AdventureClass;
-import stfadventure.classes.hunter.Hunter;
+import stfadventure.classes.AdventureClassType;
 import stfadventure.classes.necromancer.NecroMinion;
 import stfadventure.classes.necromancer.NecroSkeleton;
-import stfadventure.classes.necromancer.Necromancer;
-import stfadventure.classes.wizard.Wizard;
 import stfadventure.main.Main;
 
 public class PlayerManager implements Listener, Runnable {
@@ -36,7 +33,6 @@ public class PlayerManager implements Listener, Runnable {
 		this.plugin = plugin;
 		Bukkit.getPluginManager().registerEvents(this, plugin);
 		for (Player player : Bukkit.getOnlinePlayers()) {
-			setAdventureClass(plugin, player);
 			player.addAttachment(plugin, "STFAdventure", true);
 		}
 	}
@@ -45,7 +41,6 @@ public class PlayerManager implements Listener, Runnable {
 	private void onPlayerJoin(PlayerJoinEvent event) {
 //		setAdventureClass(plugin, event.getPlayer());
 //		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this, TimeUtil.convertMinutesToTicks(5), TimeUtil.convertMinutesToTicks(5));
-		setAdventureClass(plugin, event.getPlayer());
 		event.getPlayer().addAttachment(plugin, "STFAdventure", true);
 	}
 	
@@ -78,13 +73,13 @@ public class PlayerManager implements Listener, Runnable {
 //		}
 	}
 	
-	public static void setAdventureClass(Main plugin, Player player) {
-		FixedMetadataValue data = new FixedMetadataValue(plugin, new Hunter(plugin, player));
+	public static void setAdventureClass(Main plugin, Player player, AdventureClassType classType) {
+		FixedMetadataValue data = new FixedMetadataValue(plugin, classType.getAdventureClass(plugin, player));
 		player.setMetadata("STFAdventureClass", data);
 	}
 	
-	public static AdventureClass getAdventureClass(Player player) {
-		return (AdventureClass) player.getMetadata("STFAdventureClass").get(0).value();
+	public static AdventureClass getAdventureClass(Metadatable metadatable) {
+		return (AdventureClass) metadatable.getMetadata("STFAdventureClass").get(0).value();
 	}
 	
 	public void stop() {

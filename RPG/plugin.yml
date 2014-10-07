@@ -3,7 +3,6 @@ main: stfadventure.main.Main
 description: STF Adventure plugin
 version: 0.1a
 author: qsik
-depend: [ProtocolLib]
 
 commands:
   class:

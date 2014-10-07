@@ -4,18 +4,18 @@ import java.lang.reflect.Constructor;
 
 import org.bukkit.entity.Player;
 
-import stfadventure.classes.berserker.Berserker;
 import stfadventure.classes.hunter.Hunter;
 import stfadventure.classes.necromancer.Necromancer;
 import stfadventure.classes.paladin.Paladin;
 import stfadventure.classes.priest.Priest;
+import stfadventure.classes.rogue.Rogue;
 import stfadventure.classes.wizard.cryomancer.Cryomancer;
 import stfadventure.classes.wizard.pyromancer.Pyromancer;
 import stfadventure.main.Main;
 
 public enum AdventureClassType {
 	HUNTER (Hunter.class), 
-	BERSERKER (Berserker.class), 
+	ROGUE (Rogue.class), 
 	PALADIN (Paladin.class), 
 	PYROMANCER (Pyromancer.class), 
 	CRYOMANCER (Cryomancer.class), 
@@ -43,7 +43,7 @@ public enum AdventureClassType {
 
 	public static AdventureClassType getAdventureClassType(String classType) {
 		for (AdventureClassType adventureClass : AdventureClassType.values()) {
-			if (adventureClass.toString().equals(classType.toUpperCase())) {
+			if (adventureClass.name().equals(classType.toUpperCase())) {
 				return adventureClass;
 			}
 		}

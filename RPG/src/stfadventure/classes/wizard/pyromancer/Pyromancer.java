@@ -7,7 +7,7 @@ import stfadventure.classes.wizard.Wizard;
 import stfadventure.main.Main;
 
 public class Pyromancer extends Wizard {
-	public Pyromancer(Main plugin, Player player, YamlConfiguration playerConfig) {
+	public Pyromancer(Main plugin, Player player) {
 		super(plugin, player);
 		// TODO Auto-generated constructor stub
 	}

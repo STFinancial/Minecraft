@@ -4,8 +4,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
 import stfadventure.classes.AdventureClass;
-import stfadventure.classes.Resource;
 import stfadventure.classes.Resource.ResourceType;
+import stfadventure.item.ArmorType;
 import stfadventure.main.Main;
 
 public class Necromancer extends AdventureClass {
@@ -17,13 +17,7 @@ public class Necromancer extends AdventureClass {
 
 	@Override
 	protected void initializeResource(Main plugin) {
-		resource = new Resource(plugin, scoreboard, ResourceType.ESSENCE, 100);
-		
-	}
-
-	@Override
-	protected void initializeSkills() {
-		// TODO Auto-generated method stub
+		resource.setType(ResourceType.ESSENCE, 100, 100, 10);
 		
 	}
 
@@ -31,5 +25,10 @@ public class Necromancer extends AdventureClass {
 	public void getSkill(Event event) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void setArmorTypes() {
+		armorTypes.add(ArmorType.CHAINMAIL);		
 	}	
 }

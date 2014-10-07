@@ -10,9 +10,7 @@ import org.bukkit.entity.Skeleton;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-
+import stfadventure.classes.AdventureClassType;
 import stfadventure.events.EventManager;
 import stfadventure.main.managers.CustomEntityType;
 import stfadventure.main.managers.PlayerManager;
@@ -25,7 +23,7 @@ public class Main extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		playerManager = new PlayerManager(this);
-		eventManager = new EventManager(this, ProtocolLibrary.getProtocolManager());
+		eventManager = new EventManager();
 		Bukkit.getPluginManager().registerEvents(eventManager, this);
 		CustomEntityType.registerEntities();
 	}
@@ -51,10 +49,7 @@ public class Main extends JavaPlugin {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (cmd.getName().equalsIgnoreCase("class")) {
-//			YamlConfiguration playerConfig = FileManager.getPlayerConfig((Player) sender);
-//			playerConfig.set("class", args[0].toUpperCase());
-//			playerConfig.lo
-//			PlayerManager.setAdventureClass(this, (Player) sender);
+			PlayerManager.setAdventureClass(this, (Player) sender, AdventureClassType.getAdventureClassType(args[0]));
 		}
 		if (cmd.getName().equalsIgnoreCase("info")) {
 			PlayerManager.getAdventureClass((Player) sender).info();

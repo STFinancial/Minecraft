@@ -2,9 +2,6 @@ package stfadventure.classes;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.scoreboard.Score;
-import org.bukkit.scoreboard.Scoreboard;
-
 import stfadventure.main.Main;
 
 public class Resource implements Runnable {
@@ -12,8 +9,8 @@ public class Resource implements Runnable {
 		MANA (ChatColor.BLUE + "Mana: "), 
 		LIFE (ChatColor.GREEN + "Life: "), 
 		ESSENCE (ChatColor.GRAY + "Essence: "), 
-		RAGE (ChatColor.RED + "Rage: "),
-		HOLY_ENERGY (ChatColor.YELLOW + "Holy Energy: ");
+		ENERGY (ChatColor.YELLOW + "Energy: "),
+		HOLY_ENERGY (ChatColor.WHITE + "Holy Energy: ");
 		
 		private final String display;
 		
@@ -26,31 +23,37 @@ public class Resource implements Runnable {
 		}		
 	}
 	
+	enum State {
+		START,
+		STOP,
+		WAIT;
+	}
+	
 	private static final int MINIMUM_AMOUNT = 0;
 	private final Main plugin;
 	private int taskId = -1;
-	private final Score global;
-	private final Score local;
+	private ResourceType type;
 	private int currentAmount = 0, maximumAmount = 0, regainAmount = 0;
 	
-	public Resource(Main plugin, Scoreboard scoreboard, ResourceType type) {
+	public Resource(Main plugin) {
 		this.plugin = plugin;
-		global = scoreboard.getObjective("global").getScore(type.getDisplay());
-		local = scoreboard.getObjective("local").getScore(type.getDisplay());
-		updateScore();
 	}
 	
-	public Resource(Main plugin, Scoreboard scoreboard, ResourceType type, int currentAmount) {
-		this(plugin, scoreboard, type);
+	public void setType(ResourceType type, int currentAmount, int maximumAmount, int regainAmount) {
+		this.type = type;
 		this.currentAmount = currentAmount;
-		updateScore();		
+		this.maximumAmount = maximumAmount;
+		this.regainAmount = regainAmount;
 	}
 	
-	private void updateScore() {
-		global.setScore(currentAmount);
-		local.setScore(currentAmount);
+	public ResourceType getType() {
+		return type;
 	}
-
+	
+	public String getDisplayType() {
+		return type.getDisplay();
+	}
+	
 	@Override
 	public void run() {
 		currentAmount = currentAmount + regainAmount;
@@ -62,9 +65,7 @@ public class Resource implements Runnable {
 		if (currentAmount < MINIMUM_AMOUNT) {
 			currentAmount = MINIMUM_AMOUNT;
 			stop();
-		}
-			
-		updateScore();			
+		}		
 	}
 	
 	public void start(long delay, long repeatLength) {
@@ -85,13 +86,11 @@ public class Resource implements Runnable {
 		if (currentAmount > maximumAmount) {
 			currentAmount = maximumAmount;
 		}
-		updateScore();
 	}
 	
 	public boolean useResource(int amount) {
 		if (currentAmount - amount >= MINIMUM_AMOUNT) {
 			currentAmount = currentAmount - amount;
-			updateScore();
 			return true;
 		}
 		return false;		

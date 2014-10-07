@@ -3,11 +3,14 @@ package stfadventure.classes.wizard.cryomancer;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.bukkit.Bukkit;
-import org.bukkit.World;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class Blizzard implements Runnable {
 	private static final int RADIUS = 5;
@@ -23,16 +26,26 @@ public class Blizzard implements Runnable {
 	@Override
 	public void run() {
 		if (player != null && player.isValid() && snowfall < duration) {
-			World world = player.getWorld();
-			int x = ThreadLocalRandom.current().nextInt(-RADIUS, RADIUS + 1);
-			int z = ThreadLocalRandom.current().nextInt(-RADIUS, RADIUS + 1);
-			Snowball snowball = (Snowball) world.spawnEntity(player.getLocation().add(x, 5, z), EntityType.SNOWBALL);
-			snowball.setShooter(player);
+			for (Entity entity : player.getNearbyEntities(RADIUS, RADIUS, RADIUS)) {
+				if (entity instanceof LivingEntity) {
+					((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100, 4));
+				}
+			}
+			for (int i = 0; i < 10; i++) {
+				generateSnowball();
+			}
 			snowfall++;
 		}
 		else {
 			stop();
 		}		
+	}
+	
+	private void generateSnowball() {
+		int x = ThreadLocalRandom.current().nextInt(-RADIUS, RADIUS + 1);
+		int z = ThreadLocalRandom.current().nextInt(-RADIUS, RADIUS + 1);
+		Snowball snowball = (Snowball) player.getWorld().spawnEntity(player.getLocation().add(x, 5, z), EntityType.SNOWBALL);
+		snowball.setShooter(player);
 	}
 
 	public void start() {

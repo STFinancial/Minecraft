@@ -1,4 +1,4 @@
-package stfadventure.wizard;
+package stfadventure.classes.wizard.pyromancer;
 
 import org.bukkit.Location;
 import org.bukkit.WeatherType;
